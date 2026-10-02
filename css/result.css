@@ -1,0 +1,393 @@
+/* ==========================================================================
+   result.css - Final Result Report Card, Answer Review, and Print Stylesheet
+   ========================================================================== */
+
+.result-container {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.report-card {
+    background: #ffffff;
+    border-radius: var(--radius-xl);
+    border: 3px solid var(--primary-light);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+}
+
+.report-card-header {
+    text-align: center;
+    border-bottom: 3px solid var(--surface-soft);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.report-celebration-badge {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.report-card-header h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary-sky);
+    margin-bottom: 0.25rem;
+}
+
+.report-card-header p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.student-meta-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.5rem;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+/* Giant Final Score Hero */
+.final-score-showcase {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid var(--primary-light);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.final-score-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.final-score-number {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--primary-sky);
+    line-height: 1;
+    margin: 0.5rem 0;
+}
+
+.predicate-badge {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding: 0.4rem 1.5rem;
+    border-radius: var(--radius-full);
+    color: #ffffff;
+    box-shadow: var(--shadow-sm);
+}
+
+.predicate-excellent { background: var(--success-emerald); }
+.predicate-good { background: var(--primary-sky); }
+.predicate-satisfactory { background: var(--accent-amber); }
+.predicate-needspractice { background: #f97316; }
+.predicate-needslearning { background: var(--danger-rose); }
+
+/* Analytics Metrics Grid */
+.metrics-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.metric-box {
+    background: var(--surface-soft);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    text-align: center;
+}
+
+.metric-val {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: block;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* Level Breakdown Bars */
+.level-breakdown-section {
+    margin-bottom: 2rem;
+}
+
+.level-breakdown-section h4 {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+
+.result-level-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.65rem;
+}
+
+.lvl-label {
+    min-width: 75px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.lvl-bar-wrapper {
+    flex: 1;
+    background: var(--surface-soft);
+    height: 12px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.lvl-bar-fill {
+    background: linear-gradient(90deg, var(--primary-light), var(--primary-sky));
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.8s ease;
+}
+
+.lvl-score-val {
+    min-width: 65px;
+    text-align: right;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--primary-sky);
+}
+
+/* Concept Mastery Breakdown */
+.concept-analysis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.concept-box {
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+}
+
+.concept-box.mastered {
+    background: var(--success-bg);
+    border: 2px solid var(--success-emerald);
+}
+
+.concept-box.practice {
+    background: var(--accent-amber-bg);
+    border: 2px solid var(--accent-amber);
+}
+
+.concept-box h5 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.concept-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.9rem;
+}
+
+.check-icon { color: var(--success-emerald); font-weight: bold; }
+.warn-icon { color: #d97706; }
+
+/* Report Action Buttons */
+.report-actions-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--surface-soft);
+}
+
+/* Review Answers List */
+.review-filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.review-filter-btn {
+    background: var(--surface-soft);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.review-filter-btn.active {
+    background: var(--primary-sky);
+    color: #fff;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.review-item-card {
+    background: var(--surface-white);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+}
+
+.review-item-card.correct-entry {
+    border-left: 6px solid var(--success-emerald);
+}
+
+.review-item-card.wrong-entry {
+    border-left: 6px solid var(--danger-rose);
+}
+
+.review-item-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.review-q-num {
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--primary-sky);
+}
+
+.review-status-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+.tag-correct { background: var(--success-bg); color: var(--success-dark); }
+.tag-wrong { background: var(--danger-bg); color: var(--danger-dark); }
+
+.review-question-title {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.review-answers-box {
+    background: var(--surface-soft);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.text-success { color: var(--success-emerald); font-weight: bold; }
+.text-danger { color: var(--danger-rose); font-weight: bold; }
+
+.review-explanation {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* ----------------------------------------------------
+   OFFICIAL PRINT STYLESHEET (@media print)
+   ---------------------------------------------------- */
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 12pt;
+    }
+
+    .app-header, 
+    .mobile-bottom-nav, 
+    .clouds-backdrop, 
+    .report-actions-bar,
+    .kiko-companion-card,
+    #toast-notification-area,
+    #achievement-toast-container,
+    .modal-overlay {
+        display: none !important;
+    }
+
+    .main-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .report-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    .print-only-block {
+        display: block !important;
+    }
+
+    .print-signatures-area {
+        display: flex !important;
+        justify-content: space-between;
+        margin-top: 3rem;
+        padding-top: 1rem;
+    }
+
+    .signature-box {
+        text-align: center;
+        width: 220px;
+    }
+
+    .signature-line {
+        border-bottom: 1px solid #000;
+        margin-top: 50px;
+        margin-bottom: 5px;
+    }
+}
+
+.print-only-block {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .metrics-summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .concept-analysis-grid {
+        grid-template-columns: 1fr;
+    }
+    .report-card {
+        padding: 1.5rem;
+    }
+    .final-score-number {
+        font-size: 3.5rem;
+    }
+}

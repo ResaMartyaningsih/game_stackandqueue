@@ -1,0 +1,199 @@
+/* ==========================================================================
+   challenge.css - Challenge Arena & Contextual Scenario Testing
+   ========================================================================== */
+
+.challenge-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-white);
+    border: 2px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.challenge-meta-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.challenge-pill {
+    background: var(--primary-sky-bg);
+    color: var(--primary-sky);
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+}
+
+.challenge-live-score {
+    background: var(--accent-amber-bg);
+    color: #92400e;
+    font-weight: 800;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--accent-amber);
+}
+
+.challenge-scenario-card {
+    background: var(--surface-white);
+    border-radius: var(--radius-xl);
+    border: 3px solid var(--border-soft);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.scenario-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.concept-badge {
+    background: var(--purple-bg);
+    color: var(--purple-royal);
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+}
+
+.points-tag {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--success-emerald);
+}
+
+.scenario-question-text {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.45;
+    margin-bottom: 1.75rem;
+}
+
+/* Options Grid */
+.scenario-options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-option-choice {
+    background: var(--surface-soft);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-option-choice:hover:not(:disabled) {
+    border-color: var(--primary-sky);
+    background: var(--primary-sky-bg);
+    transform: translateX(4px);
+}
+
+.opt-letter {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.btn-option-choice.correct-choice {
+    border-color: var(--success-emerald);
+    background: var(--success-bg);
+    color: var(--success-dark);
+}
+
+.btn-option-choice.correct-choice .opt-letter {
+    background: var(--success-emerald);
+    border-color: var(--success-emerald);
+    color: #ffffff;
+}
+
+.btn-option-choice.wrong-choice {
+    border-color: var(--danger-rose);
+    background: var(--danger-bg);
+    color: var(--danger-dark);
+}
+
+.btn-option-choice.wrong-choice .opt-letter {
+    background: var(--danger-rose);
+    border-color: var(--danger-rose);
+    color: #ffffff;
+}
+
+/* Feedback Callout */
+.challenge-feedback-box {
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.challenge-feedback-box.success-callout {
+    background: var(--success-bg);
+    border-left: 6px solid var(--success-emerald);
+    color: var(--success-dark);
+}
+
+.challenge-feedback-box.error-callout {
+    background: var(--danger-bg);
+    border-left: 6px solid var(--danger-rose);
+    color: var(--danger-dark);
+}
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.badge-success {
+    background: var(--success-emerald);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+.badge-danger {
+    background: var(--danger-rose);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+.challenge-footer-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid var(--surface-soft);
+    padding-top: 1.25rem;
+}

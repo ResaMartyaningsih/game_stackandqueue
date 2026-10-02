@@ -1,0 +1,477 @@
+/* ==========================================================================
+   game.css - 6 Real-Life Mini Games Styling
+   ========================================================================== */
+
+/* Mini Game Navigation Tabs */
+.game-tabs-bar {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.game-tab-btn {
+    background: var(--surface-white);
+    border: 2px solid var(--border-soft);
+    border-radius: var(--radius-full);
+    padding: 0.6rem 1.25rem;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.game-tab-btn:hover {
+    border-color: var(--primary-sky);
+    color: var(--primary-sky);
+}
+
+.game-tab-btn.active {
+    background: var(--primary-sky);
+    color: #ffffff;
+    border-color: var(--primary-sky);
+    box-shadow: var(--shadow-sm);
+}
+
+.mini-game-viewport {
+    display: none;
+    background: var(--surface-white);
+    border-radius: var(--radius-xl);
+    border: 3px solid var(--border-soft);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+.mini-game-viewport.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.game-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--surface-soft);
+}
+
+.game-title-group h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.game-title-group p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.game-goal-badge {
+    background: var(--accent-amber-bg);
+    color: #92400e;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--accent-amber);
+}
+
+/* ----------------------------------------------------
+   GAME 1: SUPERMARKET CHECKOUT
+   ---------------------------------------------------- */
+.supermarket-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.supermarket-counter-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--surface-soft);
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--primary-light);
+}
+
+.cashier-desk {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #fff;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+    min-width: 140px;
+    box-shadow: var(--shadow-md);
+}
+
+.cashier-desk span {
+    font-size: 2.2rem;
+    display: block;
+}
+
+.supermarket-conveyor {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0.5rem;
+}
+
+.customer-card {
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.85rem;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.customer-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-sky);
+}
+
+.customer-card.is-front {
+    border-color: var(--success-emerald);
+    background: var(--success-bg);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.customer-ticket {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--primary-sky);
+}
+
+.customer-avatar {
+    font-size: 2rem;
+    margin: 4px 0;
+}
+
+.customer-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.customer-item {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.front-badge {
+    position: absolute;
+    top: -10px;
+    background: var(--success-emerald);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+/* ----------------------------------------------------
+   GAME 2: SCHOOL CAFETERIA
+   ---------------------------------------------------- */
+.cafeteria-line-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 1rem 0;
+}
+
+.cafeteria-student {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--surface-soft);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.cafeteria-student.is-front {
+    border-color: var(--success-emerald);
+    background: var(--success-bg);
+    transform: translateX(6px);
+}
+
+.cafeteria-student .student-avatar {
+    font-size: 2rem;
+}
+
+.cafeteria-student .student-info {
+    flex: 1;
+}
+
+.status-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+}
+
+.status-tag.front {
+    background: var(--success-emerald);
+    color: #ffffff;
+}
+
+.status-tag.queue {
+    background: var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* ----------------------------------------------------
+   GAME 3: STACK OF BOOKS
+   ---------------------------------------------------- */
+.books-stage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1rem 0;
+}
+
+.books-column {
+    background: var(--surface-soft);
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--border-color);
+    padding: 1.25rem;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+}
+
+.books-column h4 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.book-card {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+}
+
+.book-card.is-top {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
+
+.book-card.desk-book {
+    background: linear-gradient(135deg, #10b981, #047857);
+}
+
+/* ----------------------------------------------------
+   GAME 4: WAREHOUSE BOXES
+   ---------------------------------------------------- */
+.warehouse-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.warehouse-bay {
+    width: 320px;
+    min-height: 280px;
+    background: var(--surface-soft);
+    border-left: 8px solid #94a3b8;
+    border-right: 8px solid #94a3b8;
+    border-bottom: 10px solid #64748b;
+    border-radius: 0 0 12px 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.warehouse-box {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: #ffffff;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+}
+
+.warehouse-box.is-top {
+    border: 2px solid #fef08a;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+}
+
+/* ----------------------------------------------------
+   GAME 5: PRINTER SPOOLER
+   ---------------------------------------------------- */
+.printer-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.printer-header-banner {
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+    border-left: 5px solid var(--primary-sky);
+}
+
+.print-job-card {
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+.print-job-card.is-front {
+    border-color: var(--primary-sky);
+    background: var(--primary-sky-bg);
+}
+
+.print-job-card .job-icon {
+    font-size: 2rem;
+}
+
+.print-job-card .job-details {
+    flex: 1;
+}
+
+.print-job-card .job-details strong {
+    display: block;
+    font-size: 0.95rem;
+}
+
+.print-job-card .job-details small {
+    color: var(--text-muted);
+}
+
+/* ----------------------------------------------------
+   GAME 6: BROWSER HISTORY
+   ---------------------------------------------------- */
+.browser-window-frame {
+    background: #f1f5f9;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.browser-top-bar {
+    background: #e2e8f0;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.browser-btn-back {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.browser-btn-back:hover {
+    background: var(--primary-sky);
+    color: #ffffff;
+}
+
+.browser-url-input {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.85rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--primary-sky);
+}
+
+.browser-content-area {
+    padding: 1.5rem;
+    min-height: 200px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.browser-stack-drawer {
+    margin-top: 1rem;
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    border: 1px dashed var(--border-color);
+}
+
+.browser-stack-item {
+    background: #ffffff;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.85rem;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.browser-stack-item.is-top {
+    border-color: var(--accent-amber);
+    background: var(--accent-amber-bg);
+}
+
+@media (max-width: 768px) {
+    .books-stage-grid {
+        grid-template-columns: 1fr;
+    }
+}

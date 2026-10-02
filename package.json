@@ -1,0 +1,14 @@
+{
+  "name": "buat-game",
+  "version": "1.0.0",
+  "description": "**Daily Rush** adalah media pembelajaran berbasis game edukasi interaktif *(educational game)* yang dirancang untuk siswa SMA Kelas X (Fase E) dalam mata pelajaran **Informatika**. Game ini membantu siswa memahami konsep abstrak struktur data **Stack** dan **Queue** melalui skenario kehidupan sehari-hari, simulasi langsung *(hands-on simulation)*, teka-teki logika *(puzzles)*, mini-games, dan evaluasi hasil belajar yang komprehensif.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
