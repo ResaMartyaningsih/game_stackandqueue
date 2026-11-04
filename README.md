@@ -124,3 +124,21 @@ Game ini dibuat murni menggunakan teknologi standar web: **HTML5, CSS3, dan Vani
    python -m http.server 8080
    ```
    Lalu buka `http://localhost:8080` pada peramban web.
+
+
+## Versi Ruang CT (Perombakan Media UKIN)
+
+Proyek ini telah diperbarui menjadi media pembelajaran Informatika kelas X/Fase E dengan pendekatan Problem Based Learning pada materi Computational Thinking: Struktur Data Stack dan Queue.
+
+### Menjalankan secara lokal
+1. Pastikan Node.js sudah terpasang.
+2. Buka folder proyek di VS Code.
+3. Jalankan `npm install` jika diperlukan.
+4. Jalankan `npm start`.
+5. Buka alamat lokal yang ditampilkan oleh server di terminal.
+
+Tidak diperlukan akun siswa, database, atau dashboard guru. Identitas siswa pada fitur lama tidak lagi diwajibkan saat membuka media. Halaman evaluasi dan refleksi baru berjalan di browser; jawaban tidak dikirim ke server.
+
+
+## Navigasi terbaru
+Navigasi utama menggunakan menu horizontal di bagian atas (sticky top navigation), bukan sidebar kiri. Pada layar sempit, menu dapat digulir secara horizontal.

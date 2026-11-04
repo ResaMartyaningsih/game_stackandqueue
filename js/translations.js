@@ -7,8 +7,8 @@
 const translations = {
     id: {
         // App meta & Header
-        appTitle: "DAILY RUSH",
-        appSubtitle: "Petualangan Stack & Queue",
+        appTitle: "NalarQuest",
+        appSubtitle: "Computational Thinking • Struktur Data Stack & Queue",
         welcomeTitle: "Selamat Datang di Daily Rush!",
         welcomeSubtitle: "Jelajahi dunia struktur data Stack & Queue melalui petualangan seru sehari-hari!",
         language: "Bahasa",
@@ -59,6 +59,8 @@ const translations = {
         // General Game / Action Buttons
         btnContinue: "Lanjutkan",
         btnBack: "Kembali ke Beranda",
+        btnGoBack: "Kembali",
+        btnGoHome: "Beranda",
         btnNextLevel: "Level Selanjutnya",
         btnTryAgain: "Coba Lagi",
         btnHint: "Petunjuk",
@@ -71,6 +73,80 @@ const translations = {
         timeLabel: "Waktu:",
         objectiveLabel: "Tujuan Pembelajaran:",
         instructionsLabel: "Instruksi:",
+
+        // Breadcrumb Navigation
+        breadcrumbHome: "Beranda",
+        breadcrumbLearnStack: "Belajar Stack",
+        breadcrumbLearnQueue: "Belajar Queue",
+        breadcrumbStackSim: "Lab Simulator Stack",
+        breadcrumbQueueSim: "Lab Simulator Queue",
+        breadcrumbGames: "Mini Games Edukatif",
+        breadcrumbPuzzle: "Zona Puzzle Logika",
+        breadcrumbChallenge: "Tantangan & Studi Kasus",
+        breadcrumbAchievements: "Piala & Prestasi",
+        breadcrumbResult: "Laporan Hasil Evaluasi",
+
+        // Temporary Saving & Question Retrying
+        autoSavedStatus: "Tersimpan Otomatis",
+        savingDraftStatus: "Menyimpan...",
+        saveTempAnswerBtn: "Simpan Sementara",
+        resetThisQuestionBtn: "Ulangi Soal Ini",
+        prevQuestionBtn: "Soal Sebelumnya",
+        nextQuestionBtn: "Soal Berikutnya",
+        finishChallengeBtn: "Selesai & Kumpulkan",
+        questionPaletteTitle: "Navigasi Nomor Soal:",
+        questionAnsweredBadge: "Terjawab",
+        questionDraftBadge: "Draft",
+        questionUnansweredBadge: "Belum",
+        tempAnswerSavedNotice: "Jawaban sementara soal ini tersimpan dengan aman!",
+        resetQuestionSuccessNotice: "Jawaban untuk soal ini telah diulangi. Jawaban soal lain tetap tersimpan!",
+        confirmResetQuestion: "Apakah kamu yakin ingin mengulangi jawaban soal ini? Jawaban pada soal-soal sebelumnya TIDAK akan terhapus.",
+        confirmLeaveChallenge: "Kamu sedang dalam sesi pengerjaan soal. Jawaban sementara kamu tersimpan. Yakin ingin keluar ke Beranda?",
+        pleaseSelectOptionWarning: "⚠️ Pilihan Belum Ditentukan: Silakan pilih salah satu opsi jawaban (A, B, C, atau D) sebelum melanjutkan!",
+        viewAllQuestionsBtn: "Buka Bank & Riwayat Soal",
+
+        // Search & Filter
+        searchPlaceholder: "🔍 Cari pertanyaan, skenario, konsep, atau kata kunci...",
+        filterLevelLabel: "Tingkat / Level:",
+        filterConceptLabel: "Kategori Konsep:",
+        filterStatusLabel: "Status Jawaban:",
+        filterAllLevels: "Semua Level",
+        filterAllConcepts: "Semua Konsep",
+        filterAllStatuses: "Semua Status",
+        filterStatusAnswered: "Sudah Dijawab",
+        filterStatusCorrect: "Jawaban Benar",
+        filterStatusWrong: "Perlu Koreksi",
+        filterStatusDraft: "Draft Sementara",
+        filterStatusUnanswered: "Belum Dikerjakan",
+        btnResetFilter: "Reset Filter",
+        searchResultsCount: "Menampilkan {count} dari {total} soal & studi kasus",
+        emptySearchResultTitle: "Tidak Ditemukan Hasil yang Cocok",
+        emptySearchResultDesc: "Coba gunakan kata kunci lain atau klik tombol Reset Filter untuk melihat semua soal.",
+        emptyAnswerLogTitle: "Belum Ada Riwayat Jawaban",
+        emptyAnswerLogDesc: "Kamu belum mengerjakan latihan soal atau studi kasus. Mulai petualangan sekarang!",
+        btnStartPracticing: "Mulai Kerjakan Soal",
+
+        // Loading States
+        loadingTitle: "Memuat Data...",
+        loadingQuestion: "Memuat Soal...",
+        loadingSaving: "Menyimpan Jawaban...",
+
+        // Form & Profile
+        studentNameLabel: "Nama Lengkap Siswa",
+        studentClassLabel: "Kelas / Fase",
+        studentClassOption1: "SMA Fase E (Kelas X)",
+        studentClassOption2: "SMA Fase F (Kelas XI)",
+        studentClassOption3: "SMA Fase F (Kelas XII)",
+        studentClassOption4: "Guru / Tamu Umum",
+        studentAbsenLabel: "Nomor Absen",
+        namePlaceholder: "Contoh: Budi Pratama",
+        classPlaceholder: "Pilih atau ketik kelas (contoh: X-1, Fase E)...",
+        absenPlaceholder: "Contoh: 14",
+        saveProfileBtn: "Simpan & Mulai Belajar",
+        cancelBtn: "Batal",
+        nameValidationRequired: "Nama siswa wajib diisi (minimal 2 huruf).",
+        classValidationRequired: "Kelas / Fase wajib diisi.",
+        absenValidationRequired: "Nomor absen wajib diisi dengan angka (1 - 60).",
 
         // Character (Kiko) Dialogues
         kikoGreeting: "Hai! Aku Kiko, teman belajarmu. Ayo kita kuasai konsep Stack & Queue bersama!",
@@ -277,6 +353,8 @@ const translations = {
         achPerfectScoreDesc: "Raih skor sempurna 100 poin pada salah satu level.",
         achGrandMasterTitle: "Juara Struktur Data (Grand Master)",
         achGrandMasterDesc: "Tuntaskan seluruh 8 level petualangan Daily Rush!",
+        achTeamCollabTitle: "Kolaborasi Tim Handal (Team Collab)",
+        achTeamCollabDesc: "Berhasil menyelesaikan dan menyimpan tugas kelompok kolaboratif!",
 
         // Print Sheet
         printTitle: "LEMBAR LAPORAN EVALUASI SISWA",
@@ -290,8 +368,8 @@ const translations = {
 
     en: {
         // App meta & Header
-        appTitle: "DAILY RUSH",
-        appSubtitle: "Stack & Queue Adventure",
+        appTitle: "NalarQuest",
+        appSubtitle: "Computational Thinking • Stack & Queue",
         welcomeTitle: "Welcome to Daily Rush!",
         welcomeSubtitle: "Explore the world of Stack & Queue data structures through exciting everyday adventures!",
         language: "Language",
@@ -342,6 +420,8 @@ const translations = {
         // General Game / Action Buttons
         btnContinue: "Continue",
         btnBack: "Back to Home",
+        btnGoBack: "Back",
+        btnGoHome: "Home",
         btnNextLevel: "Next Level",
         btnTryAgain: "Try Again",
         btnHint: "Hint",
@@ -354,6 +434,80 @@ const translations = {
         timeLabel: "Time:",
         objectiveLabel: "Learning Objective:",
         instructionsLabel: "Instructions:",
+
+        // Breadcrumb Navigation
+        breadcrumbHome: "Home",
+        breadcrumbLearnStack: "Learn Stack",
+        breadcrumbLearnQueue: "Learn Queue",
+        breadcrumbStackSim: "Stack Lab Simulator",
+        breadcrumbQueueSim: "Queue Lab Simulator",
+        breadcrumbGames: "Educational Mini Games",
+        breadcrumbPuzzle: "Logic Puzzle Zone",
+        breadcrumbChallenge: "Challenges & Scenarios",
+        breadcrumbAchievements: "Trophies & Badges",
+        breadcrumbResult: "Evaluation Report",
+
+        // Temporary Saving & Question Retrying
+        autoSavedStatus: "Auto Saved",
+        savingDraftStatus: "Saving...",
+        saveTempAnswerBtn: "Save Draft",
+        resetThisQuestionBtn: "Retry This Question",
+        prevQuestionBtn: "Previous Question",
+        nextQuestionBtn: "Next Question",
+        finishChallengeBtn: "Finish & Submit",
+        questionPaletteTitle: "Question Navigator:",
+        questionAnsweredBadge: "Answered",
+        questionDraftBadge: "Draft",
+        questionUnansweredBadge: "Empty",
+        tempAnswerSavedNotice: "Draft answer for this question saved safely!",
+        resetQuestionSuccessNotice: "This question has been reset. All other questions remain preserved!",
+        confirmResetQuestion: "Are you sure you want to retry this question? Answers to previous questions will NOT be deleted.",
+        confirmLeaveChallenge: "You are currently taking a challenge. Your drafts are saved. Do you want to return to Home?",
+        pleaseSelectOptionWarning: "⚠️ No Option Selected: Please choose an option (A, B, C, or D) before proceeding!",
+        viewAllQuestionsBtn: "Open Question Bank & History",
+
+        // Search & Filter
+        searchPlaceholder: "🔍 Search question, scenario, concept, or keyword...",
+        filterLevelLabel: "Level / Stage:",
+        filterConceptLabel: "Concept Category:",
+        filterStatusLabel: "Answer Status:",
+        filterAllLevels: "All Levels",
+        filterAllConcepts: "All Concepts",
+        filterAllStatuses: "All Statuses",
+        filterStatusAnswered: "Answered",
+        filterStatusCorrect: "Correct",
+        filterStatusWrong: "Needs Practice",
+        filterStatusDraft: "Draft",
+        filterStatusUnanswered: "Unanswered",
+        btnResetFilter: "Reset Filter",
+        searchResultsCount: "Showing {count} of {total} questions & scenarios",
+        emptySearchResultTitle: "No Matching Questions Found",
+        emptySearchResultDesc: "Try adjusting your search keywords or click Reset Filter to view all questions.",
+        emptyAnswerLogTitle: "No Answer History Yet",
+        emptyAnswerLogDesc: "You haven't completed any questions yet. Start your adventure now!",
+        btnStartPracticing: "Start Challenges",
+
+        // Loading States
+        loadingTitle: "Loading Data...",
+        loadingQuestion: "Loading Question...",
+        loadingSaving: "Saving Answer...",
+
+        // Form & Profile
+        studentNameLabel: "Student Full Name",
+        studentClassLabel: "Class / Grade",
+        studentClassOption1: "High School Grade 10 (Fase E)",
+        studentClassOption2: "High School Grade 11 (Fase F)",
+        studentClassOption3: "High School Grade 12 (Fase F)",
+        studentClassOption4: "Teacher / Guest",
+        studentAbsenLabel: "Attendance Number",
+        namePlaceholder: "e.g. Budi Pratama",
+        classPlaceholder: "Select or type class (e.g. 10th Grade, X-1)...",
+        absenPlaceholder: "e.g. 14",
+        saveProfileBtn: "Save & Start Learning",
+        cancelBtn: "Cancel",
+        nameValidationRequired: "Student name is required (min 2 characters).",
+        classValidationRequired: "Class / Grade is required.",
+        absenValidationRequired: "Attendance number is required (1 - 60).",
 
         // Character (Kiko) Dialogues
         kikoGreeting: "Hi! I'm Kiko, your learning companion. Let's master Stack & Queue concepts together!",
@@ -560,6 +714,8 @@ const translations = {
         achPerfectScoreDesc: "Score a perfect 100 points on any level.",
         achGrandMasterTitle: "Data Structure Grand Master",
         achGrandMasterDesc: "Complete all 8 adventure levels of Daily Rush!",
+        achTeamCollabTitle: "Team Collab Champion",
+        achTeamCollabDesc: "Successfully complete and save collaborative group project work!",
 
         // Print Sheet
         printTitle: "STUDENT EVALUATION REPORT CARD",

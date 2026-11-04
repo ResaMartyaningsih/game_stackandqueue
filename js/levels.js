@@ -136,6 +136,22 @@ const LevelsManager = {
                 }
             }
         }
+    },
+
+    goToNextLevel(currentLevelId) {
+        const nextId = Number(currentLevelId) + 1;
+        if (nextId <= LEVELS_CONFIG.length) {
+            if (window.StorageManager) {
+                StorageManager.unlockLevel(nextId);
+            }
+            if (window.UI) {
+                UI.startLevelFromMap(nextId);
+            }
+        } else {
+            if (window.UI) {
+                UI.switchScreen('result');
+            }
+        }
     }
 };
 

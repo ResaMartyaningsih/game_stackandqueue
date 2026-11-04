@@ -20,13 +20,14 @@ const App = {
         const savedLang = StorageManager.getSetting('language') || 'id';
         setLanguage(savedLang);
 
-        // Check if player name exists
-        if (!Player.hasName()) {
-            this.showNamePromptModal();
+        // Check if player profile exists and is complete (Nama, Kelas, Nomor Absen)
+        if (!Player.hasValidProfile()) {
+            this.showNamePromptModal(true);
         }
 
         this.initSimulators();
         this.bindGlobalHandlers();
+        this.initGroupProject();
     },
 
     bindGlobalHandlers() {
@@ -45,21 +46,128 @@ const App = {
             });
         });
 
-        // Player name form submission
+        // Player name & profile form submission
         const nameForm = document.getElementById('player-name-form');
+        const nameInput = document.getElementById('player-name-input');
+        const classInput = document.getElementById('player-class-input') || document.getElementById('player-class-select');
+        const absenInput = document.getElementById('player-absen-input');
+        const nameErrorMsg = document.getElementById('name-field-error');
+        const classErrorMsg = document.getElementById('class-field-error');
+        const absenErrorMsg = document.getElementById('absen-field-error');
+
+        if (nameInput) {
+            nameInput.addEventListener('input', () => {
+                if (nameErrorMsg) nameErrorMsg.classList.add('hidden');
+                nameInput.classList.remove('input-has-error');
+            });
+        }
+        if (classInput) {
+            classInput.addEventListener('input', () => {
+                if (classErrorMsg) classErrorMsg.classList.add('hidden');
+                classInput.classList.remove('input-has-error');
+            });
+        }
+        if (absenInput) {
+            absenInput.addEventListener('input', () => {
+                if (absenErrorMsg) absenErrorMsg.classList.add('hidden');
+                absenInput.classList.remove('input-has-error');
+            });
+        }
+
         if (nameForm) {
             nameForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const input = document.getElementById('player-name-input');
-                const val = input ? input.value.trim() : '';
-                if (val) {
-                    Player.setName(val);
-                    this.hideNamePromptModal();
-                    if (window.SoundManager) SoundManager.play('correct');
-                    UI.showToast(`Selamat datang, ${val}! Petualangan dimulai!`);
-                    UI.setKikoDialogue(t('greeting', { name: val }), 'cheering');
-                } else {
-                    alert(t('enterNameAlert'));
+                const nameVal = nameInput ? nameInput.value.trim() : '';
+                const classVal = classInput ? classInput.value.trim() : '';
+                const absenVal = absenInput ? absenInput.value.trim() : '';
+
+                let hasError = false;
+
+                if (!nameVal || nameVal.length < 2 || nameVal.toLowerCase() === 'petualang') {
+                    if (nameErrorMsg) nameErrorMsg.classList.remove('hidden');
+                    if (nameInput) {
+                        nameInput.classList.add('input-has-error');
+                        if (!hasError) nameInput.focus();
+                    }
+                    hasError = true;
+                }
+
+                if (!classVal || classVal.length === 0) {
+                    if (classErrorMsg) classErrorMsg.classList.remove('hidden');
+                    if (classInput) {
+                        classInput.classList.add('input-has-error');
+                        if (!hasError) classInput.focus();
+                    }
+                    hasError = true;
+                }
+
+                const numAbsen = parseInt(absenVal, 10);
+                if (!absenVal || isNaN(numAbsen) || numAbsen < 1 || numAbsen > 60) {
+                    if (absenErrorMsg) absenErrorMsg.classList.remove('hidden');
+                    if (absenInput) {
+                        absenInput.classList.add('input-has-error');
+                        if (!hasError) absenInput.focus();
+                    }
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    if (window.SoundManager) SoundManager.play('wrong');
+                    return;
+                }
+
+                Player.setProfile(nameVal, classVal, String(numAbsen));
+                this.hideNamePromptModal();
+                if (window.SoundManager) SoundManager.play('correct');
+                UI.showToast(`Selamat datang, ${nameVal} (${classVal} - Absen ${numAbsen})! Petualangan dimulai!`);
+                UI.setKikoDialogue(t('greeting', { name: nameVal }), 'cheering');
+
+                // Auto-sync ke anggota 1 di Tugas Kelompok jika belum ada anggota
+                if (this.groupProjectState && this.groupProjectState.members && this.groupProjectState.members.length > 0) {
+                    const firstMember = this.groupProjectState.members[0];
+                    if (!firstMember.name || firstMember.name === 'Petualang' || firstMember.name === 'Siswa 1') {
+                        firstMember.name = nameVal;
+                        firstMember.absen = String(numAbsen);
+                        this.renderGroupMembersList();
+                    }
+                }
+            });
+        }
+
+        // Prevent closing modal when mandatory on backdrop click
+        const nameModal = document.getElementById('name-prompt-modal');
+        if (nameModal) {
+            nameModal.addEventListener('click', (e) => {
+                if (e.target === nameModal) {
+                    if (nameModal.getAttribute('data-mandatory') === 'true' || !Player.hasValidProfile()) {
+                        e.stopPropagation();
+                        const card = nameModal.querySelector('.modal-card');
+                        if (card) {
+                            card.classList.remove('animate-shake');
+                            void card.offsetWidth;
+                            card.classList.add('animate-shake');
+                        }
+                    } else {
+                        this.hideNamePromptModal();
+                    }
+                }
+            });
+
+            // Prevent closing modal via Escape key if mandatory
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && nameModal.classList.contains('active')) {
+                    if (nameModal.getAttribute('data-mandatory') === 'true' || !Player.hasValidProfile()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const card = nameModal.querySelector('.modal-card');
+                        if (card) {
+                            card.classList.remove('animate-shake');
+                            void card.offsetWidth;
+                            card.classList.add('animate-shake');
+                        }
+                    } else {
+                        this.hideNamePromptModal();
+                    }
                 }
             });
         }
@@ -81,18 +189,88 @@ const App = {
         });
     },
 
-    showNamePromptModal() {
+    openProfileModal(isMandatory = false) {
+        this.showNamePromptModal(isMandatory);
+    },
+
+    showNamePromptModal(isMandatory = false) {
         const modal = document.getElementById('name-prompt-modal');
-        if (modal) {
-            modal.classList.add('active');
-            const input = document.getElementById('player-name-input');
-            if (input) setTimeout(() => input.focus(), 300);
+        if (!modal) return;
+
+        const mandatory = isMandatory || !Player.hasValidProfile();
+        const cancelBtn = document.getElementById('player-form-cancel-btn');
+        const submitBtn = document.getElementById('player-form-submit-btn');
+
+        if (mandatory) {
+            modal.setAttribute('data-mandatory', 'true');
+            if (cancelBtn) cancelBtn.style.display = 'none';
+            if (submitBtn) submitBtn.textContent = '🚀 Simpan & Mulai Belajar';
+        } else {
+            modal.removeAttribute('data-mandatory');
+            if (cancelBtn) cancelBtn.style.display = 'inline-block';
+            if (submitBtn) submitBtn.textContent = '💾 Simpan Perubahan Profil';
         }
+
+        modal.classList.add('active');
+
+        const input = document.getElementById('player-name-input');
+        const classInput = document.getElementById('player-class-input') || document.getElementById('player-class-select');
+        const absenInput = document.getElementById('player-absen-input');
+
+        if (input) {
+            input.value = (Player.getName() !== 'Petualang') ? Player.getName() : '';
+            setTimeout(() => input.focus(), 300);
+        }
+        if (classInput) {
+            classInput.value = Player.getClass() || 'SMA Fase E (Kelas X)';
+        }
+        if (absenInput) {
+            absenInput.value = Player.getAbsen() || '';
+        }
+    },
+
+    cancelProfileModal() {
+        const modal = document.getElementById('name-prompt-modal');
+        if (modal && modal.getAttribute('data-mandatory') === 'true' && !Player.hasValidProfile()) {
+            alert("Data Nama Lengkap, Kelas, dan Nomor Absen wajib diisi sebelum memulai belajar!");
+            return;
+        }
+        if (!Player.hasValidProfile()) {
+            return;
+        }
+        this.hideNamePromptModal();
     },
 
     hideNamePromptModal() {
         const modal = document.getElementById('name-prompt-modal');
-        if (modal) modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+            modal.removeAttribute('data-mandatory');
+        }
+    },
+
+    // ----------------------------------------------------
+    // LEARNING TABS SWITCHER (Stack & Queue)
+    // ----------------------------------------------------
+    switchLearnTab(screenType, tabKey) {
+        const screenEl = document.getElementById(`screen-learn-${screenType}`);
+        if (!screenEl) return;
+
+        // Update active tab buttons
+        screenEl.querySelectorAll('.learn-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-tab') === tabKey);
+        });
+
+        // Update active tab panes
+        screenEl.querySelectorAll('.learn-tab-pane').forEach(pane => {
+            pane.classList.toggle('active', pane.getAttribute('data-tab-pane') === tabKey);
+        });
+
+        // Scroll smooth to top of learning container
+        const container = screenEl.querySelector('.learning-container');
+        if (container) {
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     },
 
     // ----------------------------------------------------
@@ -117,30 +295,38 @@ const App = {
         
         if (this.simStack.size() >= 6) {
             UI.showFeedback(false, "Kapasitas simulasi tumpukan penuh (Maksimal 6 elemen)! Hindari Stack Overflow.", 'LIFO');
+            this.stackMissions.boundDone = true;
+            this.updateStackMissionUI();
             return;
         }
 
         this.simStack.push(item);
         if (window.SoundManager) SoundManager.play('push');
         
+        this.stackMissions.pushDone = true;
+        if (this.simStack.size() >= 4) {
+            this.stackMissions.boundDone = true;
+        }
+        this.updateStackMissionUI();
+
         UI.showFeedback(true, `push("${item}"): Elemen baru bertengger tepat di posisi TOP.`, 'LIFO');
         this.renderStackSim(true);
-
-        // Check level 2 progress
-        if (this.simStack.size() >= 4 && window.LevelsManager) {
-            LevelsManager.completeLevel(2, 95);
-        }
     },
 
     simPop() {
         if (this.simStack.isEmpty()) {
             if (window.SoundManager) SoundManager.play('wrong');
             UI.showFeedback(false, `pop() gagal: ${t('stackEmptyNotice')} (Stack Underflow)`, 'LIFO');
+            this.stackMissions.boundDone = true;
+            this.updateStackMissionUI();
             return;
         }
 
         const popped = this.simStack.pop();
         if (window.SoundManager) SoundManager.play('pop');
+
+        this.stackMissions.popDone = true;
+        this.updateStackMissionUI();
 
         UI.showFeedback(true, `pop(): Mengambil "${popped}" dari puncak TOP. Elemen yang terakhir masuk keluar lebih dulu (LIFO).`, 'LIFO');
         this.renderStackSim();
@@ -155,6 +341,9 @@ const App = {
         const top = this.simStack.peek();
         if (window.SoundManager) SoundManager.play('peek');
 
+        this.stackMissions.peekDone = true;
+        this.updateStackMissionUI();
+
         UI.showFeedback(true, `peek(): Elemen di puncak TOP saat ini adalah "${top}". Ukuran tumpukan tetap sama (${this.simStack.size()}).`, 'LIFO');
         
         // Highlight top card visually
@@ -167,6 +356,8 @@ const App = {
 
     simClearStack() {
         this.simStack.clear();
+        this.stackMissions.boundDone = true;
+        this.updateStackMissionUI();
         if (window.SoundManager) SoundManager.play('click');
         UI.showFeedback(true, "Tumpukan telah dikosongkan (clear).", 'LIFO');
         this.renderStackSim();
@@ -213,6 +404,8 @@ const App = {
 
         if (this.simQueue.size() >= 6) {
             UI.showFeedback(false, "Antrean penuh (Maksimal 6 orang)! Tunggu kasir melayani di depan.", 'FIFO');
+            this.queueMissions.boundDone = true;
+            this.updateQueueMissionUI();
             return;
         }
 
@@ -220,24 +413,30 @@ const App = {
         this.simQueue.enqueue(person);
         if (window.SoundManager) SoundManager.play('enqueue');
 
+        this.queueMissions.enqueueDone = true;
+        if (this.simQueue.size() >= 4) {
+            this.queueMissions.boundDone = true;
+        }
+        this.updateQueueMissionUI();
+
         UI.showFeedback(true, `enqueue("${person.name}"): Masuk ke antrean di posisi paling belakang (REAR).`, 'FIFO');
         this.renderQueueSim(true);
-
-        // Check level 3 progress
-        if (this.simQueue.size() >= 4 && window.LevelsManager) {
-            LevelsManager.completeLevel(3, 95);
-        }
     },
 
     simDequeue() {
         if (this.simQueue.isEmpty()) {
             if (window.SoundManager) SoundManager.play('wrong');
             UI.showFeedback(false, `dequeue() gagal: ${t('queueEmptyNotice')} (Queue Underflow)`, 'FIFO');
+            this.queueMissions.boundDone = true;
+            this.updateQueueMissionUI();
             return;
         }
 
         const dequeued = this.simQueue.dequeue();
         if (window.SoundManager) SoundManager.play('dequeue');
+
+        this.queueMissions.dequeueDone = true;
+        this.updateQueueMissionUI();
 
         UI.showFeedback(true, `dequeue(): Melayani "${dequeued.name}" yang berada di posisi FRONT. Pelanggan pertama dilayani lebih dulu (FIFO).`, 'FIFO');
         this.renderQueueSim();
@@ -252,6 +451,9 @@ const App = {
         const frontPerson = this.simQueue.front();
         if (window.SoundManager) SoundManager.play('peek');
 
+        this.queueMissions.frontDone = true;
+        this.updateQueueMissionUI();
+
         UI.showFeedback(true, `front(): Orang di barisan depan saat ini adalah "${frontPerson.name}". Tidak ada perubahan antrean.`, 'FIFO');
 
         const frontEl = document.querySelector('#sim-queue-container .sim-queue-person:first-child');
@@ -263,6 +465,8 @@ const App = {
 
     simClearQueue() {
         this.simQueue.clear();
+        this.queueMissions.boundDone = true;
+        this.updateQueueMissionUI();
         if (window.SoundManager) SoundManager.play('click');
         UI.showFeedback(true, "Antrean telah dikosongkan.", 'FIFO');
         this.renderQueueSim();
@@ -309,6 +513,2049 @@ const App = {
         this.renderQueueSim();
         if (UI.currentScreen === 'home') UI.renderWorldMap();
         if (UI.currentScreen === 'achievements') AchievementsManager.renderAchievementsGrid();
+    },
+
+    // ----------------------------------------------------
+    // MISSION CHECKLIST TRACKERS (Levels 2 & 3)
+    // ----------------------------------------------------
+    stackMissions: {
+        pushDone: false,
+        peekDone: false,
+        popDone: false,
+        boundDone: false
+    },
+
+    queueMissions: {
+        enqueueDone: false,
+        frontDone: false,
+        dequeueDone: false,
+        boundDone: false
+    },
+
+    updateStackMissionUI() {
+        const missions = [
+            { id: 'sm-push', done: this.stackMissions.pushDone },
+            { id: 'sm-peek', done: this.stackMissions.peekDone },
+            { id: 'sm-pop', done: this.stackMissions.popDone },
+            { id: 'sm-bound', done: this.stackMissions.boundDone }
+        ];
+
+        let completedCount = 0;
+        missions.forEach(m => {
+            const el = document.getElementById(m.id);
+            if (el) {
+                el.classList.toggle('completed', m.done);
+                const cb = el.querySelector('.mission-checkbox');
+                if (cb) cb.textContent = m.done ? '✓' : '';
+            }
+            if (m.done) completedCount++;
+        });
+
+        const score = completedCount * 25;
+        const scoreEl = document.getElementById('stack-sim-mission-score');
+        if (scoreEl) scoreEl.textContent = `${score} / 100 Poin`;
+
+        if (completedCount === 4) {
+            const saveBtn = document.getElementById('btn-save-stack-sim');
+            if (saveBtn) saveBtn.classList.remove('btn-disabled');
+        }
+    },
+
+    updateQueueMissionUI() {
+        const missions = [
+            { id: 'qm-enqueue', done: this.queueMissions.enqueueDone },
+            { id: 'qm-front', done: this.queueMissions.frontDone },
+            { id: 'qm-dequeue', done: this.queueMissions.dequeueDone },
+            { id: 'qm-bound', done: this.queueMissions.boundDone }
+        ];
+
+        let completedCount = 0;
+        missions.forEach(m => {
+            const el = document.getElementById(m.id);
+            if (el) {
+                el.classList.toggle('completed', m.done);
+                const cb = el.querySelector('.mission-checkbox');
+                if (cb) cb.textContent = m.done ? '✓' : '';
+            }
+            if (m.done) completedCount++;
+        });
+
+        const score = completedCount * 25;
+        const scoreEl = document.getElementById('queue-sim-mission-score');
+        if (scoreEl) scoreEl.textContent = `${score} / 100 Poin`;
+
+        if (completedCount === 4) {
+            const saveBtn = document.getElementById('btn-save-queue-sim');
+            if (saveBtn) saveBtn.classList.remove('btn-disabled');
+        }
+    },
+
+    saveStackSimScore() {
+        let count = 0;
+        if (this.stackMissions.pushDone) count++;
+        if (this.stackMissions.peekDone) count++;
+        if (this.stackMissions.popDone) count++;
+        if (this.stackMissions.boundDone) count++;
+
+        const finalScore = Math.max(80, count * 25);
+        if (window.StorageManager) {
+            StorageManager.savePageScore('stack-sim', finalScore, { missions: this.stackMissions });
+            StorageManager.setLevelScore(2, finalScore);
+            StorageManager.unlockLevel(3);
+        }
+        if (window.LevelsManager) {
+            LevelsManager.completeLevel(2, finalScore);
+        }
+        if (window.SoundManager) SoundManager.play('levelComplete');
+
+        UI.showToast(`✅ Skor Simulator Stack tersimpan: ${finalScore} pts! Level 3 Terbuka!`);
+        UI.showLevelCompleteModal(2, finalScore);
+    },
+
+    saveQueueSimScore() {
+        let count = 0;
+        if (this.queueMissions.enqueueDone) count++;
+        if (this.queueMissions.frontDone) count++;
+        if (this.queueMissions.dequeueDone) count++;
+        if (this.queueMissions.boundDone) count++;
+
+        const finalScore = Math.max(80, count * 25);
+        if (window.StorageManager) {
+            StorageManager.savePageScore('queue-sim', finalScore, { missions: this.queueMissions });
+            StorageManager.setLevelScore(3, finalScore);
+            StorageManager.unlockLevel(4);
+        }
+        if (window.LevelsManager) {
+            LevelsManager.completeLevel(3, finalScore);
+        }
+        if (window.SoundManager) SoundManager.play('levelComplete');
+
+        UI.showToast(`✅ Skor Simulator Queue tersimpan: ${finalScore} pts! Level 4 Terbuka!`);
+        UI.showLevelCompleteModal(3, finalScore);
+    },
+
+    // ----------------------------------------------------
+    // HANDS-ON MINI SIMULATORS (Inside Learn Pages)
+    // ----------------------------------------------------
+    learnStackPlates: ["Piring Merah", "Piring Hijau"],
+    learnQueuePeople: [
+        { name: "Doni", avatar: "👦" },
+        { name: "Siti", avatar: "👧" }
+    ],
+
+    handsOnPushPlate() {
+        const colors = ["Piring Biru", "Piring Kuning", "Piring Ungu", "Piring Oranye"];
+        const nextColor = colors[this.learnStackPlates.length % colors.length];
+        if (this.learnStackPlates.length >= 5) {
+            UI.showToast("Tumpukan piring mini sudah penuh (5 piring)!");
+            return;
+        }
+        this.learnStackPlates.push(nextColor);
+        if (window.SoundManager) SoundManager.play('push');
+        this.renderHandsOnStack();
+        UI.showToast(`Push: ${nextColor} diletakkan di puncak (TOP).`);
+    },
+
+    handsOnPopPlate() {
+        if (this.learnStackPlates.length === 0) {
+            if (window.SoundManager) SoundManager.play('wrong');
+            UI.showToast("Tumpukan piring kosong (Underflow)!");
+            return;
+        }
+        const popped = this.learnStackPlates.pop();
+        if (window.SoundManager) SoundManager.play('pop');
+        this.renderHandsOnStack();
+        UI.showToast(`Pop: ${popped} diambil dari TOP. Prinsip LIFO terbukti!`);
+    },
+
+    renderHandsOnStack() {
+        const container = document.getElementById('handson-stack-plates');
+        if (!container) return;
+        container.innerHTML = this.learnStackPlates.slice().reverse().map((plate, idx) => `
+            <div class="sim-stack-item ${idx === 0 ? 'is-top animate-slide-down-in' : ''}" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+                <span>🍽 ${plate}</span>
+                ${idx === 0 ? '<span class="top-indicator" style="font-size: 0.7rem;">TOP ➔</span>' : ''}
+            </div>
+        `).join('');
+
+        if (this.learnStackPlates.length === 0) {
+            container.innerHTML = '<div class="sim-empty-label">Tumpukan Kosong</div>';
+        }
+    },
+
+    handsOnEnqueuePerson() {
+        const avatars = ["👨‍💼", "👵", "🧒", "👱‍♀️"];
+        const names = ["Rian", "Dewi", "Edo", "Maya"];
+        const idx = this.learnQueuePeople.length % names.length;
+        if (this.learnQueuePeople.length >= 5) {
+            UI.showToast("Antrean mini sudah penuh (5 orang)!");
+            return;
+        }
+        const newPerson = { name: names[idx], avatar: avatars[idx] };
+        this.learnQueuePeople.push(newPerson);
+        if (window.SoundManager) SoundManager.play('enqueue');
+        this.renderHandsOnQueue();
+        UI.showToast(`Enqueue: ${newPerson.name} masuk di bagian REAR (paling belakang).`);
+    },
+
+    handsOnDequeuePerson() {
+        if (this.learnQueuePeople.length === 0) {
+            if (window.SoundManager) SoundManager.play('wrong');
+            UI.showToast("Antrean kosong (Underflow)!");
+            return;
+        }
+        const dequeued = this.learnQueuePeople.shift();
+        if (window.SoundManager) SoundManager.play('dequeue');
+        this.renderHandsOnQueue();
+        UI.showToast(`Dequeue: ${dequeued.name} dilayani di FRONT. Prinsip FIFO terbukti!`);
+    },
+
+    renderHandsOnQueue() {
+        const container = document.getElementById('handson-queue-people');
+        if (!container) return;
+        container.innerHTML = this.learnQueuePeople.map((p, idx) => `
+            <div class="sim-queue-person ${idx === 0 ? 'is-front' : ''}" style="padding: 0.4rem 0.6rem; font-size: 0.82rem;">
+                <span class="person-avatar">${p.avatar}</span>
+                <span class="person-name">${p.name}</span>
+                ${idx === 0 ? '<span class="queue-role-badge front" style="font-size: 0.65rem;">FRONT</span>' : ''}
+                ${idx === this.learnQueuePeople.length - 1 && idx !== 0 ? '<span class="queue-role-badge rear" style="font-size: 0.65rem;">REAR</span>' : ''}
+            </div>
+        `).join('');
+
+        if (this.learnQueuePeople.length === 0) {
+            container.innerHTML = '<div class="sim-empty-label">Antrean Kosong</div>';
+        }
+    },
+
+    // ----------------------------------------------------
+    // INTERACTIVE VIDEO DEMONSTRATION CONTROLLERS
+    // ----------------------------------------------------
+    stackVideoState: {
+        isPlaying: false,
+        timer: null,
+        currentStep: 0,
+        steps: [
+            { title: "Pengenalan Stack", time: "0:05", progress: 20, desc: "Stack beroperasi dengan prinsip LIFO. Elemen yang terakhir masuk akan menjadi puncak (TOP)." },
+            { title: "Operasi push(item)", time: "0:12", progress: 45, desc: "push('Buku Algoritma'): Elemen baru dimasukkan tepat di atas tumpukan (TOP)." },
+            { title: "Operasi peek()", time: "0:18", progress: 65, desc: "peek(): Melihat buku teratas tanpa mengambil atau mengubah ukuran tumpukan." },
+            { title: "Operasi pop()", time: "0:25", progress: 85, desc: "pop(): Mengambil buku paling atas (TOP). Elemen terakhir masuk keluar pertama!" },
+            { title: "Kesimpulan LIFO", time: "0:30", progress: 100, desc: "Prinsip LIFO terbukti: Last In, First Out diterapkan pada Undo dan Back Browser." }
+        ]
+    },
+
+    toggleStackVideo() {
+        if (this.stackVideoState.isPlaying) {
+            this.pauseStackVideo();
+        } else {
+            this.playStackVideo();
+        }
+    },
+
+    playStackVideo() {
+        this.stackVideoState.isPlaying = true;
+        const playBtn = document.getElementById('stack-video-play-btn');
+        if (playBtn) playBtn.textContent = '⏸';
+
+        clearInterval(this.stackVideoState.timer);
+        this.stackVideoState.timer = setInterval(() => {
+            this.stackVideoState.currentStep = (this.stackVideoState.currentStep + 1) % this.stackVideoState.steps.length;
+            this.renderStackVideoStep();
+        }, 3200);
+        this.renderStackVideoStep();
+    },
+
+    pauseStackVideo() {
+        this.stackVideoState.isPlaying = false;
+        clearInterval(this.stackVideoState.timer);
+        const playBtn = document.getElementById('stack-video-play-btn');
+        if (playBtn) playBtn.textContent = '▶';
+    },
+
+    jumpStackVideoChapter(stepIndex) {
+        this.stackVideoState.currentStep = stepIndex;
+        this.renderStackVideoStep();
+    },
+
+    renderStackVideoStep() {
+        const step = this.stackVideoState.steps[this.stackVideoState.currentStep];
+        const subEl = document.getElementById('stack-video-subtitle');
+        const fillEl = document.getElementById('stack-video-timeline-fill');
+        const timeEl = document.getElementById('stack-video-time');
+        const visualEl = document.getElementById('stack-video-visual-frame');
+
+        if (subEl) subEl.textContent = `[${step.title}] - ${step.desc}`;
+        if (fillEl) fillEl.style.width = `${step.progress}%`;
+        if (timeEl) timeEl.textContent = `${step.time} / 0:30`;
+
+        // Update active chapter button
+        document.querySelectorAll('.stack-ch-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === this.stackVideoState.currentStep);
+        });
+
+        if (visualEl) {
+            const visualStates = [
+                '<div style="font-size: 3rem; text-align: center;">📚<br><span style="font-size: 0.9rem; color: #38bdf8;">Wadah Stack Siap</span></div>',
+                '<div style="font-size: 2.5rem; text-align: center; color: #10b981;">⬇ push("Buku Algo")<br><div style="background: #2563eb; color: #fff; padding: 6px 16px; border-radius: 6px; font-size: 1rem; margin-top: 8px;">TOP ➔ [Buku Algo]</div></div>',
+                '<div style="font-size: 2.5rem; text-align: center; color: #f59e0b;">👁 peek() ➔ "Buku Algo"<br><div style="background: #2563eb; color: #fff; padding: 6px 16px; border-radius: 6px; font-size: 1rem; margin-top: 8px; border: 2px solid #f59e0b;">TOP [Buku Algo]</div></div>',
+                '<div style="font-size: 2.5rem; text-align: center; color: #ef4444;">⬆ pop() Mengambil TOP<br><span style="font-size: 0.9rem; color: #94a3b8;">Buku Algo Dikeluarkan</span></div>',
+                '<div style="font-size: 2.8rem; text-align: center;">✨🏆<br><span style="font-size: 1rem; color: #10b981; font-weight: 800;">LIFO: Last In, First Out Sempurna!</span></div>'
+            ];
+            visualEl.innerHTML = visualStates[this.stackVideoState.currentStep];
+        }
+    },
+
+    // Queue Video Controller
+    queueVideoState: {
+        isPlaying: false,
+        timer: null,
+        currentStep: 0,
+        steps: [
+            { title: "Pengenalan Queue", time: "0:05", progress: 20, desc: "Queue beroperasi dengan prinsip FIFO. Pelanggan pertama masuk adalah yang pertama dilayani." },
+            { title: "Operasi enqueue(item)", time: "0:12", progress: 45, desc: "enqueue('Siti'): Pelanggan baru selalu antre di bagian paling belakang (REAR)." },
+            { title: "Operasi front()", time: "0:18", progress: 65, desc: "front(): Melihat siapa yang berada di antrean paling depan tanpa mengeluarkannya." },
+            { title: "Operasi dequeue()", time: "0:25", progress: 85, desc: "dequeue(): Melayani pelanggan terdepan (FRONT) dan mengeluarkannya dari barisan." },
+            { title: "Kesimpulan FIFO", time: "0:30", progress: 100, desc: "Prinsip FIFO adil: First In, First Out diterapkan pada kasir, tiket bioskop, dan printer." }
+        ]
+    },
+
+    toggleQueueVideo() {
+        if (this.queueVideoState.isPlaying) {
+            this.pauseQueueVideo();
+        } else {
+            this.playQueueVideo();
+        }
+    },
+
+    playQueueVideo() {
+        this.queueVideoState.isPlaying = true;
+        const playBtn = document.getElementById('queue-video-play-btn');
+        if (playBtn) playBtn.textContent = '⏸';
+
+        clearInterval(this.queueVideoState.timer);
+        this.queueVideoState.timer = setInterval(() => {
+            this.queueVideoState.currentStep = (this.queueVideoState.currentStep + 1) % this.queueVideoState.steps.length;
+            this.renderQueueVideoStep();
+        }, 3200);
+        this.renderQueueVideoStep();
+    },
+
+    pauseQueueVideo() {
+        this.queueVideoState.isPlaying = false;
+        clearInterval(this.queueVideoState.timer);
+        const playBtn = document.getElementById('queue-video-play-btn');
+        if (playBtn) playBtn.textContent = '▶';
+    },
+
+    jumpQueueVideoChapter(stepIndex) {
+        this.queueVideoState.currentStep = stepIndex;
+        this.renderQueueVideoStep();
+    },
+
+    renderQueueVideoStep() {
+        const step = this.queueVideoState.steps[this.queueVideoState.currentStep];
+        const subEl = document.getElementById('queue-video-subtitle');
+        const fillEl = document.getElementById('queue-video-timeline-fill');
+        const timeEl = document.getElementById('queue-video-time');
+        const visualEl = document.getElementById('queue-video-visual-frame');
+
+        if (subEl) subEl.textContent = `[${step.title}] - ${step.desc}`;
+        if (fillEl) fillEl.style.width = `${step.progress}%`;
+        if (timeEl) timeEl.textContent = `${step.time} / 0:30`;
+
+        document.querySelectorAll('.queue-ch-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === this.queueVideoState.currentStep);
+        });
+
+        if (visualEl) {
+            const visualStates = [
+                '<div style="font-size: 2.8rem; text-align: center;">👥 ➔ 🛒<br><span style="font-size: 0.9rem; color: #38bdf8;">Jalur Antrean Kasir Dibuka</span></div>',
+                '<div style="font-size: 2.4rem; text-align: center; color: #10b981;">➔ enqueue("Siti") di REAR<br><div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;"><span style="background: #10b981; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem;">[Budi (FRONT)]</span><span style="background: #0284c7; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem;">[Siti (REAR)]</span></div></div>',
+                '<div style="font-size: 2.4rem; text-align: center; color: #f59e0b;">👁 front() ➔ "Budi"<br><span style="font-size: 0.9rem; color: #e2e8f0;">Budi siap dilayani kasir di depan</span></div>',
+                '<div style="font-size: 2.4rem; text-align: center; color: #ef4444;">➔ dequeue() Melayani FRONT<br><span style="font-size: 0.9rem; color: #10b981;">Budi Selesai -> Siti Maju Jadi FRONT!</span></div>',
+                '<div style="font-size: 2.8rem; text-align: center;">✨🎯<br><span style="font-size: 1rem; color: #10b981; font-weight: 800;">FIFO: First In, First Out Sempurna!</span></div>'
+            ];
+            visualEl.innerHTML = visualStates[this.queueVideoState.currentStep];
+        }
+    },
+
+    // ----------------------------------------------------
+    // QUICK CHECK QUIZZES & PERSISTENCE (Learn Pages)
+    // ----------------------------------------------------
+    stackQuizAnswers: { 1: null, 2: null, 3: null },
+    queueQuizAnswers: { 1: null, 2: null, 3: null },
+
+    checkLearnQuiz(topic, qIndex, optionIndex, isCorrect, explanation) {
+        const answersObj = topic === 'stack' ? this.stackQuizAnswers : this.queueQuizAnswers;
+        answersObj[qIndex] = isCorrect;
+
+        const options = document.querySelectorAll(`.${topic}-q${qIndex}-opt`);
+        options.forEach((btn, idx) => {
+            btn.classList.remove('selected-correct', 'selected-wrong');
+            if (idx === optionIndex) {
+                btn.classList.add(isCorrect ? 'selected-correct' : 'selected-wrong');
+            }
+        });
+
+        const feedback = document.getElementById(`${topic}-feedback-q${qIndex}`);
+        if (feedback) {
+            feedback.className = `quiz-feedback-box active ${isCorrect ? 'correct' : 'wrong'}`;
+            feedback.textContent = (isCorrect ? '✓ Benar! ' : '✕ Belum tepat. ') + explanation;
+        }
+
+        if (window.SoundManager) {
+            SoundManager.play(isCorrect ? 'correct' : 'wrong');
+        }
+
+        // Calculate score
+        const correctCount = Object.values(answersObj).filter(v => v === true).length;
+        const score = Math.round((correctCount / 3) * 100);
+
+        const scoreBadge = document.getElementById(`${topic}-quiz-score`);
+        if (scoreBadge) scoreBadge.textContent = `${score} / 100 Poin`;
+
+        const scoreMeter = document.getElementById(`${topic}-live-page-score`);
+        if (scoreMeter) scoreMeter.textContent = `${score} pts`;
+    },
+
+    saveLearnScore(topic) {
+        const answersObj = topic === 'stack' ? this.stackQuizAnswers : this.queueQuizAnswers;
+        const correctCount = Object.values(answersObj).filter(v => v === true).length;
+        const calculatedScore = Math.round((correctCount / 3) * 100);
+        const finalScore = Math.max(75, calculatedScore); // Skor minimal apresiasi belajar
+
+        const pageKey = topic === 'stack' ? 'learn-stack' : 'learn-queue';
+        if (window.StorageManager) {
+            StorageManager.savePageScore(pageKey, finalScore, { answers: answersObj });
+            StorageManager.setLevelScore(1, finalScore);
+        }
+
+        if (window.SoundManager) SoundManager.play('levelComplete');
+        UI.showToast(`✅ Nilai Belajar ${topic.toUpperCase()} tersimpan: ${finalScore} pts!`);
+        UI.setKikoDialogue(`Nilai materi ${topic.toUpperCase()} berhasil disimpan! Kamu hebat, ayo lanjutkan perjalanan!`, 'cheering');
+        
+        // Re-render world map
+        UI.renderWorldMap();
+    },
+
+    // ----------------------------------------------------
+    // GROUP PROJECT WORKSPACE (TUGAS KELOMPOK)
+    // ----------------------------------------------------
+    groupProjectState: {
+        groupName: '',
+        groupClass: 'SMA Kelas X (Fase E)',
+        identitySaved: false,
+        members: [
+            { name: '', role: '👑 Ketua Kelompok' },
+            { name: '', role: '🔍 Analis Struktur Data' },
+            { name: '', role: '📝 Notulis / Penyusun' }
+        ],
+        selectedCase: 'case1',
+        cases: {
+            case1: {
+                id: 'case1',
+                icon: '🏥',
+                badge: 'Kasus 1: Medis & Gawat Darurat',
+                title: 'Sistem Triase & Antrean IGD Rumah Sakit',
+                category: 'Kesehatan & Sistem Darurat',
+                desc: 'Di Instalasi Gawat Darurat (IGD) RS Medika, pasien datang sewaktu-waktu dengan tingkat keparahan yang berbeda: Pasien Kritis (henti jantung/stroke butuh tindakan detik ini juga), Pasien Sedang (patah tulang/luka sobek), dan Pasien Ringan (demam biasa/flu). Dokter bedah IGD memiliki kapasitas terbatas. Jika rumah sakit hanya menerapkan antrean FIFO murni tanpa prioritas (siapa datang lebih awal dilayani duluan), pasien kritis yang datang belakangan terancam meninggal dunia karena tertahan di belakang antrean pasien flu ringan.',
+                problemChallenge: 'Bagaimana merancang arsitektur antrean agar pasien berstatus gawat darurat (kritis) langsung mendapatkan penanganan medis tercepat tanpa membatalkan pasien umum yang sudah mengantre secara tertib?',
+                recommendedStructure: 'Priority Queue (atau Kombinasi Queue & Stack Kedaruratan)',
+                defaultItems: ['[Ringan] Pasien Ahmad (Flu)', '[Sedang] Pasien Dewi (Patah Tangan)'],
+                hots: {
+                    mc: {
+                        question: 'Jika rumah sakit menerapkan sistem FIFO murni tanpa sistem prioritas pada ruang IGD di atas, kegagalan komputasional dan operasional apa yang paling berbahaya terjadi?',
+                        options: [
+                            { key: 'A', text: 'Waktu tunggu seluruh pasien akan meningkat dua kali lipat secara merata.' },
+                            { key: 'B', text: 'Terjadi fatalitas pasien darurat karena waktu respons terhalang oleh antrean pasien bergejala ringan yang datang lebih awal.', isCorrect: true, feedback: 'Tepat sekali! FIFO murni tidak mempertimbangkan bobot urgensi (urgency weight). Dalam skenario gawat darurat, mekanisme pemotongan antrean (preemption) berdasarkan tingkat prioritas sangat esensial menyelamatkan nyawa.' },
+                            { key: 'C', text: 'Komputer rekam medis rumah sakit akan mengalami crash Stack Overflow.' },
+                            { key: 'D', text: 'Mesin antrean otomatis mencetak tiket dengan nomor acak.' }
+                        ]
+                    },
+                    tf: [
+                        {
+                            id: 'tf1',
+                            statement: 'Penerapan antrean murni FIFO (First In First Out) tanpa bobot urgensi adalah metode paling adil dan aman untuk ruang Instalasi Gawat Darurat (IGD).',
+                            correct: false,
+                            explanation: 'SALAH. Keadilan medis berbasis urgensi nyawa (triase), bukan semata urutan waktu kedatangan. FIFO murni sangat berbahaya jika pasien kritis tiba belakangan.'
+                        },
+                        {
+                            id: 'tf2',
+                            statement: 'Pada Priority Queue, saat pasien berstatus "Kritis" tiba, data pasien dapat langsung ditempatkan di posisi paling depan untuk segera di-dequeue (ditangani dokter bedah).',
+                            correct: true,
+                            explanation: 'BENAR. Priority Queue mengatur elemen berdasarkan nilai prioritas (urgensi tertinggi di posisi FRONT), sehingga langsung diproses tanpa menunggu antrean reguler.'
+                        }
+                    ],
+                    essay: {
+                        prompt: 'Rancanglah solusi algoritma: Jika ada 2 pasien berkategori "Kritis" tiba pada menit yang persis sama, aturan atau struktur data sekunder apa yang harus diterapkan untuk menentukan siapa yang masuk ruang operasi lebih dulu?',
+                        placeholder: 'Tuliskan aturan kelompokmu (misal: memadukan parameter prioritas medis dengan tie-breaker FIFO waktu kedatangan atau sub-level skala ESI 1-5)...'
+                    }
+                }
+            },
+            case2: {
+                id: 'case2',
+                icon: '🎨',
+                badge: 'Kasus 2: Perangkat Lunak & Grafis',
+                title: 'Mekanisme Multi-Level Undo & Redo Text / Image Editor',
+                category: 'Software Engineering & UI History',
+                desc: 'Pada aplikasi desain grafis atau text editor seperti Canva, Figma, atau VS Code, pengguna secara berkelanjutan mengetik kalimat, menggambar bentuk, mewarnai bidang, dan menghapus objek. Ketika pengguna salah melakukan aksi, mereka menekan Ctrl+Z (Undo) untuk membatalkan langkah paling akhir. Saat menekan Ctrl+Y (Redo), langkah yang baru dibatalkan dapat dipulihkan kembali. Namun, jika setelah Undo pengguna langsung melakukan aksi baru, seluruh histori Redo wajib dibersihkan.',
+                problemChallenge: 'Bagaimana cara aplikasi menyimpan jejak riwayat aksi secara efisien sehingga aksi terakhir selalu menjadi yang pertama dibatalkan, dan status kanvas dapat dipulihkan bolak-balik tanpa membebani memori RAM?',
+                recommendedStructure: 'Stack (LIFO) Ganda (Undo Stack & Redo Stack)',
+                defaultItems: ['1. Ketik Judul Dokumen', '2. Warnai Latar Biru', '3. Sisipkan Gambar'],
+                hots: {
+                    mc: {
+                        question: 'Mengapa fitur Undo mutlak memerlukan struktur data Stack (LIFO) dan BUKAN Queue (FIFO)?',
+                        options: [
+                            { key: 'A', text: 'Karena aksi yang pertama kali dilakukan pengguna harus menjadi yang pertama kali dibatalkan.' },
+                            { key: 'B', text: 'Karena aksi yang paling terakhir dilakukan (paling baru) harus menjadi yang pertama kali dibatalkan untuk mengembalikan kondisi aplikasi sebelumnya.', isCorrect: true, feedback: 'Tepat sekali! Karakteristik Last In First Out (LIFO) menjamin state yang paling baru ditaruh di puncak (TOP) adalah yang pertama kali diangkat (POP) saat pembatalan dilakukan.' },
+                            { key: 'C', text: 'Karena Stack dapat menyimpan data berukuran tanpa batas di memori RAM.' },
+                            { key: 'D', text: 'Karena Queue hanya dapat digunakan untuk file teks dan tidak bisa untuk gambar.' }
+                        ]
+                    },
+                    tf: [
+                        {
+                            id: 'tf1',
+                            statement: 'Ketika tombol Undo (Ctrl+Z) ditekan, aksi teratas di-pop dari Undo Stack dan secara otomatis di-push ke dalam Redo Stack.',
+                            correct: true,
+                            explanation: 'BENAR. Aksi yang dibatalkan tidak langsung dimusnahkan dari memori, melainkan dipindahkan ke Redo Stack agar pengguna bisa mengembalikannya jika berubah pikiran.'
+                        },
+                        {
+                            id: 'tf2',
+                            statement: 'Jika setelah menekan Undo 2 kali pengguna menggambar lingkaran baru di kanvas, data riwayat di dalam Redo Stack tetap tersimpan utuh.',
+                            correct: false,
+                            explanation: 'SALAH. Memulai cabang riwayat baru (new branch action) setelah Undo mewajibkan sistem mengosongkan (clear) Redo Stack agar integritas state tidak bertabrakan.'
+                        }
+                    ],
+                    essay: {
+                        prompt: 'Untuk mencegah kehabisan memori RAM (Stack Overflow), kapasitas Undo Stack dibatasi 50 aksi. Apa langkah algoritma yang harus dilakukan sistem ketika aksi ke-51 masuk ke dalam Undo Stack?',
+                        placeholder: 'Jelaskan mekanisme penghapusan aksi paling lama (elemen paling bawah/dasar stack) untuk memberi ruang bagi aksi baru di TOP...'
+                    }
+                }
+            },
+            case3: {
+                id: 'case3',
+                icon: '📦',
+                badge: 'Kasus 3: Logistik & Rantai Pasok',
+                title: 'Gudang Logistik E-Commerce & Jalur Kontainer Buntu',
+                category: 'Logistik Industri & Supply Chain',
+                desc: 'Pusat distribusi kargo belanja online menyimpan peti kemas di lorong kontainer sempit yang berujung buntu (hanya memiliki 1 pintu akses keluar-masuk di ujung depan). Forklift hanya dapat memasukkan peti dari satu arah. Peti A dimasukkan paling awal ke dasar lorong, lalu ditumpuk Peti B, C, dan D di depannya. Di sisi lain, peti yang sudah dikeluarkan diletakkan di atas sabuk konveyor berjalan (conveyor belt) otomatis menuju pintu muat truk ekspedisi luar kota.',
+                problemChallenge: 'Bagaimana menganalisis kombinasi struktur data pada lorong sempit satu pintu (LIFO) dan sabuk konveyor pengiriman (FIFO) agar proses pembongkaran peti tidak memakan waktu lama dan tidak merusak barang?',
+                recommendedStructure: 'Kombinasi Stack & Queue (Lorong Buntu = Stack LIFO, Sabuk Konveyor = Queue FIFO)',
+                defaultItems: ['Peti A (Elektronik)', 'Peti B (Pakaian)', 'Peti C (Peralatan)'],
+                hots: {
+                    mc: {
+                        question: 'Peti A, B, dan C berturut-turut dimasukkan ke lorong buntu satu pintu (A paling dasar). Jika pesanan mendesak membutuhkan Peti A, langkah algoritma forklift yang tepat adalah...',
+                        options: [
+                            { key: 'A', text: 'Menarik paksa peti A menembus dinding belakang lorong gudang.' },
+                            { key: 'B', text: 'Melakukan operasi pop pada Peti C terlebih dahulu, lalu pop Peti B, barulah Peti A dapat diakses dan diambil.', isCorrect: true, feedback: 'Tepat sekali! Lorong satu pintu adalah tumpukan Stack LIFO. Akses ke dasar tumpukan mengharuskan pengangkatan seluruh elemen di atasnya satu demi satu.' },
+                            { key: 'C', text: 'Menjalankan operasi dequeue dari bagian belakang lorong secara langsung.' },
+                            { key: 'D', text: 'Memasukkan Peti D agar Peti A otomatis terdorong keluar ke depan.' }
+                        ]
+                    },
+                    tf: [
+                        {
+                            id: 'tf1',
+                            statement: 'Sabuk berjalan (conveyor belt) yang memindahkan peti ke pintu muat truk beroperasi menggunakan prinsip Queue (FIFO - First In First Out).',
+                            correct: true,
+                            explanation: 'BENAR. Peti yang ditaruh pertama kali di ujung sabuk konveyor akan tiba dan diturunkan pertama kali ke truk pengangkut.'
+                        },
+                        {
+                            id: 'tf2',
+                            statement: 'Pada lorong buntu, menaruh peti yang jadwal pengirimannya paling pagi di posisi paling dasar lorong adalah strategi penataan gudang yang paling efisien.',
+                            correct: false,
+                            explanation: 'SALAH. Ini strategi yang sangat tidak efisien karena forklift harus membongkar seluruh peti lain di atasnya terlebih dahulu hanya untuk mengambil peti paling dasar.'
+                        }
+                    ],
+                    essay: {
+                        prompt: 'Rancanglah strategi penyusunan barang di lorong buntu agar forklift tidak perlu memindahkan peti lain saat jam keberangkatan tiba! Barang dengan jadwal keberangkatan paling akhir harus diletakkan di mana?',
+                        placeholder: 'Jelaskan konsep penataan LIFO terencana (jadwal paling akhir diletakkan di dasar lorong, jadwal paling awal ditaruh paling depan/TOP)...'
+                    }
+                }
+            },
+            case4: {
+                id: 'case4',
+                icon: '🖨️',
+                badge: 'Kasus 4: Jaringan Komputer & OS',
+                title: 'Antrean Spooling Printer Jaringan WiFi Laboratorium',
+                category: 'Sistem Operasi & Jaringan Komputer',
+                desc: 'Di laboratorium komputer sekolah dengan 36 siswa, semua PC terhubung ke 1 printer laser bersama. Saat bel tanda tugas selesai berbunyi, 15 siswa serentak menekan tombol "Print". Kecepatan cetak fisik printer adalah 1 dokumen per 20 detik, sedangkan pengiriman berkas melalui WiFi hanya 0,1 detik per dokumen. Layanan Print Spooler di sistem operasi bertugas menampung limpahan berkas ini di memori sementara (buffer).',
+                problemChallenge: 'Bagaimana sistem operasi mengatur berkas cetak yang masuk serentak agar tidak tertukar halamannya, tercetak sesuai urutan pengiriman yang adil, dan tidak terjadi buffer overflow saat memori printer penuh?',
+                recommendedStructure: 'Queue (FIFO - First In First Out)',
+                defaultItems: ['Laporan_Ahmad.pdf', 'Tugas_Dewi.docx', 'Makalah_Rian.pdf'],
+                hots: {
+                    mc: {
+                        question: 'Mengapa modul Print Spooler pada sistem operasi wajib menerapkan struktur data Queue (FIFO)?',
+                        options: [
+                            { key: 'A', text: 'Agar dokumen yang berukuran paling besar dicetak lebih dahulu.' },
+                            { key: 'B', text: 'Untuk menjamin keadilan urutan waktu pengiriman (first-come, first-served) dan memastikan setiap dokumen diproses utuh tanpa tertukar lembarannya.', isCorrect: true, feedback: 'Tepat sekali! Antrean spooling FIFO menjamin keadilan waktu cetak dan memproses dokumen satu per satu secara teratur tanpa menginterupsi dokumen yang sedang berjalan.' },
+                            { key: 'C', text: 'Karena printer fisik hanya mengerti perintah Last In First Out (LIFO).' },
+                            { key: 'D', text: 'Untuk membagi 1 printer fisik menjadi 36 printer virtual mandiri.' }
+                        ]
+                    },
+                    tf: [
+                        {
+                            id: 'tf1',
+                            statement: 'Jika kapasitas buffer printer penuh (Queue Overflow), berkas dokumen siswa berikutnya yang baru dikirim harus berstatus "Pending" dan menunggu antrean kosong.',
+                            correct: true,
+                            explanation: 'BENAR. Mekanisme antrean buffer penuh mencegah data berkas hilang atau korup dengan menahan antrean di sisi komputer pengirim.'
+                        },
+                        {
+                            id: 'tf2',
+                            statement: 'Jika kertas printer habis di tengah proses pencetakan, seluruh daftar dokumen di dalam Queue Spooler otomatis terhapus permanen.',
+                            correct: false,
+                            explanation: 'SALAH. Queue Print Spooler menahan status "Paused" di memori antrean; saat kertas diisi ulang, pencetakan berlanjut dari posisi yang tertunda.'
+                        }
+                    ],
+                    essay: {
+                        prompt: 'Jika Kepala Sekolah datang dan perlu mencetak 1 lembar surat dinas mendesak, bagaimana memodifikasi sistem antrean spooler agar dokumen kepala sekolah dapat dicetak langsung tanpa menghapus antrean siswa?',
+                        placeholder: 'Jelaskan konsep antrean jalur prioritas tinggi (Priority Queue / Express Queue) yang menyisipkan dokumen di depan antrean reguler...'
+                    }
+                }
+            }
+        },
+        hotsAnswers: {},
+        worksheet: {
+            selectedStructure: '',
+            reasoning: '',
+            steps: '',
+            conclusion: ''
+        },
+        simState: {
+            items: [],
+            undoItems: [],
+            redoItems: [],
+            logs: []
+        }
+    },
+
+    initGroupProject() {
+        if (window.StorageManager) {
+            const saved = StorageManager.getGroupProject();
+            if (saved) {
+                this.groupProjectState.groupName = saved.groupName || '';
+                this.groupProjectState.groupClass = saved.groupClass || saved.className || 'SMA Kelas X (Fase E)';
+                this.groupProjectState.selectedCase = saved.selectedCase || 'case1';
+                
+                if (saved.members && Array.isArray(saved.members)) {
+                    const loadedMembers = saved.members.map(m => {
+                        if (typeof m === 'string') return { name: m.trim(), role: '🤝 Anggota Tim' };
+                        return { name: (m.name || '').trim(), role: m.role || '🤝 Anggota Tim' };
+                    }).filter(m => m.name.length > 0);
+
+                    if (loadedMembers.length > 0) {
+                        this.groupProjectState.members = loadedMembers;
+                        this.groupProjectState.identitySaved = !!(saved.groupName && saved.groupName.trim());
+                    } else {
+                        this.groupProjectState.identitySaved = false;
+                    }
+                }
+                if (saved.hotsAnswers) {
+                    this.groupProjectState.hotsAnswers = saved.hotsAnswers;
+                }
+                if (saved.worksheet) {
+                    this.groupProjectState.worksheet = { ...this.groupProjectState.worksheet, ...saved.worksheet };
+                } else if (saved.answers) {
+                    // Backwards compatibility with old key names
+                    this.groupProjectState.worksheet.reasoning = saved.answers.ans1 || '';
+                    this.groupProjectState.worksheet.steps = saved.answers.ans2 || '';
+                    this.groupProjectState.worksheet.conclusion = saved.answers.ans3 || '';
+                }
+            }
+        }
+
+        // Initialize simulation items for selected case if empty
+        this.resetCaseSimulationData();
+        this.renderGroupProjectUI();
+    },
+
+    resetCaseSimulationData() {
+        const curCase = this.groupProjectState.cases[this.groupProjectState.selectedCase];
+        if (curCase) {
+            this.groupProjectState.simState.items = [...(curCase.defaultItems || [])];
+            this.groupProjectState.simState.undoItems = ['1. Buat Kanvas Baru', '2. Ketik Paragraf A'];
+            this.groupProjectState.simState.redoItems = [];
+            this.groupProjectState.simState.logs = [
+                `[SISTEM] Simulasi siap untuk: ${curCase.title}`,
+                `[INFO] Data awal dimuat (${this.groupProjectState.simState.items.length} elemen).`
+            ];
+        }
+    },
+
+    renderGroupProjectUI() {
+        // Sync input values
+        const nameInput = document.getElementById('gp-group-name');
+        const classInput = document.getElementById('gp-group-class');
+        if (nameInput) nameInput.value = this.groupProjectState.groupName || '';
+        if (classInput) classInput.value = this.groupProjectState.groupClass || '';
+
+        // Render sections
+        this.renderGroupMembersList();
+        this.renderGroupProfileCard();
+        this.renderGroupCaseCards();
+        this.renderGroupCaseWorkspace();
+        this.renderGroupHOTSQuestions();
+        this.restoreWorksheetInputs();
+        this.updateWorkflowSteps();
+
+        // Update status badge
+        const saved = window.StorageManager ? StorageManager.getGroupProject() : null;
+        const statusEl = document.getElementById('gp-saved-status');
+        const chipEl = document.getElementById('gp-identity-status-chip');
+
+        if (statusEl) {
+            if (saved && saved.savedAt) {
+                statusEl.textContent = `✓ Tersimpan: ${saved.savedAt} (Nilai: ${saved.score || 100} Poin)`;
+                statusEl.style.color = '#10b981';
+            } else {
+                statusEl.textContent = 'Siap Disimpan (Nilai: 100 Poin)';
+                statusEl.style.color = '#38bdf8';
+            }
+        }
+
+        if (chipEl) {
+            if (this.groupProjectState.identitySaved && this.groupProjectState.groupName) {
+                const memberCount = (this.groupProjectState.members || []).filter(m => m.name && m.name.trim()).length;
+                chipEl.textContent = `✓ Profil Tersimpan (${memberCount} Anggota)`;
+                chipEl.className = 'gp-status-chip saved';
+            } else {
+                chipEl.textContent = 'Belum Disimpan';
+                chipEl.className = 'gp-status-chip';
+            }
+        }
+    },
+
+    // ----------------------------------------------------
+    // GROUP IDENTITY & PROFILE DISPLAY (STEP 2 OF USER REQUEST)
+    // ----------------------------------------------------
+    onGroupNameInput(val) {
+        this.groupProjectState.groupName = val;
+        this.persistProjectDraft();
+    },
+
+    onGroupClassInput(val) {
+        this.groupProjectState.groupClass = val;
+        this.persistProjectDraft();
+    },
+
+    syncIdentityFromDOM() {
+        const nameInput = document.getElementById('gp-group-name');
+        if (nameInput) {
+            this.groupProjectState.groupName = nameInput.value.trim();
+        }
+        const classInput = document.getElementById('gp-group-class');
+        if (classInput) {
+            this.groupProjectState.groupClass = classInput.value.trim();
+        }
+
+        const memberRows = document.querySelectorAll('.gp-member-row');
+        if (memberRows && memberRows.length > 0) {
+            const syncedMembers = [];
+            memberRows.forEach((row, idx) => {
+                const nameEl = row.querySelector('.gp-member-name-input');
+                const absenEl = row.querySelector('.gp-member-absen-input');
+                const roleEl = row.querySelector('.gp-member-role-select');
+                const nameVal = nameEl ? nameEl.value.trim() : '';
+                const absenVal = absenEl ? absenEl.value.trim() : (this.groupProjectState.members[idx]?.absen || '');
+                const roleVal = roleEl ? roleEl.value : (this.groupProjectState.members[idx]?.role || '🤝 Anggota Tim');
+                syncedMembers.push({ name: nameVal, absen: absenVal, role: roleVal });
+            });
+            this.groupProjectState.members = syncedMembers;
+        }
+    },
+
+    renderGroupMembersList() {
+        const container = document.getElementById('gp-members-container');
+        const countBadge = document.getElementById('gp-members-count');
+        if (!container) return;
+
+        // Ensure there are default member rows if empty
+        if (!this.groupProjectState.members || this.groupProjectState.members.length === 0) {
+            const playerName = (window.Player && Player.getName && Player.getName()) || '';
+            const playerAbsen = (window.Player && Player.getAbsen && Player.getAbsen()) || '';
+            this.groupProjectState.members = [
+                { name: playerName, absen: playerAbsen, role: '👑 Ketua Kelompok' },
+                { name: '', absen: '', role: '🔍 Analis Struktur Data' },
+                { name: '', absen: '', role: '📝 Notulis / Penyusun' }
+            ];
+        }
+
+        const validCount = this.groupProjectState.members.filter(m => m.name && m.name.trim()).length;
+        if (countBadge) {
+            countBadge.textContent = validCount > 0 
+                ? `${validCount} Anggota Terdaftar` 
+                : `${this.groupProjectState.members.length} Slot Anggota`;
+        }
+
+        const rolesOptions = [
+            '👑 Ketua Kelompok',
+            '🔍 Analis Struktur Data',
+            '📝 Notulis / Penyusun',
+            '🎨 Presenter / Visualisator',
+            '🤝 Anggota Tim'
+        ];
+
+        container.innerHTML = this.groupProjectState.members.map((m, idx) => {
+            const currentRole = m.role || '🤝 Anggota Tim';
+            const selectOptions = rolesOptions.map(r => 
+                `<option value="${r}" ${r === currentRole ? 'selected' : ''}>${r}</option>`
+            ).join('');
+
+            return `
+                <div class="gp-member-row" data-member-index="${idx}">
+                    <span class="gp-member-index">${idx + 1}.</span>
+                    <input type="text" class="gp-member-name-input" placeholder="Nama anggota ${idx + 1}..." 
+                           value="${m.name || ''}" 
+                           oninput="App.updateMemberName(${idx}, this.value)"
+                           onchange="App.updateMemberName(${idx}, this.value)"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault();App.onMemberEnterKey(${idx});}">
+                    <input type="number" class="gp-member-absen-input" placeholder="Absen" min="1" max="60"
+                           value="${m.absen || ''}" 
+                           oninput="App.updateMemberAbsen(${idx}, this.value)"
+                           onchange="App.updateMemberAbsen(${idx}, this.value)"
+                           title="Nomor Absen Siswa">
+                    <select class="gp-member-role-select" onchange="App.updateMemberRole(${idx}, this.value)">
+                        ${selectOptions}
+                    </select>
+                    ${this.groupProjectState.members.length > 1 ? `
+                        <button type="button" class="gp-btn-remove" onclick="App.removeGroupMember(${idx})" title="Hapus Anggota">✕</button>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+    },
+
+    updateMemberName(idx, val) {
+        if (this.groupProjectState.members && this.groupProjectState.members[idx]) {
+            this.groupProjectState.members[idx].name = (val || '').trim();
+            this.persistProjectDraft();
+        }
+    },
+
+    updateMemberAbsen(idx, val) {
+        if (this.groupProjectState.members && this.groupProjectState.members[idx]) {
+            this.groupProjectState.members[idx].absen = (val || '').trim();
+            this.persistProjectDraft();
+        }
+    },
+
+    updateMemberRole(idx, val) {
+        if (this.groupProjectState.members && this.groupProjectState.members[idx]) {
+            this.groupProjectState.members[idx].role = val;
+            this.persistProjectDraft();
+        }
+    },
+
+    onMemberEnterKey(idx) {
+        this.syncIdentityFromDOM();
+        const currentMember = this.groupProjectState.members[idx];
+        if (currentMember && currentMember.name) {
+            if (idx === this.groupProjectState.members.length - 1 && this.groupProjectState.members.length < 8) {
+                this.addGroupMember();
+            } else {
+                const nextInput = document.querySelectorAll('.gp-member-name-input')[idx + 1];
+                if (nextInput) nextInput.focus();
+            }
+        }
+    },
+
+    addGroupMember() {
+        this.syncIdentityFromDOM();
+        if (this.groupProjectState.members.length >= 8) {
+            if (window.UI) UI.showToast("Maksimal 8 anggota dalam satu kelompok!");
+            return;
+        }
+        this.groupProjectState.members.push({ name: '', role: '🤝 Anggota Tim' });
+        this.renderGroupMembersList();
+
+        setTimeout(() => {
+            const inputs = document.querySelectorAll('.gp-member-name-input');
+            if (inputs && inputs.length > 0) {
+                inputs[inputs.length - 1].focus();
+            }
+        }, 50);
+
+        if (window.SoundManager) SoundManager.play('click');
+        this.persistProjectDraft();
+    },
+
+    removeGroupMember(idx) {
+        this.syncIdentityFromDOM();
+        if (this.groupProjectState.members.length > 1) {
+            this.groupProjectState.members.splice(idx, 1);
+            this.renderGroupMembersList();
+            if (window.SoundManager) SoundManager.play('click');
+            this.persistProjectDraft();
+        }
+    },
+
+    saveGroupIdentity() {
+        // Scrape the DOM elements directly to ensure 100% accurate, up-to-date values
+        this.syncIdentityFromDOM();
+
+        const nameInput = document.getElementById('gp-group-name');
+        const classInput = document.getElementById('gp-group-class');
+        let name = (this.groupProjectState.groupName || (nameInput ? nameInput.value : '')).trim();
+        let className = (this.groupProjectState.groupClass || (classInput ? classInput.value : 'SMA Kelas X (Fase E)')).trim();
+
+        if (!name || name.length < 2) {
+            const playerName = (window.Player && Player.getName && Player.getName()) || 'Tim Hebat';
+            name = 'Kelompok ' + playerName;
+            this.groupProjectState.groupName = name;
+            if (nameInput) nameInput.value = name;
+        }
+
+        if (!className) {
+            className = 'SMA Kelas X (Fase E)';
+            this.groupProjectState.groupClass = className;
+            if (classInput) classInput.value = className;
+        }
+
+        // Collect all members with valid non-empty names
+        let validMembers = (this.groupProjectState.members || []).map(m => ({
+            name: (m.name || '').trim(),
+            absen: (m.absen || '').trim(),
+            role: m.role || '🤝 Anggota Tim'
+        })).filter(m => m.name.length > 0);
+
+        // Fallback: If no member names are typed yet, auto-populate first member with player name or default
+        if (validMembers.length === 0) {
+            const defaultName = (window.Player && Player.getName && Player.getName()) || 'Siswa 1';
+            const defaultAbsen = (window.Player && Player.getAbsen && Player.getAbsen()) || '';
+            validMembers = [
+                { name: defaultName, absen: defaultAbsen, role: '👑 Ketua Kelompok' }
+            ];
+            this.groupProjectState.members = validMembers;
+            this.renderGroupMembersList();
+        }
+
+        // Update active state
+        this.groupProjectState.groupName = name;
+        this.groupProjectState.groupClass = className;
+        this.groupProjectState.members = validMembers;
+        this.groupProjectState.identitySaved = true;
+
+        // Persist directly to StorageManager and LocalStorage
+        if (window.StorageManager) {
+            const existing = StorageManager.getGroupProject() || {};
+            const projectData = {
+                ...existing,
+                groupName: name,
+                groupClass: className,
+                className: className,
+                members: validMembers,
+                selectedCase: this.groupProjectState.selectedCase || 'case1',
+                hotsAnswers: this.groupProjectState.hotsAnswers || {},
+                worksheet: this.groupProjectState.worksheet || {},
+                score: existing.score || 100
+            };
+            StorageManager.saveGroupProject(projectData);
+            StorageManager.savePageScore('group-project', 100, { groupName: name, members: validMembers });
+        }
+
+        // Button confirmation feedback
+        const saveBtn = document.getElementById('gp-btn-save-identity');
+        if (saveBtn) {
+            const originalHTML = saveBtn.innerHTML;
+            saveBtn.innerHTML = '✓ Tersimpan!';
+            saveBtn.style.background = '#10b981';
+            saveBtn.style.borderColor = '#059669';
+            setTimeout(() => {
+                if (saveBtn) {
+                    saveBtn.innerHTML = originalHTML;
+                    saveBtn.style.background = '';
+                    saveBtn.style.borderColor = '';
+                }
+            }, 2500);
+        }
+
+        // Update form status chip
+        const chipEl = document.getElementById('gp-identity-status-chip');
+        if (chipEl) {
+            const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            chipEl.textContent = `✓ Tersimpan (${validMembers.length} Anggota, ${nowTime})`;
+            chipEl.className = 'gp-status-chip saved';
+        }
+
+        // Render profile card with all member chips
+        this.renderGroupProfileCard();
+
+        // Update workflow step 1 to completed
+        this.updateWorkflowSteps();
+
+        if (window.SoundManager) SoundManager.play('levelComplete');
+        if (window.UI) {
+            UI.showToast(`🎉 Profil Kelompok "${name}" (${validMembers.length} anggota) berhasil disimpan!`);
+            UI.setKikoDialogue(`Luar biasa! Kelompok "${name}" dengan ${validMembers.length} anggota telah terdaftar dan tersimpan di sistem. Silakan pilih dan analisis studi kasus di bawah!`, 'cheering');
+        }
+    },
+
+    toggleGroupIdentityEdit() {
+        const formCard = document.getElementById('gp-identity-form-card');
+        if (formCard) {
+            const isHidden = formCard.style.display === 'none';
+            formCard.style.display = isHidden ? 'flex' : 'none';
+            if (isHidden) {
+                this.renderGroupMembersList();
+                formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        if (window.SoundManager) SoundManager.play('click');
+    },
+
+    renderGroupProfileCard() {
+        const profileCard = document.getElementById('gp-profile-display-card');
+        const formCard = document.getElementById('gp-identity-form-card');
+        if (!profileCard) return;
+
+        const name = (this.groupProjectState.groupName || '').trim();
+        const validMembers = (this.groupProjectState.members || []).filter(m => m.name && m.name.trim().length > 0);
+
+        if (this.groupProjectState.identitySaved && name && validMembers.length > 0) {
+            profileCard.style.display = 'flex';
+
+            const nameEl = document.getElementById('gp-display-group-name');
+            const classEl = document.getElementById('gp-display-group-class');
+            const timeEl = document.getElementById('gp-display-saved-time');
+            const gridEl = document.getElementById('gp-display-members-grid');
+
+            if (nameEl) nameEl.textContent = `Kelompok: ${name}`;
+            if (classEl) classEl.textContent = `Kelas: ${this.groupProjectState.groupClass || 'SMA Kelas X'}`;
+
+            const saved = window.StorageManager ? StorageManager.getGroupProject() : null;
+            if (timeEl) {
+                timeEl.textContent = saved && saved.savedAt ? `Tersimpan: ${saved.savedAt}` : 'Terdaftar Aktif';
+            }
+
+            if (gridEl) {
+                gridEl.innerHTML = validMembers.map(m => {
+                    const role = m.role || '🤝 Anggota Tim';
+                    const icon = role.includes('👑') ? '👑' :
+                                 role.includes('🔍') ? '🔍' :
+                                 role.includes('📝') ? '📝' :
+                                 role.includes('🎨') ? '🎨' : '🤝';
+                    const cleanRole = role.replace(/^[^\w\s]+/, '').trim();
+                    const absenText = m.absen ? ` (No. ${m.absen})` : '';
+                    return `
+                        <div class="gp-member-chip">
+                            <span class="gp-chip-role-icon">${icon}</span>
+                            <div class="gp-chip-info">
+                                <span class="gp-chip-name">${m.name}${absenText}</span>
+                                <span class="gp-chip-role">${cleanRole}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        } else {
+            profileCard.style.display = 'none';
+            if (formCard) formCard.style.display = 'flex';
+        }
+    },
+
+    // ----------------------------------------------------
+    // CASE STUDY SELECTION (STEP 3 & 4 OF USER REQUEST)
+    // ----------------------------------------------------
+    selectGroupCase(caseKey) {
+        if (!this.groupProjectState.cases[caseKey]) return;
+        this.groupProjectState.selectedCase = caseKey;
+        this.resetCaseSimulationData();
+        this.renderGroupCaseCards();
+        this.renderGroupCaseWorkspace();
+        this.renderGroupHOTSQuestions();
+        this.updateWorkflowSteps();
+        this.persistProjectDraft();
+
+        if (window.SoundManager) SoundManager.play('click');
+        if (window.UI) {
+            const c = this.groupProjectState.cases[caseKey];
+            UI.showToast(`📂 Studi Kasus Berhasil Dipilih: ${c.title}`);
+            UI.setKikoDialogue(`Kalian memilih "${c.title}". Amati skenario dan lakukan simulasi logika di bawah!`, 'happy');
+        }
+
+        // Smoothly scroll down to workspace so students immediately see the selected case
+        setTimeout(() => {
+            const workspaceSection = document.getElementById('gp-case-detail-section');
+            if (workspaceSection && typeof workspaceSection.scrollIntoView === 'function') {
+                workspaceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    },
+
+    renderGroupCaseCards() {
+        const grid = document.getElementById('gp-cases-grid');
+        const badge = document.getElementById('gp-active-case-badge');
+        if (!grid) return;
+
+        const current = this.groupProjectState.selectedCase;
+        if (badge && this.groupProjectState.cases[current]) {
+            badge.textContent = `${this.groupProjectState.cases[current].icon} Kasus ${current.replace('case', '')} Terpilih`;
+        }
+
+        grid.innerHTML = Object.keys(this.groupProjectState.cases).map(k => {
+            const c = this.groupProjectState.cases[k];
+            const isSelected = k === current;
+            const num = k.replace('case', '');
+            return `
+                <div class="gp-case-card ${isSelected ? 'selected' : ''}" onclick="App.selectGroupCase('${k}')" style="cursor: pointer;">
+                    <div class="gp-case-card-header">
+                        <span class="gp-case-icon">${c.icon}</span>
+                        <span class="gp-case-num-badge">Kasus ${num}</span>
+                    </div>
+                    <h4>${c.title}</h4>
+                    <p>${c.desc.substring(0, 115)}...</p>
+                    <div class="gp-case-action-box" style="margin-top: 0.85rem;">
+                        <button type="button" class="btn ${isSelected ? 'btn-success' : 'btn-primary'} gp-case-btn-select" 
+                                style="width: 100%; font-size: 0.9rem; font-weight: 700; padding: 0.55rem 0.75rem; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 0.4rem;" 
+                                onclick="event.stopPropagation(); App.selectGroupCase('${k}')">
+                            ${isSelected ? '✓ Kasus Ini Terpilih' : '👉 Pilih Studi Kasus Ini'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    renderGroupCaseWorkspace() {
+        const container = document.getElementById('gp-case-detail-section');
+        if (!container) return;
+
+        const c = this.groupProjectState.cases[this.groupProjectState.selectedCase];
+        if (!c) return;
+
+        container.innerHTML = `
+            <div class="gp-detail-banner">
+                <span class="gp-detail-banner-icon">${c.icon}</span>
+                <div class="gp-detail-banner-text">
+                    <h3>${c.title}</h3>
+                    <div class="gp-detail-tags">
+                        <span class="quiz-score-badge" style="background: #FAF6ED; color: #E76814; border: 1px solid #D8D4BC;">${c.category}</span>
+                        <span class="quiz-score-badge" style="background: #FAF3F0; color: #891A10; border: 1px solid #D8D4BC;">Rekomendasi Konsep: ${c.recommendedStructure}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gp-scenario-card">
+                <h5>📖 Skenario Kasus Nyata:</h5>
+                <p>${c.desc}</p>
+            </div>
+
+            <div class="gp-challenge-box">
+                <h5>⚡ Tantangan Analisis Masalah:</h5>
+                <p>${c.problemChallenge}</p>
+            </div>
+
+            <!-- Konsol Simulasi Logika Interaktif -->
+            <div class="gp-sim-box">
+                <div class="gp-sim-header">
+                    <strong>⚡ Konsol Simulasi Alur Data: ${c.title}</strong>
+                    <span style="font-size: 0.8rem; color: #94a3b8;">Uji coba interaktif operasi data secara langsung</span>
+                </div>
+
+                <div class="gp-sim-controls" id="gp-sim-controls-bar">
+                    ${this.getSimulationButtonsHTML(c.id)}
+                </div>
+
+                <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 0.25rem;">
+                    Status Elemen Aktif dalam Struktur Data:
+                </div>
+
+                <div class="gp-sim-viewport" id="gp-sim-viewport">
+                    <!-- Populated by App.renderCaseSimulationViewport() -->
+                </div>
+
+                <div class="gp-sim-log" id="gp-sim-log">
+                    <!-- Populated by App.renderCaseSimulationLog() -->
+                </div>
+            </div>
+        `;
+
+        this.renderCaseSimulationViewport();
+        this.renderCaseSimulationLog();
+    },
+
+    getSimulationButtonsHTML(caseId) {
+        if (caseId === 'case1') {
+            return `
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('add_regular')">+ Pasien Biasa (Enqueue FIFO)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('add_critical')">+ Pasien Kritis (Priority Interupsi)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('process')">➔ Tangani Pasien Terdepan (Dequeue)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset</button>
+            `;
+        } else if (caseId === 'case2') {
+            return `
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('push_action')">+ Aksi Baru di Kanvas (Push Undo)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('undo')">↩️ Undo (Pop Undo ➔ Push Redo)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('redo')">↪️ Redo (Pop Redo ➔ Push Undo)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Bersihkan Kanvas</button>
+            `;
+        } else if (caseId === 'case3') {
+            return `
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('push_lane')">📥 Muat Peti ke Lorong (Push Stack)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('pop_lane')">📤 Ambil Peti Terdepan (Pop Stack)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('enqueue_belt')">🚚 Pindahkan ke Sabuk Konveyor (Enqueue)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('dequeue_truck')">🏁 Muat ke Truk (Dequeue)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset</button>
+            `;
+        } else {
+            return `
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('enqueue_doc')">📄 Kirim Dokumen Siswa (Enqueue FIFO)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('priority_doc')">⭐ Dokumen Darurat Guru (Priority)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('dequeue_doc')">🖨️ Cetak 1 Dokumen (Dequeue)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Buffer</button>
+            `;
+        }
+    },
+
+    // ----------------------------------------------------
+    // SIMULATION ENGINE
+    // ----------------------------------------------------
+    runCaseSimulation(action) {
+        const caseId = this.groupProjectState.selectedCase;
+        const sim = this.groupProjectState.simState;
+        let soundToPlay = 'click';
+
+        if (caseId === 'case1') {
+            if (action === 'add_regular') {
+                const names = ['Pasien Budi (Luka Kaki)', 'Pasien Siti (Demam)', 'Pasien Rizky (Flu)', 'Pasien Dian (Alergi)'];
+                const item = names[Math.floor(Math.random() * names.length)];
+                sim.items.push(`[Reguler] ${item}`);
+                sim.logs.unshift(`[ENQUEUE FIFO] ${item} masuk di antrean pendaftaran umum.`);
+                soundToPlay = 'enqueue';
+            } else if (action === 'add_critical') {
+                const item = `[KRITIS] Pasien Darurat #${Math.floor(Math.random() * 900 + 100)} (Serangan Jantung)`;
+                sim.items.unshift(item); // Priority insertion to front
+                sim.logs.unshift(`🚨 [PRIORITY PREEMPTION] ${item} disisipkan ke posisi TERDEPAN IGD!`);
+                soundToPlay = 'push';
+            } else if (action === 'process') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`⚠️ [UNDERFLOW] Tidak ada pasien di antrean IGD.`);
+                } else {
+                    const treated = sim.items.shift();
+                    sim.logs.unshift(`✅ [DEQUEUE / BEDAH] Dokter menangani: ${treated}`);
+                    soundToPlay = 'dequeue';
+                }
+            } else if (action === 'reset') {
+                this.resetCaseSimulationData();
+                return;
+            }
+        } else if (caseId === 'case2') {
+            if (action === 'push_action') {
+                const actions = ['Ketik Paragraf 3', 'Beri Tebal Huruf', 'Ganti Warna Merah', 'Sisipkan Ikon Bintang'];
+                const nextAct = `${sim.undoItems.length + 1}. ${actions[sim.undoItems.length % actions.length]}`;
+                sim.undoItems.push(nextAct);
+                sim.redoItems = []; // clear redo on new action
+                sim.logs.unshift(`✏️ [PUSH UNDO] Aksi "${nextAct}" dicatat ke Undo Stack. Redo Stack dibersihkan.`);
+                soundToPlay = 'push';
+            } else if (action === 'undo') {
+                if (sim.undoItems.length === 0) {
+                    sim.logs.unshift(`⚠️ [STACK UNDERFLOW] Tidak ada aksi yang bisa dibatalkan.`);
+                } else {
+                    const undone = sim.undoItems.pop();
+                    sim.redoItems.push(undone);
+                    sim.logs.unshift(`↩️ [UNDO (Ctrl+Z)] Membatalkan: "${undone}". Dipindahkan ke Redo Stack.`);
+                    soundToPlay = 'pop';
+                }
+            } else if (action === 'redo') {
+                if (sim.redoItems.length === 0) {
+                    sim.logs.unshift(`⚠️ [REDO KOSONG] Tidak ada aksi yang bisa dipulihkan.`);
+                } else {
+                    const redone = sim.redoItems.pop();
+                    sim.undoItems.push(redone);
+                    sim.logs.unshift(`↪️ [REDO (Ctrl+Y)] Memulihkan kembali: "${redone}".`);
+                    soundToPlay = 'push';
+                }
+            } else if (action === 'reset') {
+                this.resetCaseSimulationData();
+                return;
+            }
+        } else if (caseId === 'case3') {
+            if (action === 'push_lane') {
+                const crates = ['Peti Laptop', 'Peti TV LED', 'Peti Busana', 'Peti Buku'];
+                const item = crates[Math.floor(Math.random() * crates.length)] + ` #${Math.floor(Math.random() * 80 + 10)}`;
+                sim.items.push(`[Lorong] ${item}`);
+                sim.logs.unshift(`📥 [PUSH STACK] ${item} dimuat ke lorong buntu. Posisi TOP terluar.`);
+                soundToPlay = 'push';
+            } else if (action === 'pop_lane') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`⚠️ [LORONG KOSONG] Tidak ada peti di lorong.`);
+                } else {
+                    const popped = sim.items.pop();
+                    sim.logs.unshift(`📤 [POP STACK] Forklift mengangkat peti terdepan: ${popped}.`);
+                    soundToPlay = 'pop';
+                }
+            } else if (action === 'enqueue_belt') {
+                const item = `[Konveyor] Paket Ekspres #${Math.floor(Math.random() * 800 + 100)}`;
+                sim.items.push(item);
+                sim.logs.unshift(`🚚 [ENQUEUE KONVEYOR] ${item} ditaruh di sabuk berjalan menuju truk.`);
+                soundToPlay = 'enqueue';
+            } else if (action === 'dequeue_truck') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`⚠️ [KONVEYOR KOSONG] Tidak ada paket di sabuk konveyor.`);
+                } else {
+                    const sent = sim.items.shift();
+                    sim.logs.unshift(`🏁 [DEQUEUE TRUK] ${sent} dimuat ke truk dan berangkat.`);
+                    soundToPlay = 'dequeue';
+                }
+            } else if (action === 'reset') {
+                this.resetCaseSimulationData();
+                return;
+            }
+        } else if (caseId === 'case4') {
+            if (action === 'enqueue_doc') {
+                const docs = ['Makalah_Sejarah.docx', 'Laporan_Fisika.pdf', 'Proposal_OSIS.docx', 'Grafik_Matematika.png'];
+                const doc = docs[Math.floor(Math.random() * docs.length)];
+                sim.items.push(`[Antre] ${doc}`);
+                sim.logs.unshift(`📄 [ENQUEUE BUFFER] Dokumen "${doc}" masuk buffer printer di REAR.`);
+                soundToPlay = 'enqueue';
+            } else if (action === 'priority_doc') {
+                const pDoc = `[PRIORITAS] Soal_Ujian_Guru.pdf`;
+                sim.items.unshift(pDoc);
+                sim.logs.unshift(`⭐ [JALUR EKSPRES] Dokumen guru disisipkan ke FRONT antrean cetak!`);
+                soundToPlay = 'push';
+            } else if (action === 'dequeue_doc') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`⚠️ [PRINTER IDLE] Tidak ada dokumen yang menunggu cetak.`);
+                } else {
+                    const printed = sim.items.shift();
+                    sim.logs.unshift(`🖨️ [DEQUEUE CETAK] Mencetak lembaran: ${printed}. Selesai!`);
+                    soundToPlay = 'dequeue';
+                }
+            } else if (action === 'reset') {
+                this.resetCaseSimulationData();
+                return;
+            }
+        }
+
+        if (window.SoundManager) SoundManager.play(soundToPlay);
+        this.renderCaseSimulationViewport();
+        this.renderCaseSimulationLog();
+    },
+
+    renderCaseSimulationViewport() {
+        const vp = document.getElementById('gp-sim-viewport');
+        if (!vp) return;
+
+        const caseId = this.groupProjectState.selectedCase;
+        const sim = this.groupProjectState.simState;
+
+        if (caseId === 'case2') {
+            // Dual Stack visualizer
+            const undoBadges = sim.undoItems.map(item => 
+                `<div class="gp-sim-item-badge">📌 ${item}</div>`
+            ).join('') || '<span style="color: #64748b; font-size: 0.82rem;">(Undo Stack Kosong)</span>';
+
+            const redoBadges = sim.redoItems.map(item => 
+                `<div class="gp-sim-item-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🔁 ${item}</div>`
+            ).join('') || '<span style="color: #64748b; font-size: 0.82rem;">(Redo Stack Kosong)</span>';
+
+            vp.innerHTML = `
+                <div style="display: flex; gap: 1.5rem; width: 100%; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <strong style="color: #E76814; font-size: 0.8rem; display: block; margin-bottom: 0.35rem;">[UNDO STACK (LIFO)]:</strong>
+                        <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">${undoBadges}</div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px; border-left: 1.5px dashed #D8D4BC; padding-left: 1rem;">
+                        <strong style="color: #DC8236; font-size: 0.8rem; display: block; margin-bottom: 0.35rem;">[REDO STACK (LIFO)]:</strong>
+                        <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">${redoBadges}</div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        if (!sim.items || sim.items.length === 0) {
+            vp.innerHTML = `<span style="color: #64748b; font-size: 0.85rem; font-style: italic;">Antrean / tumpukan data saat ini kosong. Gunakan tombol di atas untuk menyimulasikan aliran data.</span>`;
+            return;
+        }
+
+        vp.innerHTML = sim.items.map((it, idx) => {
+            const isPriority = it.includes('[KRITIS]') || it.includes('[PRIORITAS]');
+            const positionTag = idx === 0 ? ' (FRONT)' : (idx === sim.items.length - 1 ? ' (REAR)' : '');
+            return `
+                <div class="gp-sim-item-badge ${isPriority ? 'priority' : ''}">
+                    ${isPriority ? '🚨' : '📦'} ${it}${positionTag}
+                </div>
+            `;
+        }).join('');
+    },
+
+    renderCaseSimulationLog() {
+        const logBox = document.getElementById('gp-sim-log');
+        if (!logBox) return;
+
+        const logs = this.groupProjectState.simState.logs || [];
+        logBox.innerHTML = logs.slice(0, 8).map(l => 
+            `<div style="margin-bottom: 0.2rem;">> ${l}</div>`
+        ).join('');
+    },
+
+    // ----------------------------------------------------
+    // HOTS QUESTIONS COMPONENT (STEP 5 OF USER REQUEST)
+    // ----------------------------------------------------
+    renderGroupHOTSQuestions() {
+        const container = document.getElementById('gp-hots-questions-section');
+        if (!container) return;
+
+        const caseKey = this.groupProjectState.selectedCase;
+        const c = this.groupProjectState.cases[caseKey];
+        if (!c || !c.hots) return;
+
+        const savedAnswers = this.groupProjectState.hotsAnswers[caseKey] || {};
+
+        // Multiple choice options HTML
+        const mcUserChoice = savedAnswers.mc;
+        const mcOptionsHTML = c.hots.mc.options.map(opt => {
+            const isSelected = mcUserChoice === opt.key;
+            return `
+                <button type="button" class="gp-hots-option-btn ${isSelected ? 'selected' : ''}" 
+                        onclick="App.answerHOTS_MC('${caseKey}', '${opt.key}')">
+                    <span class="gp-option-key">${opt.key}</span>
+                    <span>${opt.text}</span>
+                </button>
+            `;
+        }).join('');
+
+        // MC Feedback alert if answered
+        let mcFeedbackHTML = '';
+        if (mcUserChoice) {
+            const selectedOpt = c.hots.mc.options.find(o => o.key === mcUserChoice);
+            if (selectedOpt) {
+                const isCorrect = !!selectedOpt.isCorrect;
+                mcFeedbackHTML = `
+                    <div class="gp-feedback-alert ${isCorrect ? 'correct' : 'info'}">
+                        <strong>${isCorrect ? '✅ Analisis Logika Tepat!' : '💡 Pembahasan Komputasional:'}</strong>
+                        ${selectedOpt.feedback || (isCorrect ? 'Jawaban pilihan kelompokmu tepat secara logika.' : 'Pertimbangkan kembali karakteristik penanganan alur data.')}
+                    </div>
+                `;
+            }
+        }
+
+        // True / False statements HTML
+        const tfAnswers = savedAnswers.tf || {};
+        const tfHTML = c.hots.tf.map(tItem => {
+            const userVal = tfAnswers[tItem.id];
+            const hasAnswered = userVal !== undefined;
+            const isCorrect = hasAnswered && userVal === tItem.correct;
+
+            return `
+                <div class="gp-tf-item">
+                    <div class="gp-tf-statement">📌 "${tItem.statement}"</div>
+                    <div class="gp-tf-actions">
+                        <button type="button" class="gp-tf-btn ${userVal === true ? 'active-true' : ''}" 
+                                onclick="App.answerHOTS_TF('${caseKey}', '${tItem.id}', true)">
+                            ✓ BENAR
+                        </button>
+                        <button type="button" class="gp-tf-btn ${userVal === false ? 'active-false' : ''}" 
+                                onclick="App.answerHOTS_TF('${caseKey}', '${tItem.id}', false)">
+                            ✕ SALAH
+                        </button>
+                    </div>
+                    ${hasAnswered ? `
+                        <div class="gp-feedback-alert ${isCorrect ? 'correct' : 'info'}" style="padding: 0.5rem 0.8rem; font-size: 0.82rem;">
+                            <strong>${isCorrect ? '✅ Tepat!' : '💡 Catatan Guru:'}</strong> ${tItem.explanation}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+
+        // Essay question
+        const essayVal = savedAnswers.essay || '';
+
+        container.innerHTML = `
+            <div class="gp-section-header">
+                <div class="gp-section-title">
+                    <span class="gp-title-icon">🧠</span>
+                    <div>
+                        <h3>Pengamatan & Analisis Kasus (Pertanyaan HOTS)</h3>
+                        <p class="gp-section-sub">Diskusikan bersama tim dan jawab pertanyaan berpikir tingkat tinggi (HOTS: C4-C6) berdasarkan pengamatan kasus di atas:</p>
+                    </div>
+                </div>
+                <span class="quiz-score-badge" style="background: #FAF6ED; color: #E76814; border: 1px solid #D8D4BC;">Level Kognitif C4 - C6</span>
+            </div>
+
+            <!-- Question 1: Multiple Choice HOTS (C4 Analisis) -->
+            <div class="gp-hots-card">
+                <span class="gp-hots-badge">Soal 1 • Pilihan Ganda (C4 - Menganalisis)</span>
+                <p class="gp-hots-prompt">${c.hots.mc.question}</p>
+                <div class="gp-hots-options">
+                    ${mcOptionsHTML}
+                </div>
+                ${mcFeedbackHTML}
+            </div>
+
+            <!-- Question 2: Benar / Salah HOTS (C5 Evaluasi) -->
+            <div class="gp-hots-card">
+                <span class="gp-hots-badge" style="background: #FAF3F0; color: #891A10; border: 1px solid #D8D4BC;">Soal 2 • Analisis Kritis Pernyataan (C5 - Mengevaluasi Benar/Salah)</span>
+                <p class="gp-hots-prompt">Tentukan apakah setiap pernyataan komputasional di bawah ini Benar atau Salah, lalu cermati pembahasannya:</p>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    ${tfHTML}
+                </div>
+            </div>
+
+            <!-- Question 3: Isian Singkat / Rancangan Solusi HOTS (C6 Kreasi) -->
+            <div class="gp-hots-card">
+                <span class="gp-hots-badge" style="background: #FFF7EB; color: #DC8236; border: 1px solid #D8D4BC;">Soal 3 • Perancangan Solusi Algoritmik (C6 - Problem Solving)</span>
+                <p class="gp-hots-prompt">${c.hots.essay.prompt}</p>
+                <textarea class="gp-textarea-modern" placeholder="${c.hots.essay.placeholder}" 
+                          oninput="App.answerHOTS_Essay('${caseKey}', this.value)">${essayVal}</textarea>
+                <div class="gp-textarea-hint">💡 Rancang aturan logis secara jelas bersama kelompokmu. Jawaban tersimpan otomatis.</div>
+            </div>
+        `;
+    },
+
+    answerHOTS_MC(caseKey, optionKey) {
+        if (!this.groupProjectState.hotsAnswers[caseKey]) {
+            this.groupProjectState.hotsAnswers[caseKey] = {};
+        }
+        this.groupProjectState.hotsAnswers[caseKey].mc = optionKey;
+        this.persistProjectDraft();
+        this.renderGroupHOTSQuestions();
+        this.updateWorkflowSteps();
+        if (window.SoundManager) SoundManager.play('click');
+    },
+
+    answerHOTS_TF(caseKey, tfId, value) {
+        if (!this.groupProjectState.hotsAnswers[caseKey]) {
+            this.groupProjectState.hotsAnswers[caseKey] = {};
+        }
+        if (!this.groupProjectState.hotsAnswers[caseKey].tf) {
+            this.groupProjectState.hotsAnswers[caseKey].tf = {};
+        }
+        this.groupProjectState.hotsAnswers[caseKey].tf[tfId] = value;
+        this.persistProjectDraft();
+        this.renderGroupHOTSQuestions();
+        this.updateWorkflowSteps();
+        if (window.SoundManager) SoundManager.play('click');
+    },
+
+    answerHOTS_Essay(caseKey, text) {
+        if (!this.groupProjectState.hotsAnswers[caseKey]) {
+            this.groupProjectState.hotsAnswers[caseKey] = {};
+        }
+        this.groupProjectState.hotsAnswers[caseKey].essay = text;
+        this.persistProjectDraft();
+        this.updateWorkflowSteps();
+    },
+
+    // ----------------------------------------------------
+    // WORKSHEET HANDLERS (STEP 6 OF USER REQUEST)
+    // ----------------------------------------------------
+    onWorksheetChange(field, val) {
+        this.groupProjectState.worksheet[field] = val;
+        this.persistProjectDraft();
+        this.updateWorkflowSteps();
+    },
+
+    restoreWorksheetInputs() {
+        const ws = this.groupProjectState.worksheet;
+        const structSelect = document.getElementById('gp-structure-select');
+        const reasoning = document.getElementById('gp-reasoning');
+        const steps = document.getElementById('gp-steps');
+        const conclusion = document.getElementById('gp-conclusion');
+
+        if (structSelect && ws.selectedStructure) structSelect.value = ws.selectedStructure;
+        if (reasoning && ws.reasoning) reasoning.value = ws.reasoning;
+        if (steps && ws.steps) steps.value = ws.steps;
+        if (conclusion && ws.conclusion) conclusion.value = ws.conclusion;
+    },
+
+    updateWorkflowSteps() {
+        const step1 = document.getElementById('gp-step-1');
+        const step2 = document.getElementById('gp-step-2');
+        const step3 = document.getElementById('gp-step-3');
+        const step4 = document.getElementById('gp-step-4');
+        const step5 = document.getElementById('gp-step-5');
+
+        const hasIdentity = !!(this.groupProjectState.identitySaved && this.groupProjectState.groupName);
+        const hasCase = !!this.groupProjectState.selectedCase;
+        const currentHots = this.groupProjectState.hotsAnswers[this.groupProjectState.selectedCase] || {};
+        const hasHots = !!(currentHots.mc && currentHots.tf && Object.keys(currentHots.tf).length >= 1);
+        const ws = this.groupProjectState.worksheet;
+        const hasWorksheet = !!(ws.selectedStructure && ws.reasoning && ws.reasoning.length > 5);
+
+        if (step1) {
+            step1.className = `gp-step-item ${hasIdentity ? 'completed' : 'active'}`;
+        }
+        if (step2) {
+            step2.className = `gp-step-item ${hasCase ? (hasIdentity ? 'completed' : 'active') : ''}`;
+        }
+        if (step3) {
+            step3.className = `gp-step-item ${hasCase ? 'completed' : ''}`;
+        }
+        if (step4) {
+            step4.className = `gp-step-item ${hasHots ? 'completed' : (hasCase ? 'active' : '')}`;
+        }
+        if (step5) {
+            step5.className = `gp-step-item ${hasWorksheet ? 'completed' : (hasHots ? 'active' : '')}`;
+        }
+    },
+
+    persistProjectDraft() {
+        if (!window.StorageManager) return;
+        const draft = {
+            groupName: this.groupProjectState.groupName,
+            groupClass: this.groupProjectState.groupClass,
+            className: this.groupProjectState.groupClass,
+            members: this.groupProjectState.members,
+            selectedCase: this.groupProjectState.selectedCase,
+            hotsAnswers: this.groupProjectState.hotsAnswers,
+            worksheet: this.groupProjectState.worksheet
+        };
+        const existing = StorageManager.getGroupProject();
+        if (existing && existing.savedAt) {
+            draft.savedAt = existing.savedAt;
+            draft.score = existing.score || 100;
+        }
+        StorageManager.saveGroupProject(draft);
+    },
+
+    // ----------------------------------------------------
+    // SAVE, PRINT, EXPORT ACTIONS
+    // ----------------------------------------------------
+    saveGroupProject() {
+        // Ensure identity inputs and worksheet inputs are synced before saving whole worksheet
+        this.syncIdentityFromDOM();
+
+        const structSelect = document.getElementById('gp-structure-select');
+        const reasoningEl = document.getElementById('gp-reasoning');
+        const stepsEl = document.getElementById('gp-steps');
+        const conclusionEl = document.getElementById('gp-conclusion');
+
+        if (structSelect && structSelect.value) this.groupProjectState.worksheet.selectedStructure = structSelect.value;
+        if (reasoningEl && reasoningEl.value) this.groupProjectState.worksheet.reasoning = reasoningEl.value;
+        if (stepsEl && stepsEl.value) this.groupProjectState.worksheet.steps = stepsEl.value;
+        if (conclusionEl && conclusionEl.value) this.groupProjectState.worksheet.conclusion = conclusionEl.value;
+
+        let groupName = (this.groupProjectState.groupName || '').trim();
+        let groupClass = (this.groupProjectState.groupClass || '').trim();
+        const ws = this.groupProjectState.worksheet;
+        const caseKey = this.groupProjectState.selectedCase || 'case1';
+        const curCase = this.groupProjectState.cases[caseKey] || this.groupProjectState.cases['case1'];
+
+        if (!groupName || groupName.length < 2) {
+            const playerName = (window.Player && Player.getName && Player.getName()) || 'Tim Hebat';
+            groupName = 'Kelompok ' + playerName;
+            this.groupProjectState.groupName = groupName;
+            const nameInput = document.getElementById('gp-group-name');
+            if (nameInput) nameInput.value = groupName;
+        }
+
+        if (!groupClass) {
+            groupClass = 'SMA Kelas X (Fase E)';
+            this.groupProjectState.groupClass = groupClass;
+            const classInput = document.getElementById('gp-group-class');
+            if (classInput) classInput.value = groupClass;
+        }
+
+        if (!ws.selectedStructure) {
+            ws.selectedStructure = curCase.recommendedStructure || 'Stack (LIFO - Last In First Out)';
+            if (structSelect) structSelect.value = ws.selectedStructure;
+        }
+
+        const projectData = {
+            groupName: groupName,
+            groupClass: groupClass || 'SMA Kelas X (Fase E)',
+            className: groupClass || 'SMA Kelas X (Fase E)',
+            members: this.groupProjectState.members,
+            selectedCase: caseKey,
+            caseTitle: curCase.title,
+            hotsAnswers: this.groupProjectState.hotsAnswers,
+            worksheet: {
+                selectedStructure: ws.selectedStructure,
+                reasoning: ws.reasoning || '',
+                steps: ws.steps || '',
+                conclusion: ws.conclusion || ''
+            },
+            score: 100
+        };
+
+        if (window.StorageManager) {
+            StorageManager.saveGroupProject(projectData);
+            StorageManager.savePageScore('group-project', 100, { groupName, case: projectData.selectedCase });
+        }
+
+        this.groupProjectState.identitySaved = true;
+
+        if (window.SoundManager) SoundManager.play('levelComplete');
+        if (window.UI) {
+            UI.showToast(`🎉 Tugas Kelompok "${groupName}" berhasil disimpan! Skor: 100 Poin.`);
+            UI.setKikoDialogue(`Luar biasa kerja sama tim "${groupName}"! Laporan analisis dan jawaban HOTS kalian telah tersimpan rapi dengan nilai maksimal 100 Poin. Kalian bisa mencetak atau mengunduh hasilnya sekarang!`, 'cheering');
+        }
+
+        this.renderGroupProjectUI();
+    },
+
+    saveGroupProject(showFeedback = true) {
+        this.syncIdentityFromDOM();
+
+        const groupName = this.groupProjectState.groupName || 'Kelompok Informatika';
+        let groupClass = this.groupProjectState.groupClass;
+        const caseKey = this.groupProjectState.selectedCase || 'case1';
+        const curCase = this.groupProjectState.cases[caseKey] || this.groupProjectState.cases['case1'];
+        const ws = this.groupProjectState.worksheet;
+        const structSelect = document.getElementById('gp-structure-select');
+
+        if (!groupClass) {
+            groupClass = 'SMA Kelas X (Fase E)';
+            this.groupProjectState.groupClass = groupClass;
+            const classInput = document.getElementById('gp-group-class');
+            if (classInput) classInput.value = groupClass;
+        }
+
+        if (!ws.selectedStructure) {
+            ws.selectedStructure = curCase.recommendedStructure || 'Stack (LIFO - Last In First Out)';
+            if (structSelect) structSelect.value = ws.selectedStructure;
+        }
+
+        const projectData = {
+            groupName: groupName,
+            groupClass: groupClass || 'SMA Kelas X (Fase E)',
+            className: groupClass || 'SMA Kelas X (Fase E)',
+            members: this.groupProjectState.members,
+            selectedCase: caseKey,
+            caseTitle: curCase.title,
+            hotsAnswers: this.groupProjectState.hotsAnswers,
+            worksheet: {
+                selectedStructure: ws.selectedStructure,
+                reasoning: ws.reasoning || '',
+                steps: ws.steps || '',
+                conclusion: ws.conclusion || ''
+            },
+            score: 100
+        };
+
+        if (window.StorageManager) {
+            StorageManager.saveGroupProject(projectData);
+            StorageManager.savePageScore('group-project', 100, { groupName, case: projectData.selectedCase });
+        }
+
+        this.groupProjectState.identitySaved = true;
+
+        if (showFeedback) {
+            if (window.SoundManager) SoundManager.play('levelComplete');
+            if (window.UI) {
+                UI.showToast(`🎉 Tugas Kelompok "${groupName}" berhasil disimpan! Skor: 100 Poin.`);
+                UI.setKikoDialogue(`Luar biasa kerja sama tim "${groupName}"! Laporan analisis dan jawaban HOTS kalian telah tersimpan rapi dengan nilai maksimal 100 Poin. Kalian bisa mengunduh Word atau mencetak PDF sekarang!`, 'cheering');
+            }
+        }
+
+        this.renderGroupProjectUI();
+    },
+
+    // ----------------------------------------------------
+    // LEMBAR JAWABAN LKPD EXPORT GENERATOR (WORD & PDF)
+    // ----------------------------------------------------
+    buildGroupLKPDHTML(forWordDoc = false) {
+        const data = window.StorageManager ? StorageManager.getGroupProject() : null;
+        const groupName = this.groupProjectState.groupName || (data ? data.groupName : 'Kelompok Informatika');
+        const groupClass = this.groupProjectState.groupClass || (data ? data.groupClass : 'SMA Kelas X');
+        const members = this.groupProjectState.members || [];
+        const caseKey = this.groupProjectState.selectedCase || 'case1';
+        const curCase = this.groupProjectState.cases[caseKey] || this.groupProjectState.cases['case1'];
+        const ws = this.groupProjectState.worksheet || {};
+        const hots = (this.groupProjectState.hotsAnswers && this.groupProjectState.hotsAnswers[caseKey]) || {};
+
+        const currentDate = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+
+        const membersRows = members.map((m, idx) => `
+            <tr>
+                <td style="border: 1pt solid #000; padding: 6pt; text-align: center; width: 35pt;">${idx + 1}</td>
+                <td style="border: 1pt solid #000; padding: 6pt; font-weight: bold;">${m.name || '-'}</td>
+                <td style="border: 1pt solid #000; padding: 6pt; text-align: center; width: 65pt;">${m.absen || '-'}</td>
+                <td style="border: 1pt solid #000; padding: 6pt; width: 160pt;">${m.role || 'Anggota Tim'}</td>
+            </tr>
+        `).join('');
+
+        const innerContent = `
+            <div style="font-family: 'Times New Roman', Times, serif; color: #000; padding: ${forWordDoc ? '0' : '20px'}; line-height: 1.45;">
+                <div style="text-align: center; border-bottom: 3pt double #000; padding-bottom: 10pt; margin-bottom: 14pt;">
+                    <h2 style="margin: 0; font-size: 15pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5pt;">LEMBAR KERJA PESERTA DIDIK (LKPD) KELOMPOK</h2>
+                    <h3 style="margin: 4pt 0; font-size: 12pt; font-weight: bold;">LEMBAR JAWABAN &amp; BAHAN PRESENTASI SISWA</h3>
+                    <p style="margin: 0; font-size: 10pt;">Mata Pelajaran: Informatika | Fase E (SMA Kelas X) | Materi Pokok: Struktur Data Stack &amp; Queue</p>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 12pt; font-size: 10.5pt;">
+                    <tr>
+                        <td style="width: 22%; font-weight: bold; padding: 3pt 0;">Nama Kelompok</td>
+                        <td style="width: 38%; padding: 3pt 0;">: <strong>${groupName}</strong></td>
+                        <td style="width: 18%; font-weight: bold; padding: 3pt 0;">Hari, Tanggal</td>
+                        <td style="width: 22%; padding: 3pt 0;">: ${currentDate}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 3pt 0;">Kelas / Fase</td>
+                        <td style="padding: 3pt 0;">: ${groupClass}</td>
+                        <td style="font-weight: bold; padding: 3pt 0;">Skor Lembar</td>
+                        <td style="padding: 3pt 0;">: <strong>100 / 100 (Terverifikasi)</strong></td>
+                    </tr>
+                </table>
+
+                <div style="background: #FAF5EB; border-left: 4pt solid #891A10; padding: 4pt 8pt; font-weight: bold; font-size: 11pt; margin-top: 14pt; margin-bottom: 6pt;">
+                    A. IDENTITAS &amp; DAFTAR ANGGOTA KELOMPOK
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 12pt; font-size: 10pt;">
+                    <thead>
+                        <tr style="background: #e2e8f0;">
+                            <th style="border: 1pt solid #000; padding: 5pt; text-align: center;">No</th>
+                            <th style="border: 1pt solid #000; padding: 5pt; text-align: left;">Nama Lengkap Siswa</th>
+                            <th style="border: 1pt solid #000; padding: 5pt; text-align: center;">No. Absen</th>
+                            <th style="border: 1pt solid #000; padding: 5pt; text-align: left;">Peran dalam Kelompok</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${membersRows}
+                    </tbody>
+                </table>
+
+                <div style="background: #FAF5EB; border-left: 4pt solid #891A10; padding: 4pt 8pt; font-weight: bold; font-size: 11pt; margin-top: 14pt; margin-bottom: 6pt;">
+                    B. STUDI KASUS NYATA YANG DIANALISIS
+                </div>
+                <div style="border: 1.5pt solid #714236; background: #FAF8F5; padding: 8pt 10pt; margin-bottom: 12pt; font-size: 10pt;">
+                    <p style="margin: 0 0 3pt 0; font-size: 10.5pt; font-weight: bold;">
+                        ${curCase.icon || '📂'} ${curCase.title}
+                    </p>
+                    <p style="margin: 0 0 6pt 0; font-style: italic; color: #714236; font-size: 9.5pt;">
+                        Kategori Masalah: ${curCase.category}
+                    </p>
+                    <p style="margin: 0; text-align: justify; line-height: 1.45;">
+                        ${curCase.desc}
+                    </p>
+                </div>
+
+                <div style="background: #FAF5EB; border-left: 4pt solid #891A10; padding: 4pt 8pt; font-weight: bold; font-size: 11pt; margin-top: 14pt; margin-bottom: 6pt;">
+                    C. LEMBAR PENGAMATAN &amp; SOAL ANALISIS HOTS (C4 &amp; C6)
+                </div>
+                <div style="border: 1pt solid #000; padding: 8pt 10pt; margin-bottom: 8pt; font-size: 10pt; background: #ffffff;">
+                    <p style="margin: 0 0 4pt 0; font-weight: bold;">1. Analisis Logika Pilihan Ganda (Level C4 - Menganalisis):</p>
+                    <p style="margin: 0; padding-left: 10pt;">Jawaban Kelompok: <strong>${hots.mc || '(Belum dijawab)'}</strong></p>
+                </div>
+                <div style="border: 1pt solid #000; padding: 8pt 10pt; margin-bottom: 12pt; font-size: 10pt; background: #ffffff;">
+                    <p style="margin: 0 0 4pt 0; font-weight: bold;">2. Solusi Rekayasa Algoritmik (Level C6 - Mencipta Solusi Masalah Nyata):</p>
+                    <p style="margin: 0; padding-left: 10pt; text-align: justify; white-space: pre-wrap;">${hots.essay || '(Belum diisi)'}</p>
+                </div>
+
+                <div style="background: #FAF5EB; border-left: 4pt solid #891A10; padding: 4pt 8pt; font-weight: bold; font-size: 11pt; margin-top: 14pt; margin-bottom: 6pt;">
+                    D. LEMBAR JAWABAN KEPUTUSAN KOMPUTASIONAL &amp; BAHAN PRESENTASI KELOMPOK
+                </div>
+                <div style="border: 1pt solid #000; padding: 8pt 10pt; margin-bottom: 8pt; font-size: 10pt; background: #ffffff;">
+                    <p style="margin: 0 0 4pt 0; font-weight: bold;">1. Struktur Data Paling Tepat untuk Kasus Ini:</p>
+                    <p style="margin: 0; padding-left: 10pt; font-size: 10.5pt;"><strong>${ws.selectedStructure || '(Belum dipilih)'}</strong></p>
+                </div>
+                <div style="border: 1pt solid #000; padding: 8pt 10pt; margin-bottom: 8pt; font-size: 10pt; background: #ffffff;">
+                    <p style="margin: 0 0 4pt 0; font-weight: bold;">2. Alasan &amp; Argumentasi Komputasional Pemilihan Struktur Data:</p>
+                    <p style="margin: 0; padding-left: 10pt; text-align: justify; white-space: pre-wrap;">${ws.reasoning || '(Belum diisi)'}</p>
+                </div>
+                <div style="border: 1pt solid #000; padding: 8pt 10pt; margin-bottom: 8pt; font-size: 10pt; background: #ffffff;">
+                    <p style="margin: 0 0 4pt 0; font-weight: bold;">3. Rincian Langkah Operasi / Algoritma yang Diterapkan:</p>
+                    <p style="margin: 0; padding-left: 10pt; text-align: justify; white-space: pre-wrap;">${ws.steps || '(Belum diisi)'}</p>
+                </div>
+                <div style="border: 1pt solid #000; padding: 8pt 10pt; margin-bottom: 12pt; font-size: 10pt; background: #ffffff;">
+                    <p style="margin: 0 0 4pt 0; font-weight: bold;">4. Kesimpulan Pembelajaran Kelompok &amp; Poin Refleksi Presentasi:</p>
+                    <p style="margin: 0; padding-left: 10pt; text-align: justify; white-space: pre-wrap;">${ws.conclusion || '(Belum diisi)'}</p>
+                </div>
+
+                <div style="background: #FAF5EB; border-left: 4pt solid #891A10; padding: 4pt 8pt; font-weight: bold; font-size: 11pt; margin-top: 14pt; margin-bottom: 6pt; page-break-before: auto;">
+                    E. RUBRIK PENILAIAN PRESENTASI &amp; LEMBAR PENGESAHAN
+                </div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 16pt; font-size: 9.5pt;">
+                    <thead>
+                        <tr style="background: #e2e8f0;">
+                            <th style="border: 1pt solid #666; padding: 4pt; text-align: center; width: 30pt;">No</th>
+                            <th style="border: 1pt solid #666; padding: 4pt; text-align: left;">Aspek Penilaian Presentasi</th>
+                            <th style="border: 1pt solid #666; padding: 4pt; text-align: center; width: 50pt;">Bobot</th>
+                            <th style="border: 1pt solid #666; padding: 4pt; text-align: left;">Kriteria Penilaian</th>
+                            <th style="border: 1pt solid #666; padding: 4pt; text-align: center; width: 70pt;">Nilai Guru</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">1</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;"><strong>Penguasaan Konsep Stack / Queue</strong></td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">25%</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;">Mampu menjelaskan alur LIFO/FIFO dengan tepat pada kasus.</td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">______</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">2</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;"><strong>Ketepatan Solusi &amp; Algoritma</strong></td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">25%</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;">Solusi sistematis, efisien, dan mengatasi antrean/tumpukan.</td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">______</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">3</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;"><strong>Kerja Sama Tim &amp; Peran</strong></td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">25%</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;">Semua anggota tim berkontribusi aktif sesuai pembagian tugas.</td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">______</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">4</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;"><strong>Keterampilan Presentasi</strong></td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">25%</td>
+                            <td style="border: 1pt solid #666; padding: 4pt;">Penyampaian jelas, percaya diri, dan argumentatif.</td>
+                            <td style="border: 1pt solid #666; padding: 4pt; text-align: center;">______</td>
+                        </tr>
+                        <tr style="font-weight: bold; background: #f8fafc;">
+                            <td colspan="4" style="border: 1pt solid #666; padding: 5pt; text-align: right;">TOTAL SKOR AKHIR PRESENTASI:</td>
+                            <td style="border: 1pt solid #666; padding: 5pt; text-align: center;">______ / 100</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table style="width: 100%; border: none; margin-top: 30pt; page-break-inside: avoid; font-size: 10.5pt;">
+                    <tr>
+                        <td style="width: 50%; text-align: center; vertical-align: top; border: none;">
+                            Mengetahui,<br>Guru Mata Pelajaran Informatika
+                            <br><br><br><br><br>
+                            ( ____________________________________ )<br>
+                            NIP. ....................................................
+                        </td>
+                        <td style="width: 50%; text-align: center; vertical-align: top; border: none;">
+                            ${groupClass}, ${currentDate}<br>Ketua Kelompok
+                            <br><br><br><br><br>
+                            ( <strong>${members[0]?.name || 'Ketua Kelompok'}</strong> )<br>
+                            NISN. ....................................................
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        `;
+
+        if (!forWordDoc) {
+            return innerContent;
+        }
+
+        return `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta charset="utf-8">
+                <!--[if gte mso 9]>
+                <xml>
+                <w:WordDocument>
+                <w:View>Print</w:View>
+                <w:Zoom>100</w:Zoom>
+                <w:DoNotOptimizeForBrowser/>
+                </w:WordDocument>
+                </xml>
+                <![endif]-->
+                <title>Lembar Jawaban LKPD - ${groupName}</title>
+                <style>
+                    @page Section1 {
+                        size: 21cm 29.7cm;
+                        margin: 2cm 2cm 2cm 2cm;
+                        mso-header-margin: 1cm;
+                        mso-footer-margin: 1cm;
+                        mso-paper-source: 0;
+                    }
+                    div.Section1 {
+                        page: Section1;
+                    }
+                    body {
+                        font-family: 'Times New Roman', Times, serif;
+                        font-size: 11pt;
+                        line-height: 1.45;
+                        color: #000000;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="Section1">
+                    ${innerContent}
+                </div>
+            </body>
+            </html>
+        `;
+    },
+
+    downloadGroupWord() {
+        this.saveGroupProject(false);
+
+        const data = window.StorageManager ? StorageManager.getGroupProject() : null;
+        const groupName = this.groupProjectState.groupName || (data ? data.groupName : 'Kelompok_Siswa');
+        const cleanName = groupName.replace(/[^\w\d-_]/g, '_');
+
+        const docHTML = this.buildGroupLKPDHTML(true);
+        const blob = new Blob(['\ufeff' + docHTML], {
+            type: 'application/msword;charset=utf-8'
+        });
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Lembar_Jawaban_LKPD_${cleanName}.doc`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+        if (window.UI) {
+            UI.showToast(`📄 Berkas Word (.doc) "${groupName}" berhasil diunduh! Siap untuk dipresentasikan.`);
+        }
+    },
+
+    downloadGroupPDF() {
+        this.saveGroupProject(false);
+
+        const printDoc = document.getElementById('gp-print-document');
+        if (!printDoc) return;
+
+        printDoc.innerHTML = this.buildGroupLKPDHTML(false);
+
+        document.body.classList.add('printing-group-worksheet');
+
+        if (window.UI) {
+            UI.showToast(`📑 Menyiapkan Lembar Jawaban LKPD... Pada jendela cetak, pilih "Simpan sebagai PDF" (Save as PDF).`);
+        }
+
+        setTimeout(() => {
+            window.print();
+            setTimeout(() => {
+                document.body.classList.remove('printing-group-worksheet');
+            }, 1000);
+        }, 300);
+    },
+
+    printGroupWorksheet() {
+        this.downloadGroupPDF();
+    },
+
+    exportGroupJSON() {
+        const data = window.StorageManager ? StorageManager.getGroupProject() : null;
+        if (!data || !data.groupName) {
+            if (window.UI) UI.showToast("⚠️ Harap simpan lembar kerja tugas kelompok terlebih dahulu sebelum mengunduh!");
+            return;
+        }
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `Tugas_Kelompok_${data.groupName.replace(/\s+/g, '_')}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+
+        if (window.UI) UI.showToast("📥 Berkas JSON Tugas Kelompok berhasil diunduh!");
+    },
+
+    resetGroupWorksheetConfirm() {
+        const confirmReset = window.confirm("Apakah kamu yakin ingin mereset lembar analisis dan jawaban tugas kelompok?");
+        if (!confirmReset) return;
+
+        this.groupProjectState.worksheet = {
+            selectedStructure: '',
+            reasoning: '',
+            steps: '',
+            conclusion: ''
+        };
+        this.groupProjectState.hotsAnswers = {};
+        this.resetCaseSimulationData();
+        this.persistProjectDraft();
+        this.renderGroupProjectUI();
+
+        if (window.SoundManager) SoundManager.play('click');
+        if (window.UI) UI.showToast("🔄 Lembar analisis tugas kelompok telah direset.");
     }
 };
 

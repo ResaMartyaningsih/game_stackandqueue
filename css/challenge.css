@@ -197,3 +197,178 @@
     border-top: 2px solid var(--surface-soft);
     padding-top: 1.25rem;
 }
+
+/* ==========================================================================
+   Question Palette Navigator & User-Friendly Toolbar
+   ========================================================================== */
+.challenge-palette-wrapper {
+    background: var(--surface-white);
+    border: 2px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.palette-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.palette-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.palette-autosave-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--success-dark);
+    background: var(--success-bg);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    transition: all 0.3s ease;
+}
+
+.palette-autosave-badge .save-dot {
+    color: var(--success-emerald);
+    font-size: 0.7rem;
+}
+
+.palette-autosave-badge.pulse-once {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.palette-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.palette-btn {
+    min-width: 44px;
+    height: 44px;
+    padding: 0 0.65rem;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-color);
+    background: var(--surface-soft);
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.palette-btn:hover {
+    border-color: var(--primary-sky);
+    background: var(--primary-sky-bg);
+    color: var(--primary-sky);
+}
+
+.palette-btn.active {
+    border-color: var(--primary-sky);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+    font-weight: 800;
+}
+
+.palette-btn.answered-correct {
+    background: var(--success-bg);
+    border-color: var(--success-emerald);
+    color: var(--success-dark);
+}
+
+.palette-btn.answered-wrong {
+    background: var(--danger-bg);
+    border-color: var(--danger-rose);
+    color: var(--danger-dark);
+}
+
+.palette-btn.draft {
+    background: var(--accent-amber-bg);
+    border-color: var(--accent-amber);
+    color: #92400e;
+}
+
+/* Draft choice styling */
+.btn-option-choice.selected-draft-choice {
+    border-color: var(--accent-amber);
+    background: var(--accent-amber-bg);
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+}
+
+.btn-option-choice.selected-draft-choice .opt-letter {
+    background: var(--accent-amber);
+    color: #ffffff;
+    border-color: var(--accent-amber);
+}
+
+.selected-check {
+    margin-left: auto;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #92400e;
+    background: rgba(245, 158, 11, 0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+}
+
+.draft-indicator-pill {
+    background: var(--surface-soft);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* Toolbar Controls */
+.challenge-action-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--border-soft);
+}
+
+.action-left-group, .action-right-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.btn-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Friendly In-card alert */
+.challenge-inline-alert {
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.challenge-inline-alert.error {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-rose);
+    color: var(--danger-dark);
+}

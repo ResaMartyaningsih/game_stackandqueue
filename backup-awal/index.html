@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAILY RUSH: Stack & Queue Adventure | Game Edukasi Struktur Data</title>
+    <meta name="description" content="Game edukasi interaktif belajar struktur data Stack (LIFO) dan Queue (FIFO) untuk siswa SMA melalui simulasi kehidupan sehari-hari.">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/learning.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/puzzle.css">
+    <link rel="stylesheet" href="css/challenge.css">
+    <link rel="stylesheet" href="css/result.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+    <!-- Floating Background Atmosphere -->
+    <div class="clouds-backdrop">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+
+    <!-- Feedback Banner for Live Alerts -->
+    <div id="global-feedback-banner" class="feedback-banner hidden"></div>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="header-brand" data-screen-target="home">
+                <div class="brand-logo-icon">🚀</div>
+                <div class="brand-text">
+                    <h1 data-i18n="appTitle">DAILY RUSH</h1>
+                    <small data-i18n="appSubtitle">Petualangan Stack & Queue</small>
+                </div>
+            </div>
+
+            <!-- Desktop Navigation (Menu bersih tanpa tombol ganda) -->
+            <nav class="desktop-nav">
+                <button class="nav-link active" data-screen-target="home" data-i18n="navHome">🏠 Beranda</button>
+                <button class="nav-link" data-screen-target="group-project">👥 Tugas Kelompok</button>
+                <button class="nav-link" data-screen-target="achievements" data-i18n="navAchievements">🏆 Prestasi</button>
+                <button class="nav-link" data-screen-target="result" data-i18n="navResult">📊 Rapor Nilai</button>
+            </nav>
+
+            <!-- Language, Audio, and Settings -->
+            <div class="header-actions">
+                <div class="lang-toggle-group">
+                    <button class="lang-btn active" data-lang="id">ID 🇮🇩</button>
+                    <button class="lang-btn" data-lang="en">EN 🇬🇧</button>
+                </div>
+                <button class="audio-toggle-btn" title="Toggle Sound">
+                    🔊 <span class="audio-label" data-i18n="soundOn">Suara: Aktif</span>
+                </button>
+                <button class="btn-reset-danger" onclick="UI.promptResetProgress()" data-i18n="resetProgress" title="Reset Data">
+                    🔄 Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <button class="bottom-nav-item active" data-screen-target="home">
+            <span class="nav-icon">🏠</span>
+            <span data-i18n="navHome">Beranda</span>
+        </button>
+        <button class="bottom-nav-item" data-screen-target="group-project">
+            <span class="nav-icon">👥</span>
+            <span>Tugas Kelompok</span>
+        </button>
+        <button class="bottom-nav-item" data-screen-target="achievements">
+            <span class="nav-icon">🏆</span>
+            <span data-i18n="navAchievements">Prestasi</span>
+        </button>
+        <button class="bottom-nav-item" data-screen-target="result">
+            <span class="nav-icon">📊</span>
+            <span data-i18n="navResult">Rapor</span>
+        </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+
+        <!-- Universal User-Friendly Navigation & Breadcrumb Utility Bar -->
+        <div class="nav-utility-bar animate-fade-in" id="global-nav-utility-bar" role="navigation" aria-label="Navigasi Halaman dan Posisi">
+            <div class="utility-nav-controls">
+                <!-- ↩️ Back Button (Text + Icon) -->
+                <button class="btn-utility btn-utility-back" onclick="UI.goBack()" title="Kembali ke halaman sebelumnya" aria-label="Kembali ke halaman sebelumnya">
+                    <span class="btn-icon">⬅</span>
+                    <span class="btn-text" data-i18n="btnGoBack">Kembali</span>
+                </button>
+                <!-- 🏠 Home Button -->
+                <button class="btn-utility btn-utility-home" onclick="UI.switchScreen('home')" title="Kembali ke Beranda" aria-label="Kembali ke Beranda">
+                    <span class="btn-icon">🏠</span>
+                    <span class="btn-text" data-i18n="btnGoHome">Beranda</span>
+                </button>
+            </div>
+
+            <!-- Dynamic Breadcrumb Trail -->
+            <nav class="breadcrumb-trail" id="global-breadcrumb-trail" aria-label="Breadcrumb">
+                <span class="breadcrumb-item active">🏠 Beranda</span>
+            </nav>
+
+            <!-- Quick Access to Bank & Riwayat Soal (Search & Filter) -->
+            <div class="utility-actions-right">
+                <button class="btn-utility btn-utility-search" onclick="UI.openReviewAnswersModal()" title="Cari soal & lihat riwayat jawaban" aria-label="Buka Bank & Riwayat Soal">
+                    <span>🔍</span> <span class="hide-on-mobile">Cari & Riwayat Soal</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Kiko Companion Speech Widget -->
+        <div class="kiko-companion-card animate-slide-up">
+            <div class="kiko-avatar" id="kiko-avatar-icon">🤖</div>
+            <div class="kiko-speech-wrapper">
+                <span class="kiko-name-tag">Kiko Guide</span>
+                <p class="kiko-speech-bubble" data-i18n="kikoGreeting">
+                    Hai! Aku Kiko, teman belajarmu. Ayo kita kuasai konsep Stack & Queue bersama!
+                </p>
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             SCREEN 1: HOME / WORLD MAP
+             =================================================================== -->
+        <section id="screen-home" class="app-screen active">
+            <!-- Hero Card -->
+            <div class="home-hero-card">
+                <div class="hero-left">
+                    <h2 data-i18n="welcomeTitle">Selamat Datang di Daily Rush!</h2>
+                    <div class="hero-greeting" data-i18n-greeting>Halo, Petualang! Siap berpetualang?</div>
+                    <p class="hero-subtitle" data-i18n="welcomeSubtitle">
+                        Jelajahi dunia struktur data Stack & Queue melalui petualangan seru sehari-hari!
+                    </p>
+                    <div class="hero-action-buttons">
+                        <button class="btn btn-primary" onclick="UI.startLevelFromMap(1)">
+                            ▶ <span data-i18n="startAdventure">Mulai Petualangan</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="UI.switchScreen('learn-stack')">
+                            📖 <span data-i18n="navLearn">Belajar Konsep</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="UI.switchScreen('games')">
+                            🎮 <span data-i18n="navPlay">Mini Games</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hero-progress-box">
+                    <div class="progress-header">
+                        <span data-i18n="adventureProgress">Progres Petualangan</span>
+                        <span class="overall-progress-text">0 / 8 (0%)</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="overall-progress-bar-fill"></div>
+                    </div>
+                    <div class="hero-player-profile-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem; flex-wrap: wrap; gap: 0.4rem;">
+                        <span class="progress-caption" style="margin: 0; font-size: 0.88rem;">
+                            👤 <strong class="player-display-name">Siswa</strong> | <span class="player-display-class">Fase E (Kelas X)</span> | <span class="player-display-absen">No. -</span>
+                        </span>
+                        <button type="button" class="btn btn-outline" onclick="App.showNamePromptModal(false)" style="padding: 0.25rem 0.65rem; font-size: 0.78rem; border-radius: 20px;" title="Ubah Nama, Kelas, atau Absen">
+                            ✏️ Edit Profil
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- World Map Nodes Grid -->
+            <div class="world-map-section">
+                <div class="section-title-bar">
+                    <h3>🗺 <span data-i18n="worldMapTitle">Peta Petualangan Daily Rush</span></h3>
+                    <small data-i18n="worldMapDesc">Selesaikan setiap lokasi secara berurutan!</small>
+                </div>
+                <div class="world-map-grid" id="world-map-nodes">
+                    <!-- Dynamic level cards populated by UI.renderWorldMap() -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN: TUGAS KELOMPOK (LEMBAR KERJA & STUDI KASUS MULTI-KASUS)
+             =================================================================== -->
+        <section id="screen-group-project" class="app-screen">
+            <div class="group-project-container">
+                <!-- Hero Header with Step Workflow Indicator -->
+                <div class="gp-hero-card">
+                    <div class="gp-hero-badge">👥 Lembar Kerja Kolaboratif Kelompok</div>
+                    <h2>Tugas Studi Kasus Analisis Stack & Queue</h2>
+                    <p>
+                        Kerjakan tugas bersama kelompokmu. Masukkan nama kelompok dan anggota, diskusikan salah satu dari 4 studi kasus nyata, amati simulasinya, jawab pertanyaan analisis HOTS, dan lengkapi lembar kesimpulan komputasional kelompok!
+                    </p>
+                    <div class="gp-workflow-steps">
+                        <div class="gp-step-item active" id="gp-step-1">
+                            <span class="step-num">1</span>
+                            <span class="step-txt">Identitas Tim</span>
+                        </div>
+                        <span class="gp-step-arrow">➔</span>
+                        <div class="gp-step-item" id="gp-step-2">
+                            <span class="step-num">2</span>
+                            <span class="step-txt">Pilih Kasus</span>
+                        </div>
+                        <span class="gp-step-arrow">➔</span>
+                        <div class="gp-step-item" id="gp-step-3">
+                            <span class="step-num">3</span>
+                            <span class="step-txt">Simulasi Logika</span>
+                        </div>
+                        <span class="gp-step-arrow">➔</span>
+                        <div class="gp-step-item" id="gp-step-4">
+                            <span class="step-num">4</span>
+                            <span class="step-txt">Soal HOTS</span>
+                        </div>
+                        <span class="gp-step-arrow">➔</span>
+                        <div class="gp-step-item" id="gp-step-5">
+                            <span class="step-num">5</span>
+                            <span class="step-txt">Lembar Kesimpulan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 1: Profil Kelompok Terdaftar (Tampil Otomatis Setelah di-Save) -->
+                <div id="gp-profile-display-card" class="gp-profile-card" style="display: none;">
+                    <div class="gp-profile-top">
+                        <div class="gp-profile-title-area">
+                            <span class="gp-profile-icon">👥</span>
+                            <div>
+                                <h3 id="gp-display-group-name">Kelompok: Tim Algoritma Garuda</h3>
+                                <div class="gp-profile-meta">
+                                    <span class="gp-badge-pill gp-badge-class" id="gp-display-group-class">Kelas: SMA Kelas X-A</span>
+                                    <span class="gp-badge-pill gp-badge-status" id="gp-display-status-tag">✓ Terverifikasi & Aktif</span>
+                                    <span class="gp-badge-pill" style="background: #ede9fe; color: #6d28d9;" id="gp-display-saved-time">Tersimpan: Baru saja</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline" style="font-size: 0.85rem;" onclick="App.toggleGroupIdentityEdit()">
+                            ✏️ Edit Identitas Tim
+                        </button>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.82rem; font-weight: 700; color: #0284c7; margin-bottom: 0.5rem;">
+                            ANGGOTA KELOMPOK TERDAFTAR:
+                        </div>
+                        <div class="gp-members-chips-grid" id="gp-display-members-grid">
+                            <!-- Populated dynamically by App.renderGroupProfileCard() -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Form Input Identitas Kelompok & Anggota -->
+                <div class="gp-section-card" id="gp-identity-form-card">
+                    <div class="gp-section-header">
+                        <div class="gp-section-title">
+                            <span class="gp-title-icon">🏷️</span>
+                            <div>
+                                <h3>Identitas Kelompok & Anggota</h3>
+                                <p class="gp-section-sub">Masukkan nama kelompok, kelas, dan nama anggota beserta perannya, lalu klik Simpan.</p>
+                            </div>
+                        </div>
+                        <span class="gp-status-chip" id="gp-identity-status-chip">Belum Disimpan</span>
+                    </div>
+
+                    <div class="gp-form-row-2">
+                        <div class="gp-form-group">
+                            <label class="gp-label" for="gp-group-name">Nama Kelompok: <span class="required">*</span></label>
+                            <input type="text" id="gp-group-name" class="gp-input-modern" placeholder="Contoh: Kelompok 1 - Algoritma Cyber" oninput="App.onGroupNameInput(this.value)">
+                        </div>
+                        <div class="gp-form-group">
+                            <label class="gp-label" for="gp-group-class">Kelas / Fase: <span class="required">*</span></label>
+                            <input type="text" id="gp-group-class" class="gp-input-modern" placeholder="Contoh: SMA Kelas X-A (Fase E)" oninput="App.onGroupClassInput(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="gp-members-block">
+                        <div class="gp-members-header">
+                            <label class="gp-label">Daftar Anggota Kelompok:</label>
+                            <span class="gp-members-count" id="gp-members-count">3 Anggota</span>
+                        </div>
+                        <div class="gp-members-grid" id="gp-members-container">
+                            <!-- Populated dynamically by App.renderGroupMembersList() -->
+                        </div>
+                        <div class="gp-member-actions">
+                            <button type="button" class="btn btn-outline gp-btn-add" onclick="App.addGroupMember()">
+                                ➕ Tambah Anggota (Maks. 8)
+                            </button>
+                            <button type="button" class="btn btn-primary gp-btn-save-id" id="gp-btn-save-identity" onclick="App.saveGroupIdentity()">
+                                💾 Simpan Identitas Kelompok
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Pilih Studi Kasus Nyata -->
+                <div class="gp-section-card" id="gp-case-selection-card">
+                    <div class="gp-section-header">
+                        <div class="gp-section-title">
+                            <span class="gp-title-icon">📂</span>
+                            <div>
+                                <h3>Pilih Studi Kasus Nyata</h3>
+                                <p class="gp-section-sub">Klik salah satu kartu kasus di bawah untuk memilih masalah nyata yang akan dianalisis:</p>
+                            </div>
+                        </div>
+                        <div class="quiz-score-badge" id="gp-active-case-badge" style="background: #e0f2fe; color: #0284c7;">
+                            Kasus 1 Dipilih
+                        </div>
+                    </div>
+
+                    <div class="gp-case-cards-grid" id="gp-cases-grid">
+                        <!-- Populated dynamically by App.renderGroupCaseCards() -->
+                    </div>
+                </div>
+
+                <!-- Section 4: Detail Studi Kasus Terpilih & Konsol Simulasi Logika -->
+                <div class="gp-section-card" id="gp-case-detail-section">
+                    <!-- Populated dynamically by App.renderGroupCaseWorkspace() -->
+                </div>
+
+                <!-- Section 5: Pengamatan & Pertanyaan Analisis HOTS -->
+                <div class="gp-section-card" id="gp-hots-questions-section">
+                    <!-- Populated dynamically by App.renderGroupHOTSQuestions() -->
+                </div>
+
+                <!-- Section 6: Lembar Analisis & Kesimpulan Kelompok (Sesuai Poin 6 Permintaan User) -->
+                <div class="gp-section-card" id="gp-worksheet-section">
+                    <div class="gp-section-header">
+                        <div class="gp-section-title">
+                            <span class="gp-title-icon">✍️</span>
+                            <div>
+                                <h3>Lembar Analisis & Kesimpulan Kelompok</h3>
+                                <p class="gp-section-sub">Diskusikan bersama anggota tim dan rumuskan rekomendasi serta kesimpulan komputasional terbaik:</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gp-worksheet-grid">
+                        <!-- 1. Struktur Data Paling Tepat -->
+                        <div class="gp-worksheet-item">
+                            <label class="gp-label" for="gp-structure-select">
+                                <span class="item-number">1</span> Struktur Data Paling Tepat untuk Kasus Ini: <span class="required">*</span>
+                            </label>
+                            <select id="gp-structure-select" class="gp-select-modern" onchange="App.onWorksheetChange('selectedStructure', this.value)">
+                                <option value="">-- Pilih Struktur Data Rekomendasi Kelompok --</option>
+                                <option value="Stack (LIFO - Last In First Out)">Stack (LIFO - Last In First Out)</option>
+                                <option value="Queue (FIFO - First In First Out)">Queue (FIFO - First In First Out)</option>
+                                <option value="Priority Queue (Antrean Berbasis Prioritas)">Priority Queue (Antrean Berbasis Prioritas)</option>
+                                <option value="Deque (Double Ended Queue)">Deque (Double Ended Queue)</option>
+                                <option value="Kombinasi Stack & Queue">Kombinasi Stack & Queue</option>
+                            </select>
+                        </div>
+
+                        <!-- 2. Alasan & Argumentasi -->
+                        <div class="gp-worksheet-item">
+                            <label class="gp-label" for="gp-reasoning">
+                                <span class="item-number">2</span> Alasan & Argumentasi Pemilihan Struktur Data: <span class="required">*</span>
+                            </label>
+                            <textarea id="gp-reasoning" class="gp-textarea-modern" placeholder="Jelaskan secara komputasional mengapa kelompokmu memilih struktur data tersebut dan apa dampaknya jika menggunakan struktur data yang salah..." oninput="App.onWorksheetChange('reasoning', this.value)"></textarea>
+                            <div class="gp-textarea-hint">💡 Tips: Bandingkan efisiensi waktu, keteraturan alur data, dan risiko jika memakai struktur data yang salah.</div>
+                        </div>
+
+                        <!-- 3. Langkah Operasi / Algoritma -->
+                        <div class="gp-worksheet-item">
+                            <label class="gp-label" for="gp-steps">
+                                <span class="item-number">3</span> Langkah Operasi / Algoritma yang Digunakan: <span class="required">*</span>
+                            </label>
+                            <textarea id="gp-steps" class="gp-textarea-modern" placeholder="Tuliskan urutan operasi (misal: push, pop, enqueue, dequeue) saat data masuk dan diproses..." oninput="App.onWorksheetChange('steps', this.value)"></textarea>
+                            <div class="gp-textarea-hint">💡 Tips: Tuliskan urutan operasi saat data masuk dan diproses (misal: push, pop, enqueue, dequeue).</div>
+                        </div>
+
+                        <!-- 4. Kesimpulan Pembelajaran Kelompok -->
+                        <div class="gp-worksheet-item">
+                            <label class="gp-label" for="gp-conclusion">
+                                <span class="item-number">4</span> Kesimpulan Pembelajaran Kelompok: <span class="required">*</span>
+                            </label>
+                            <textarea id="gp-conclusion" class="gp-textarea-modern" placeholder="Tuliskan kesimpulan dan pelajaran penting yang didapat dari penyelesaian studi kasus ini..." oninput="App.onWorksheetChange('conclusion', this.value)"></textarea>
+                            <div class="gp-textarea-hint">💡 Tips: Tuliskan kesimpulan dan pelajaran penting yang didapat dari penyelesaian studi kasus ini.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Action Bar Simpan, Cetak Lembar, Export -->
+                <div class="gp-action-bar">
+                    <div class="score-summary-left">
+                        <span class="score-trophy-icon">🏆</span>
+                        <div>
+                            <h4>Simpan Lembar Kerja Tugas Kelompok</h4>
+                            <p id="gp-save-status-text">Status: <strong id="gp-saved-status" style="color: #38bdf8;">Siap Disimpan (Nilai: 100 Poin)</strong></p>
+                        </div>
+                    </div>
+                    <div class="score-actions-right">
+                        <button type="button" class="btn-save-score" onclick="App.saveGroupProject()">
+                            💾 Simpan Tugas Kelompok
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="App.downloadGroupWord()" title="Unduh berkas Word (.doc) berformat Lembar Jawaban LKPD untuk bahan presentasi">
+                            📄 Unduh Word (.doc)
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="App.downloadGroupPDF()" title="Cetak atau Simpan sebagai PDF Lembar Jawaban LKPD">
+                            📑 Unduh / Cetak PDF
+                        </button>
+                        <button type="button" class="btn btn-outline" style="border-color: #fca5a5; color: #ef4444;" onclick="App.resetGroupWorksheetConfirm()">
+                            🔄 Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Container Print Document (Only Visible When Printing) -->
+                <div id="gp-print-document" class="gp-print-only">
+                    <!-- Populated dynamically before print -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 2: LEARN STACK (LIFO)
+             =================================================================== -->
+        <section id="screen-learn-stack" class="app-screen">
+            <div class="learning-container">
+                <div class="concept-overview-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <div class="concept-principle-badge" data-i18n="stackPrinciple">
+                            Prinsip Utama: LIFO (Last In, First Out)
+                        </div>
+                        <span class="quiz-score-badge" id="stack-quiz-score">0 / 100 Poin</span>
+                    </div>
+                    <h2 data-i18n="learnStackTitle" style="margin-bottom: 0.25rem;">1. Stack (Tumpukan)</h2>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Pelajari konsep struktur data tumpukan, eksplorasi diagram visual yang jelas, uji coba interaktif, dan kuis pemahaman tanpa rasa padat:
+                    </p>
+
+                    <!-- Learning Tabs Navigation Bar -->
+                    <div class="learn-tabs-bar">
+                        <button type="button" class="learn-tab-btn active" data-tab="concept" onclick="App.switchLearnTab('stack', 'concept')">
+                            📖 1. Konsep & Operasi
+                        </button>
+                        <button type="button" class="learn-tab-btn" data-tab="interactive" onclick="App.switchLearnTab('stack', 'interactive')">
+                            🍽️ 2. Uji Coba Interaktif
+                        </button>
+                        <button type="button" class="learn-tab-btn" data-tab="quiz" onclick="App.switchLearnTab('stack', 'quiz')">
+                            📝 3. Kuis Pemahaman
+                        </button>
+                        <button type="button" class="learn-tab-btn" data-tab="comparison" onclick="App.switchLearnTab('stack', 'comparison')">
+                            ⚖️ 4. Komparasi & CT
+                        </button>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 1: KONSEP & OPERASI DASAR
+                         ========================================== -->
+                    <div class="learn-tab-pane active" data-tab-pane="concept">
+                        <p style="font-size: 1.05rem; line-height: 1.65; margin-bottom: 0.85rem;">
+                            <strong>Stack (Tumpukan)</strong> adalah cara mengorganisasi data/benda di mana penambahan elemen baru dan pengambilan elemen lama hanya dapat dilakukan dari <strong>satu pintu/ujung yang sama</strong>, yaitu posisi paling atas (<em>TOP</em>). Berlaku prinsip mutlak <strong>LIFO (Last In, First Out)</strong>: data yang masuk paling akhir justru menjadi yang pertama dikeluarkan.
+                        </p>
+                        
+                        <div class="concept-real-world-box" style="margin-bottom: 1.25rem;">
+                            <strong data-i18n="stackRealLife">💡 Contoh Nyata dalam Kehidupan Sehari-hari & Komputasi:</strong>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                                <span class="gp-badge-pill" style="background: #e0f2fe; color: #0369a1;">🍽️ Tumpukan Piring Kafetaria</span>
+                                <span class="gp-badge-pill" style="background: #ede9fe; color: #6d28d9;">📚 Tumpukan Buku Perpustakaan</span>
+                                <span class="gp-badge-pill" style="background: #fef3c7; color: #b45309;">↩️ Fitur Undo (Ctrl+Z) di Aplikasi</span>
+                                <span class="gp-badge-pill" style="background: #dcfce7; color: #15803d;">🌐 Tombol Back pada Browser Web</span>
+                            </div>
+                        </div>
+
+                        <!-- Infografis Foto Konsep Stack (Visual Jelas, Lapang & Terpusat) -->
+                        <div class="concept-photo-card" style="margin: 1.25rem auto 1.5rem auto; max-width: 780px;">
+                            <div class="photo-header">
+                                <h4>📸 Infografis Konsep Struktur Data Stack (LIFO)</h4>
+                                <span class="photo-badge">Visual Diagram Resmi</span>
+                            </div>
+                            <div class="photo-frame" title="Infografis Struktur Data Stack" style="padding: 1.25rem; background: #f8fafc; text-align: center;">
+                                <img src="assets/images/stack_lifo_diagram.jpg" alt="Infografis Struktur Data Stack LIFO" style="max-height: 380px; width: auto; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" loading="lazy">
+                            </div>
+                            <div class="photo-caption" style="padding: 1rem 1.25rem; font-size: 0.95rem; line-height: 1.55; background: #ffffff;">
+                                <strong>Penjelasan Alur Diagram:</strong> Pada Stack, wadah tertutup di bagian bawah dan hanya memiliki satu akses terbuka di bagian atas (<strong>TOP</strong>). Operasi <code>push()</code> menaruh benda baru di posisi TOP, sedangkan <code>pop()</code> mengambil benda yang paling atas terlebih dahulu.
+                            </div>
+                        </div>
+
+                        <!-- 4 Metode / Operasi Inti Stack -->
+                        <h4 style="font-family: var(--font-heading); margin-bottom: 0.75rem; color: var(--primary-sky);">
+                            ⚙️ 4 Operasi Dasar pada Struktur Data Stack:
+                        </h4>
+                        <div class="methods-grid" style="margin-bottom: 1.5rem;">
+                            <div class="method-card">
+                                <code>📥 Menambah: push(item)</code>
+                                <p>Meletakkan elemen data baru tepat di atas puncak tumpukan (TOP).</p>
+                            </div>
+                            <div class="method-card">
+                                <code>📤 Mengambil: pop()</code>
+                                <p>Mengambil dan menghapus elemen dari puncak tumpukan (TOP).</p>
+                            </div>
+                            <div class="method-card">
+                                <code>👁 Mengintip: peek() / top()</code>
+                                <p>Melihat nilai elemen puncak tanpa mengambil atau mengubah tumpukan.</p>
+                            </div>
+                            <div class="method-card">
+                                <code>🔍 Cek Status: isEmpty()</code>
+                                <p>Memeriksa apakah tumpukan kosong sebelum operasi pengambilan data.</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
+                            <button type="button" class="btn btn-primary" onclick="App.switchLearnTab('stack', 'interactive')">
+                                🍽️ Lanjut ke Uji Coba Interaktif ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 2: UJI COBA INTERAKTIF HANDS-ON
+                         ========================================== -->
+                    <div class="learn-tab-pane" data-tab-pane="interactive">
+                        <div style="background: var(--surface-soft); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem; border: 2px dashed var(--border-color);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <h4 style="font-family: var(--font-heading); margin: 0; color: var(--primary-sky);">🍽 Laboratorium Mini: Tumpukan Piring Kafetaria</h4>
+                                <span class="gp-badge-pill" style="background: #e0f2fe; color: #0369a1;">Simulasi Langsung</span>
+                            </div>
+                            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
+                                Amati secara langsung bagaimana prinsip <strong>LIFO</strong> bekerja. Klik tombol <strong>+ Tumpuk Piring (Push)</strong> untuk menambah piring baru ke posisi teratas, lalu klik <strong>- Ambil Piring (Pop)</strong> untuk mengambil piring yang paling baru ditumpuk!
+                            </p>
+                            <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; background: #ffffff; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                <div id="handson-stack-plates" style="width: 260px; min-height: 120px; display: flex; flex-direction: column-reverse; gap: 6px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 2px dashed var(--border-color); justify-content: flex-start;">
+                                    <!-- Populated by App.renderHandsOnStack() -->
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem; flex: 1; min-width: 200px;">
+                                    <button class="btn btn-primary" onclick="App.handsOnPushPlate()">
+                                        ➕ Tumpuk Piring Baru (push)
+                                    </button>
+                                    <button class="btn btn-amber" onclick="App.handsOnPopPlate()">
+                                        ➖ Ambil Piring Teratas (pop)
+                                    </button>
+                                    <small style="color: var(--text-muted); line-height: 1.4;">
+                                        💡 Perhatikan bahwa piring yang baru saja ditaruh selalu berada di posisi paling atas dan akan menjadi piring pertama yang diambil!
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <button type="button" class="btn btn-outline" onclick="App.switchLearnTab('stack', 'concept')">
+                                ⬅ Kembali ke Konsep
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="App.switchLearnTab('stack', 'quiz')">
+                                📝 Lanjut ke Kuis Pemahaman ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 3: KUIS PEMAHAMAN CEPAT
+                         ========================================== -->
+                    <div class="learn-tab-pane" data-tab-pane="quiz">
+                        <div class="mini-quiz-card">
+                            <div class="mini-quiz-header">
+                                <h3>📝 Kuis Pemahaman Cepat Materi Stack</h3>
+                                <span class="quiz-score-badge">3 Soal Konseptual Berpoin</span>
+                            </div>
+                            <div class="quiz-questions-list">
+                                <!-- Q1 -->
+                                <div class="quiz-item-box">
+                                    <p>1. Fitur "Undo" (Ctrl+Z) pada Microsoft Word membatalkan pengetikan yang paling baru dilakukan terlebih dahulu. Fitur ini menerapkan prinsip...</p>
+                                    <div class="quiz-options-grid">
+                                        <button class="quiz-option-btn stack-q1-opt" onclick="App.checkLearnQuiz('stack', 1, 0, false, 'Queue menggunakan FIFO, sedangkan aksi pengetikan terakhir dibatalkan duluan.')">A. FIFO (First In, First Out)</button>
+                                        <button class="quiz-option-btn stack-q1-opt" onclick="App.checkLearnQuiz('stack', 1, 1, true, 'Aksi pengetikan terakhir adalah yang pertama dibatalkan saat Undo ditekan. Ini adalah LIFO murni!')">B. LIFO (Last In, First Out)</button>
+                                        <button class="quiz-option-btn stack-q1-opt" onclick="App.checkLearnQuiz('stack', 1, 2, false, 'Binary search adalah algoritma pencarian, bukan struktur data Undo.')">C. Binary Search</button>
+                                    </div>
+                                    <div class="quiz-feedback-box" id="stack-feedback-q1"></div>
+                                </div>
+                                <!-- Q2 -->
+                                <div class="quiz-item-box">
+                                    <p>2. Jika kamu melakukan operasi <code>push('Buku A')</code>, lalu <code>push('Buku B')</code>, lalu <code>push('Buku C')</code>, buku manakah yang berada di posisi puncak (TOP)?</p>
+                                    <div class="quiz-options-grid">
+                                        <button class="quiz-option-btn stack-q2-opt" onclick="App.checkLearnQuiz('stack', 2, 0, false, 'Buku A masuk paling awal sehingga berada di dasar tumpukan.')">A. Buku A (Paling Bawah)</button>
+                                        <button class="quiz-option-btn stack-q2-opt" onclick="App.checkLearnQuiz('stack', 2, 1, false, 'Buku B berada di tengah tumpukan.')">B. Buku B (Tengah)</button>
+                                        <button class="quiz-option-btn stack-q2-opt" onclick="App.checkLearnQuiz('stack', 2, 2, true, 'Buku C adalah elemen yang terakhir di-push, sehingga posisinya ada di TOP!')">C. Buku C (Paling Atas)</button>
+                                    </div>
+                                    <div class="quiz-feedback-box" id="stack-feedback-q2"></div>
+                                </div>
+                                <!-- Q3 -->
+                                <div class="quiz-item-box">
+                                    <p>3. Operasi Stack yang digunakan untuk melihat nilai elemen teratas tanpa menghapusnya dari tumpukan adalah...</p>
+                                    <div class="quiz-options-grid">
+                                        <button class="quiz-option-btn stack-q3-opt" onclick="App.checkLearnQuiz('stack', 3, 0, false, 'pop() mengambil sekaligus menghapus elemen puncak.')">A. pop()</button>
+                                        <button class="quiz-option-btn stack-q3-opt" onclick="App.checkLearnQuiz('stack', 3, 1, true, 'peek() hanya mengintip/membaca elemen TOP tanpa mengubah ukuran tumpukan!')">B. peek()</button>
+                                        <button class="quiz-option-btn stack-q3-opt" onclick="App.checkLearnQuiz('stack', 3, 2, false, 'isEmpty() hanya mengembalikan nilai true/false status tumpukan.')">C. isEmpty()</button>
+                                    </div>
+                                    <div class="quiz-feedback-box" id="stack-feedback-q3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <button type="button" class="btn btn-outline" onclick="App.switchLearnTab('stack', 'interactive')">
+                                ⬅ Kembali ke Uji Coba
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="App.switchLearnTab('stack', 'comparison')">
+                                ⚖️ Lanjut ke Komparasi & CT ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 4: KOMPARASI & BERPIKIR KOMPUTASIONAL
+                         ========================================== -->
+                    <div class="learn-tab-pane" data-tab-pane="comparison">
+
+                    <!-- ===================================================================
+                         MATERI PENGAYAAN MENDALAM: PERBANDINGAN, URUTAN KELUAR & BERPIKIR KOMPUTASIONAL
+                         =================================================================== -->
+                    <!-- 3. Perbedaan Mendalam: Stack vs Queue -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">⚖️</span>
+                            <div>
+                                <h3 class="comp-edu-title">3. Perbedaan Stack dan Queue</h3>
+                                <p class="comp-edu-sub">Tabel komparasi karakteristik, prinsip operasi, dan kata kunci pemecahan masalah komputasional</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-table-wrapper">
+                            <table class="comp-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 22%;">Aspek</th>
+                                        <th style="width: 39%;"><span class="comp-badge-stack">📚 Stack (Tumpukan)</span></th>
+                                        <th style="width: 39%;"><span class="comp-badge-queue">👥 Queue (Antrean)</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Prinsip</strong></td>
+                                        <td><strong>LIFO</strong> (masuk terakhir, keluar pertama)</td>
+                                        <td><strong>FIFO</strong> (masuk pertama, keluar pertama)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tempat Masuk</strong></td>
+                                        <td>Atas (satu ujung)</td>
+                                        <td>Belakang</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tempat Keluar</strong></td>
+                                        <td>Atas (ujung yang sama dengan tempat masuk)</td>
+                                        <td>Depan (berbeda dengan tempat masuk)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Operasi Dasar</strong></td>
+                                        <td>Menambah di atas, mengambil dari atas, melihat teratas, memeriksa kosong</td>
+                                        <td>Masuk di belakang, keluar dari depan, melihat terdepan, memeriksa kosong</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Contoh Sehari-hari</strong></td>
+                                        <td>Tumpukan piring, tombol undo, tombol back</td>
+                                        <td>Antrean kantin, antrean loket, antrean printer</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Kata Kunci Masalah</strong></td>
+                                        <td><span style="color: #6d28d9; font-weight: 600;">“membatalkan yang terakhir”</span>, <span style="color: #6d28d9; font-weight: 600;">“kembali ke langkah sebelumnya”</span></td>
+                                        <td><span style="color: #15803d; font-weight: 600;">“siapa datang lebih dulu dilayani lebih dulu”</span>, <span style="color: #15803d; font-weight: 600;">“diproses sesuai urutan kedatangan”</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 4. Contoh Menentukan Urutan Keluar -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">🔄</span>
+                            <div>
+                                <h3 class="comp-edu-title">4. Contoh Menentukan Urutan Keluar</h3>
+                                <p class="comp-edu-sub">Data <strong>A, B, C</strong> dimasukkan berurutan ke dalam sistem:</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-order-grid">
+                            <!-- Stack LIFO Order Card -->
+                            <div class="comp-order-card stack-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="comp-badge-stack">📚 Pada STACK (LIFO)</span>
+                                    <span style="font-size: 0.82rem; font-weight: 700; color: #6d28d9;">Pembalikan Urutan</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569;">
+                                    <strong>Urutan Masuk:</strong>
+                                </div>
+                                <div class="comp-flow-visual">
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span style="font-size: 0.8rem; color: #64748b; margin-left: 4px;">(C di posisi TOP)</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569; margin-top: 4px;">
+                                    <strong>Urutan Keluarnya:</strong>
+                                </div>
+                                <div class="comp-flow-visual" style="border-color: #c4b5fd; background: #faf5ff;">
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span style="font-size: 0.9rem; font-weight: 800; color: #6d28d9; margin-left: auto;">C, B, A</span>
+                                </div>
+                                <p style="font-size: 0.83rem; color: #6b7280; margin: 0; line-height: 1.4;">
+                                    💡 <em>Data C yang masuk terakhir akan menjadi yang pertama keluar dari tumpukan.</em>
+                                </p>
+                            </div>
+
+                            <!-- Queue FIFO Order Card -->
+                            <div class="comp-order-card queue-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="comp-badge-queue">👥 Pada QUEUE (FIFO)</span>
+                                    <span style="font-size: 0.82rem; font-weight: 700; color: #15803d;">Sesuai Kedatangan</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569;">
+                                    <strong>Urutan Masuk:</strong>
+                                </div>
+                                <div class="comp-flow-visual">
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span style="font-size: 0.8rem; color: #64748b; margin-left: 4px;">(A di posisi FRONT)</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569; margin-top: 4px;">
+                                    <strong>Urutan Keluarnya:</strong>
+                                </div>
+                                <div class="comp-flow-visual" style="border-color: #86efac; background: #f0fdf4;">
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span style="font-size: 0.9rem; font-weight: 800; color: #15803d; margin-left: auto;">A, B, C</span>
+                                </div>
+                                <p style="font-size: 0.83rem; color: #6b7280; margin: 0; line-height: 1.4;">
+                                    💡 <em>Data A yang pertama masuk ke antrean akan menjadi yang pertama keluar dilayani.</em>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Cara Memilih Stack atau Queue -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">🎯</span>
+                            <div>
+                                <h3 class="comp-edu-title">5. Cara Memilih Stack atau Queue</h3>
+                                <p class="comp-edu-sub">Empat pedoman sistematis untuk memilih struktur data yang tepat:</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-decision-steps">
+                            <div class="comp-step-card">
+                                <span class="comp-step-letter">a</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Tentukan Data Masuk</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Tentukan data atau objek apa yang masuk ke dalam sistem.
+                                </p>
+                            </div>
+                            <div class="comp-step-card" style="border-top-color: #f59e0b;">
+                                <span class="comp-step-letter" style="background: #f59e0b;">b</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Tentukan Urutan Keluar</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Tentukan data mana yang harus keluar lebih dulu: yang terakhir masuk atau yang pertama masuk?
+                                </p>
+                            </div>
+                            <div class="comp-step-card" style="border-top-color: #10b981;">
+                                <span class="comp-step-letter" style="background: #10b981;">c</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Pilih Struktur Data</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Bila yang terakhir ➔ <strong>Stack (LIFO)</strong>;<br>
+                                    bila yang pertama ➔ <strong>Queue (FIFO)</strong>.
+                                </p>
+                            </div>
+                            <div class="comp-step-card" style="border-top-color: #8b5cf6;">
+                                <span class="comp-step-letter" style="background: #8b5cf6;">d</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Tuliskan Alasannya</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Tulis alasannya dengan kata-kata sendiri secara jelas dan komputasional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Berpikir Komputasional pada Stack/Queue -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">🧠</span>
+                            <div>
+                                <h3 class="comp-edu-title">6. Berpikir Komputasional pada Stack/Queue</h3>
+                                <p class="comp-edu-sub">Penerapan 4 pilar Computational Thinking dalam menganalisis masalah:</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-thinking-grid">
+                            <div class="comp-thinking-card pillar-dekomposisi">
+                                <div class="comp-pillar-header">
+                                    <span>🧩</span> Dekomposisi
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Memecah masalah menjadi bagian <strong>“data masuk”</strong> dan <strong>“data keluar”</strong> agar alur kerja mudah dianalisis.
+                                </p>
+                            </div>
+                            <div class="comp-thinking-card pillar-pola">
+                                <div class="comp-pillar-header">
+                                    <span>🔍</span> Pengenalan Pola
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Mengidentifikasi urutan masuk-keluar yang berulang, apakah bersifat <strong>FIFO (Queue)</strong> atau <strong>LIFO (Stack)</strong>.
+                                </p>
+                            </div>
+                            <div class="comp-thinking-card pillar-abstraksi">
+                                <div class="comp-pillar-header">
+                                    <span>💡</span> Abstraksi
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Memfokuskan hanya pada <strong>aturan masuk-keluar yang penting</strong>, bukan bentuk fisik atau rupa bendanya.
+                                </p>
+                            </div>
+                            <div class="comp-thinking-card pillar-algoritma">
+                                <div class="comp-pillar-header">
+                                    <span>⚙️</span> Algoritma
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Langkah-langkah yang runtut dan sistematis dalam menentukan urutan keluar elemen secara konsisten.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Persistence & Next Level Bar -->
+                    <div class="page-score-action-bar">
+                        <div class="score-summary-left">
+                            <span class="score-trophy-icon">🏆</span>
+                            <div>
+                                <h4>Nilai Materi Belajar Stack</h4>
+                                <p>Skor Terkini: <strong id="stack-live-page-score" style="color: #38bdf8;">0 pts</strong>. Simpan nilaimu agar tercatat di rapor progres!</p>
+                            </div>
+                        </div>
+                        <div class="score-actions-right">
+                            <button class="btn-save-score" onclick="App.saveLearnScore('stack')">
+                                💾 Simpan Nilai Materi Stack
+                            </button>
+                            <button class="btn-next-level-nav" onclick="UI.switchScreen('learn-queue')">
+                                ▶ Lanjut: Belajar Queue ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    </div>
+                    <!-- End of Tab Pane 4 (comparison) -->
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 3: LEARN QUEUE (FIFO)
+             =================================================================== -->
+        <section id="screen-learn-queue" class="app-screen">
+            <div class="learning-container">
+                <div class="concept-overview-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div class="concept-principle-badge" style="background: var(--success-bg); color: var(--success-dark); border-color: var(--success-emerald);" data-i18n="queuePrinciple">
+                            Prinsip Utama: FIFO (First In, First Out)
+                        </div>
+                        <span class="quiz-score-badge" id="queue-quiz-score">0 / 100 Poin</span>
+                    </div>
+                    <h2 data-i18n="learnQueueTitle" style="margin-bottom: 0.25rem;">2. Queue (Antrean)</h2>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Pelajari konsep struktur data antrean, eksplorasi diagram visual yang jelas, uji coba interaktif, dan kuis pemahaman tanpa rasa padat:
+                    </p>
+
+                    <!-- Learning Tabs Navigation Bar -->
+                    <div class="learn-tabs-bar">
+                        <button type="button" class="learn-tab-btn active" data-tab="concept" onclick="App.switchLearnTab('queue', 'concept')">
+                            📖 1. Konsep & Operasi
+                        </button>
+                        <button type="button" class="learn-tab-btn" data-tab="interactive" onclick="App.switchLearnTab('queue', 'interactive')">
+                            🎟️ 2. Uji Coba Interaktif
+                        </button>
+                        <button type="button" class="learn-tab-btn" data-tab="quiz" onclick="App.switchLearnTab('queue', 'quiz')">
+                            📝 3. Kuis Pemahaman
+                        </button>
+                        <button type="button" class="learn-tab-btn" data-tab="comparison" onclick="App.switchLearnTab('queue', 'comparison')">
+                            ⚖️ 4. Komparasi & CT
+                        </button>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 1: KONSEP & OPERASI DASAR
+                         ========================================== -->
+                    <div class="learn-tab-pane active" data-tab-pane="concept">
+                        <p style="font-size: 1.05rem; line-height: 1.65; margin-bottom: 0.85rem;">
+                            <strong>Queue (Antrean)</strong> adalah cara mengorganisasi data/benda yang masuk dari ujung belakang (<em>REAR</em>) dan keluar dari ujung depan (<em>FRONT</em>). Berlaku prinsip mutlak <strong>FIFO (First In, First Out)</strong>: data atau orang yang masuk pertama kali akan dilayani dan keluar pertama kali.
+                        </p>
+                        
+                        <div class="concept-real-world-box" style="background: var(--success-bg); border-left-color: var(--success-emerald); margin-bottom: 1.25rem;">
+                            <strong data-i18n="queueRealLife">💡 Contoh Nyata dalam Kehidupan Sehari-hari & Komputasi:</strong>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                                <span class="gp-badge-pill" style="background: #dcfce7; color: #15803d;">👥 Antrean Loket Tiket & Kasir Toko</span>
+                                <span class="gp-badge-pill" style="background: #e0f2fe; color: #0369a1;">🖨️ Antrean Cetak Dokumen (Print Spooler)</span>
+                                <span class="gp-badge-pill" style="background: #ede9fe; color: #6d28d9;">🚗 Antrean Gerbang Tol Otomatis</span>
+                                <span class="gp-badge-pill" style="background: #fef3c7; color: #b45309;">📦 Antrean Pesanan Daring (Order Queue)</span>
+                            </div>
+                        </div>
+
+                        <!-- Infografis Foto Konsep Queue (Visual Jelas, Lapang & Terpusat) -->
+                        <div class="concept-photo-card" style="margin: 1.25rem auto 1.5rem auto; max-width: 780px;">
+                            <div class="photo-header">
+                                <h4>📸 Infografis Konsep Struktur Data Queue (FIFO)</h4>
+                                <span class="photo-badge" style="background: var(--success-emerald);">Visual Diagram Resmi</span>
+                            </div>
+                            <div class="photo-frame" title="Infografis Struktur Data Queue" style="padding: 1.25rem; background: #f8fafc; text-align: center;">
+                                <img src="assets/images/queue_fifo_diagram.jpg" alt="Infografis Struktur Data Queue FIFO" style="max-height: 380px; width: auto; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" loading="lazy">
+                            </div>
+                            <div class="photo-caption" style="padding: 1rem 1.25rem; font-size: 0.95rem; line-height: 1.55; background: #ffffff;">
+                                <strong>Penjelasan Alur Diagram:</strong> Pada Queue, data memiliki dua ujung akses yang berbeda. Elemen baru selalu masuk di ujung belakang (<strong>REAR</strong>) melalui operasi <code>enqueue()</code>, sedangkan elemen tertua yang berada di ujung depan (<strong>FRONT</strong>) diproses keluar melalui operasi <code>dequeue()</code>.
+                            </div>
+                        </div>
+
+                        <!-- 4 Metode / Operasi Inti Queue -->
+                        <h4 style="font-family: var(--font-heading); margin-bottom: 0.75rem; color: var(--success-dark);">
+                            ⚙️ 4 Operasi Dasar pada Struktur Data Queue:
+                        </h4>
+                        <div class="methods-grid" style="margin-bottom: 1.5rem;">
+                            <div class="method-card">
+                                <code>📥 Masuk Antrean: enqueue(item)</code>
+                                <p>Menambahkan data/elemen baru ke posisi paling belakang antrean (REAR).</p>
+                            </div>
+                            <div class="method-card">
+                                <code>📤 Keluar Antrean: dequeue()</code>
+                                <p>Mengambil dan menghapus data paling depan (FRONT) yang sudah selesai diproses.</p>
+                            </div>
+                            <div class="method-card">
+                                <code>👁 Cek Terdepan: front() / peek()</code>
+                                <p>Melihat nilai data yang ada di posisi paling depan tanpa mengeluarkannya.</p>
+                            </div>
+                            <div class="method-card">
+                                <code>🔍 Cek Kosong: isEmpty()</code>
+                                <p>Memeriksa apakah antrean sedang kosong sebelum melakukan proses dequeue.</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
+                            <button type="button" class="btn btn-success" onclick="App.switchLearnTab('queue', 'interactive')">
+                                🎟️ Lanjut ke Uji Coba Interaktif ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 2: UJI COBA INTERAKTIF HANDS-ON
+                         ========================================== -->
+                    <div class="learn-tab-pane" data-tab-pane="interactive">
+                        <div style="background: var(--surface-soft); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem; border: 2px dashed var(--border-color);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <h4 style="font-family: var(--font-heading); margin: 0; color: var(--success-dark);">🎟 Laboratorium Mini: Antrean Tiket Bioskop</h4>
+                                <span class="gp-badge-pill" style="background: #dcfce7; color: #15803d;">Simulasi Langsung</span>
+                            </div>
+                            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
+                                Amati secara langsung bagaimana prinsip <strong>FIFO</strong> bekerja. Klik tombol <strong>+ Tambah Orang (Enqueue)</strong> untuk menambah penonton baru yang mengantre di posisi <strong>REAR (Belakang)</strong>, lalu klik <strong>- Layani Terdepan (Dequeue)</strong> untuk memproses penonton di posisi <strong>FRONT (Depan)</strong>!
+                            </p>
+                            <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; background: #ffffff; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                <div id="handson-queue-people" style="flex: 1; min-width: 240px; min-height: 80px; display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; border: 2px dashed var(--border-color); overflow-x: auto;">
+                                    <!-- Populated by App.renderHandsOnQueue() -->
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem; flex-shrink: 0;">
+                                    <button class="btn btn-success" onclick="App.handsOnEnqueuePerson()">
+                                        ➕ Tambah Orang (enqueue)
+                                    </button>
+                                    <button class="btn btn-amber" onclick="App.handsOnDequeuePerson()">
+                                        ➖ Layani Terdepan (dequeue)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <button type="button" class="btn btn-outline" onclick="App.switchLearnTab('queue', 'concept')">
+                                ⬅ Kembali ke Konsep
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="App.switchLearnTab('queue', 'quiz')">
+                                📝 Lanjut ke Kuis Pemahaman ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 3: KUIS PEMAHAMAN CEPAT
+                         ========================================== -->
+                    <div class="learn-tab-pane" data-tab-pane="quiz">
+                        <div class="mini-quiz-card">
+                            <div class="mini-quiz-header">
+                                <h3>📝 Kuis Pemahaman Cepat Materi Queue</h3>
+                                <span class="quiz-score-badge">3 Soal Konseptual Berpoin</span>
+                            </div>
+                            <div class="quiz-questions-list">
+                                <!-- Q1 -->
+                                <div class="quiz-item-box">
+                                    <p>1. Di loket kasir supermarket, pelanggan yang datang pertama akan dilayani pertama kali. Struktur data yang mencerminkan sistem ini adalah...</p>
+                                    <div class="quiz-options-grid">
+                                        <button class="quiz-option-btn queue-q1-opt" onclick="App.checkLearnQuiz('queue', 1, 0, true, 'Antrean kasir adalah contoh klasik struktur data Queue dengan prinsip FIFO!')">A. Queue (FIFO)</button>
+                                        <button class="quiz-option-btn queue-q1-opt" onclick="App.checkLearnQuiz('queue', 1, 1, false, 'Stack menggunakan LIFO (yang terakhir dilayani dulu), tidak cocok untuk kasir!')">B. Stack (LIFO)</button>
+                                        <button class="quiz-option-btn queue-q1-opt" onclick="App.checkLearnQuiz('queue', 1, 2, false, 'Tree bukan antrean lurus.')">C. Binary Tree</button>
+                                    </div>
+                                    <div class="quiz-feedback-box" id="queue-feedback-q1"></div>
+                                </div>
+                                <!-- Q2 -->
+                                <div class="quiz-item-box">
+                                    <p>2. Operasi untuk memasukkan elemen baru ke dalam antrean (di posisi paling belakang) dinamakan...</p>
+                                    <div class="quiz-options-grid">
+                                        <button class="quiz-option-btn queue-q2-opt" onclick="App.checkLearnQuiz('queue', 2, 0, false, 'push() adalah operasi penambahan elemen pada Stack, bukan Queue.')">A. push()</button>
+                                        <button class="quiz-option-btn queue-q2-opt" onclick="App.checkLearnQuiz('queue', 2, 1, true, 'enqueue() adalah method standar untuk menambahkan elemen ke antrean Queue!')">B. enqueue()</button>
+                                        <button class="quiz-option-btn queue-q2-opt" onclick="App.checkLearnQuiz('queue', 2, 2, false, 'dequeue() adalah operasi melayani/mengeluarkan elemen dari depan.')">C. dequeue()</button>
+                                    </div>
+                                    <div class="quiz-feedback-box" id="queue-feedback-q2"></div>
+                                </div>
+                                <!-- Q3 -->
+                                <div class="quiz-item-box">
+                                    <p>3. Dalam struktur data Queue, di posisi manakah elemen baru selalu ditambahkan?</p>
+                                    <div class="quiz-options-grid">
+                                        <button class="quiz-option-btn queue-q3-opt" onclick="App.checkLearnQuiz('queue', 3, 0, false, 'FRONT adalah posisi elemen yang siap dilayani/keluar, bukan posisi masuk.')">A. Posisi Depan (FRONT)</button>
+                                        <button class="quiz-option-btn queue-q3-opt" onclick="App.checkLearnQuiz('queue', 3, 1, true, 'REAR (ujung belakang) adalah tempat masuknya setiap elemen baru dalam antrean!')">B. Posisi Belakang (REAR)</button>
+                                        <button class="quiz-option-btn queue-q3-opt" onclick="App.checkLearnQuiz('queue', 3, 2, false, 'Elemen antrean tidak masuk di tengah acak.')">C. Posisi Tengah</button>
+                                    </div>
+                                    <div class="quiz-feedback-box" id="queue-feedback-q3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <button type="button" class="btn btn-outline" onclick="App.switchLearnTab('queue', 'interactive')">
+                                ⬅ Kembali ke Uji Coba
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="App.switchLearnTab('queue', 'comparison')">
+                                ⚖️ Lanjut ke Komparasi & CT ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB PANE 4: KOMPARASI & BERPIKIR KOMPUTASIONAL
+                         ========================================== -->
+                    <div class="learn-tab-pane" data-tab-pane="comparison">
+
+                    <!-- ===================================================================
+                         MATERI PENGAYAAN MENDALAM: PERBANDINGAN, URUTAN KELUAR & BERPIKIR KOMPUTASIONAL
+                         =================================================================== -->
+                    <!-- 3. Perbedaan Mendalam: Stack vs Queue -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">⚖️</span>
+                            <div>
+                                <h3 class="comp-edu-title">3. Perbedaan Stack dan Queue</h3>
+                                <p class="comp-edu-sub">Tabel komparasi karakteristik, prinsip operasi, dan kata kunci pemecahan masalah komputasional</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-table-wrapper">
+                            <table class="comp-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 22%;">Aspek</th>
+                                        <th style="width: 39%;"><span class="comp-badge-stack">📚 Stack (Tumpukan)</span></th>
+                                        <th style="width: 39%;"><span class="comp-badge-queue">👥 Queue (Antrean)</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Prinsip</strong></td>
+                                        <td><strong>LIFO</strong> (masuk terakhir, keluar pertama)</td>
+                                        <td><strong>FIFO</strong> (masuk pertama, keluar pertama)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tempat Masuk</strong></td>
+                                        <td>Atas (satu ujung)</td>
+                                        <td>Belakang</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tempat Keluar</strong></td>
+                                        <td>Atas (ujung yang sama dengan tempat masuk)</td>
+                                        <td>Depan (berbeda dengan tempat masuk)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Operasi Dasar</strong></td>
+                                        <td>Menambah di atas, mengambil dari atas, melihat teratas, memeriksa kosong</td>
+                                        <td>Masuk di belakang, keluar dari depan, melihat terdepan, memeriksa kosong</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Contoh Sehari-hari</strong></td>
+                                        <td>Tumpukan piring, tombol undo, tombol back</td>
+                                        <td>Antrean kantin, antrean loket, antrean printer</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Kata Kunci Masalah</strong></td>
+                                        <td><span style="color: #6d28d9; font-weight: 600;">“membatalkan yang terakhir”</span>, <span style="color: #6d28d9; font-weight: 600;">“kembali ke langkah sebelumnya”</span></td>
+                                        <td><span style="color: #15803d; font-weight: 600;">“siapa datang lebih dulu dilayani lebih dulu”</span>, <span style="color: #15803d; font-weight: 600;">“diproses sesuai urutan kedatangan”</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 4. Contoh Menentukan Urutan Keluar -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">🔄</span>
+                            <div>
+                                <h3 class="comp-edu-title">4. Contoh Menentukan Urutan Keluar</h3>
+                                <p class="comp-edu-sub">Data <strong>A, B, C</strong> dimasukkan berurutan ke dalam sistem:</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-order-grid">
+                            <!-- Stack LIFO Order Card -->
+                            <div class="comp-order-card stack-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="comp-badge-stack">📚 Pada STACK (LIFO)</span>
+                                    <span style="font-size: 0.82rem; font-weight: 700; color: #6d28d9;">Pembalikan Urutan</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569;">
+                                    <strong>Urutan Masuk:</strong>
+                                </div>
+                                <div class="comp-flow-visual">
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span style="font-size: 0.8rem; color: #64748b; margin-left: 4px;">(C di posisi TOP)</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569; margin-top: 4px;">
+                                    <strong>Urutan Keluarnya:</strong>
+                                </div>
+                                <div class="comp-flow-visual" style="border-color: #c4b5fd; background: #faf5ff;">
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span style="font-size: 0.9rem; font-weight: 800; color: #6d28d9; margin-left: auto;">C, B, A</span>
+                                </div>
+                                <p style="font-size: 0.83rem; color: #6b7280; margin: 0; line-height: 1.4;">
+                                    💡 <em>Data C yang masuk terakhir akan menjadi yang pertama keluar dari tumpukan.</em>
+                                </p>
+                            </div>
+
+                            <!-- Queue FIFO Order Card -->
+                            <div class="comp-order-card queue-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="comp-badge-queue">👥 Pada QUEUE (FIFO)</span>
+                                    <span style="font-size: 0.82rem; font-weight: 700; color: #15803d;">Sesuai Kedatangan</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569;">
+                                    <strong>Urutan Masuk:</strong>
+                                </div>
+                                <div class="comp-flow-visual">
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span style="font-size: 0.8rem; color: #64748b; margin-left: 4px;">(A di posisi FRONT)</span>
+                                </div>
+                                <div style="font-size: 0.88rem; color: #475569; margin-top: 4px;">
+                                    <strong>Urutan Keluarnya:</strong>
+                                </div>
+                                <div class="comp-flow-visual" style="border-color: #86efac; background: #f0fdf4;">
+                                    <span class="comp-data-node node-a">A</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-b">B</span>
+                                    <span>➔</span>
+                                    <span class="comp-data-node node-c">C</span>
+                                    <span style="font-size: 0.9rem; font-weight: 800; color: #15803d; margin-left: auto;">A, B, C</span>
+                                </div>
+                                <p style="font-size: 0.83rem; color: #6b7280; margin: 0; line-height: 1.4;">
+                                    💡 <em>Data A yang pertama masuk ke antrean akan menjadi yang pertama keluar dilayani.</em>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Cara Memilih Stack atau Queue -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">🎯</span>
+                            <div>
+                                <h3 class="comp-edu-title">5. Cara Memilih Stack atau Queue</h3>
+                                <p class="comp-edu-sub">Empat pedoman sistematis untuk memilih struktur data yang tepat:</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-decision-steps">
+                            <div class="comp-step-card">
+                                <span class="comp-step-letter">a</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Tentukan Data Masuk</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Tentukan data atau objek apa yang masuk ke dalam sistem.
+                                </p>
+                            </div>
+                            <div class="comp-step-card" style="border-top-color: #f59e0b;">
+                                <span class="comp-step-letter" style="background: #f59e0b;">b</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Tentukan Urutan Keluar</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Tentukan data mana yang harus keluar lebih dulu: yang terakhir masuk atau yang pertama masuk?
+                                </p>
+                            </div>
+                            <div class="comp-step-card" style="border-top-color: #10b981;">
+                                <span class="comp-step-letter" style="background: #10b981;">c</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Pilih Struktur Data</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Bila yang terakhir ➔ <strong>Stack (LIFO)</strong>;<br>
+                                    bila yang pertama ➔ <strong>Queue (FIFO)</strong>.
+                                </p>
+                            </div>
+                            <div class="comp-step-card" style="border-top-color: #8b5cf6;">
+                                <span class="comp-step-letter" style="background: #8b5cf6;">d</span>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 0.95rem;">Tuliskan Alasannya</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                    Tulis alasannya dengan kata-kata sendiri secara jelas dan komputasional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Berpikir Komputasional pada Stack/Queue -->
+                    <div class="comp-edu-card">
+                        <div class="comp-edu-header">
+                            <span class="comp-edu-icon">🧠</span>
+                            <div>
+                                <h3 class="comp-edu-title">6. Berpikir Komputasional pada Stack/Queue</h3>
+                                <p class="comp-edu-sub">Penerapan 4 pilar Computational Thinking dalam menganalisis masalah:</p>
+                            </div>
+                        </div>
+
+                        <div class="comp-thinking-grid">
+                            <div class="comp-thinking-card pillar-dekomposisi">
+                                <div class="comp-pillar-header">
+                                    <span>🧩</span> Dekomposisi
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Memecah masalah menjadi bagian <strong>“data masuk”</strong> dan <strong>“data keluar”</strong> agar alur kerja mudah dianalisis.
+                                </p>
+                            </div>
+                            <div class="comp-thinking-card pillar-pola">
+                                <div class="comp-pillar-header">
+                                    <span>🔍</span> Pengenalan Pola
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Mengidentifikasi urutan masuk-keluar yang berulang, apakah bersifat <strong>FIFO (Queue)</strong> atau <strong>LIFO (Stack)</strong>.
+                                </p>
+                            </div>
+                            <div class="comp-thinking-card pillar-abstraksi">
+                                <div class="comp-pillar-header">
+                                    <span>💡</span> Abstraksi
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Memfokuskan hanya pada <strong>aturan masuk-keluar yang penting</strong>, bukan bentuk fisik atau rupa bendanya.
+                                </p>
+                            </div>
+                            <div class="comp-thinking-card pillar-algoritma">
+                                <div class="comp-pillar-header">
+                                    <span>⚙️</span> Algoritma
+                                </div>
+                                <p style="margin: 0; font-size: 0.86rem; color: #475569; line-height: 1.5;">
+                                    Langkah-langkah yang runtut dan sistematis dalam menentukan urutan keluar elemen secara konsisten.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Persistence & Next Level Bar -->
+                    <div class="page-score-action-bar">
+                        <div class="score-summary-left">
+                            <span class="score-trophy-icon">🏆</span>
+                            <div>
+                                <h4>Nilai Materi Belajar Queue</h4>
+                                <p>Skor Terkini: <strong id="queue-live-page-score" style="color: #38bdf8;">0 pts</strong>. Simpan nilaimu untuk membuka level laboratorium!</p>
+                            </div>
+                        </div>
+                        <div class="score-actions-right">
+                            <button class="btn-save-score" onclick="App.saveLearnScore('queue')">
+                                💾 Simpan Nilai Materi Queue
+                            </button>
+                            <button class="btn-next-level-nav" onclick="UI.goToNextLevel(1)">
+                                ▶ Lanjut: Level 2 (Simulator Stack) ➔
+                            </button>
+                        </div>
+                    </div>
+
+                    </div>
+                    <!-- End of Tab Pane 4 (comparison) -->
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 4: INTERACTIVE STACK SIMULATOR (Lab Level 2)
+             =================================================================== -->
+        <section id="screen-stack-sim" class="app-screen">
+            <div class="section-title-bar">
+                <h3>🧪 <span data-i18n="stackVisualDemo">Simulasi Visual Stack</span> (Level 2)</h3>
+                <button class="btn btn-outline" onclick="UI.switchScreen('home')" data-i18n="btnBack">⬅ Kembali</button>
+            </div>
+
+            <div class="simulator-stage-grid">
+                <!-- Visual Vertical Stack Viewport -->
+                <div class="sim-visual-viewport">
+                    <div class="sim-stack-chamber">
+                        <div class="stack-top-arrow">⬇ Pintu Masuk / Keluar (TOP)</div>
+                        <div id="sim-stack-container" style="display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Live Stack Items Rendered Here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls & State Inspector -->
+                <div class="sim-controls-panel">
+                    <!-- Mission Checklist Card -->
+                    <div class="mission-checklist-card">
+                        <div class="mission-header">
+                            <h4>🎯 Misi Laboratorium Stack</h4>
+                            <span class="mission-score-tag" id="stack-sim-score-badge">0 / 100 Poin</span>
+                        </div>
+                        <div class="mission-tasks-list">
+                            <div class="mission-task-row" id="sm-push">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Lakukan operasi <strong>PUSH</strong> minimal 2 kali</span>
+                                <span class="task-reward">+30 pts</span>
+                            </div>
+                            <div class="mission-task-row" id="sm-peek">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Periksa puncak stack dengan <strong>PEEK</strong></span>
+                                <span class="task-reward">+20 pts</span>
+                            </div>
+                            <div class="mission-task-row" id="sm-pop">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Keluarkan elemen teratas dengan <strong>POP</strong></span>
+                                <span class="task-reward">+30 pts</span>
+                            </div>
+                            <div class="mission-task-row" id="sm-bound">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Uji batas kapasitas maksimal atau <strong>CLEAR</strong></span>
+                                <span class="task-reward">+20 pts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sim-card-control">
+                        <h4 data-i18n="selectItemToAdd">Pilih Benda:</h4>
+                        <div class="sim-input-group">
+                            <select id="sim-stack-select" class="sim-select">
+                                <option value="Piring Bersih">🍽 Piring Bersih</option>
+                                <option value="Buku Pelajaran">📖 Buku Pelajaran</option>
+                                <option value="Kardus Paket">📦 Kardus Paket</option>
+                                <option value="Baki Makanan">🍱 Baki Makanan</option>
+                            </select>
+                        </div>
+                        <div class="sim-buttons-grid">
+                            <button class="btn btn-primary" onclick="App.simPush()">
+                                ⬆ PUSH
+                            </button>
+                            <button class="btn btn-amber" onclick="App.simPop()">
+                                ⬇ POP
+                            </button>
+                            <button class="btn btn-outline" onclick="App.simPeek()">
+                                👁 PEEK
+                            </button>
+                            <button class="btn btn-choice" onclick="App.simClearStack()">
+                                🗑 CLEAR
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live State Inspector -->
+                    <div class="sim-state-card">
+                        <h4 data-i18n="stackStateTitle">Status Stack:</h4>
+                        <div class="state-item-row">
+                            <span>Elemen TOP:</span>
+                            <strong id="sim-stack-top-val">-</strong>
+                        </div>
+                        <div class="state-item-row">
+                            <span>Jumlah Elemen (size):</span>
+                            <strong id="sim-stack-size-val">0</strong>
+                        </div>
+                        <div class="state-item-row">
+                            <span>isEmpty():</span>
+                            <strong id="sim-stack-empty-val">True</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Persistence & Next Level Bar -->
+            <div class="page-score-action-bar" style="margin-top: 1.5rem;">
+                <div class="score-summary-left">
+                    <span class="score-trophy-icon">🧪</span>
+                    <div>
+                        <h4>Nilai Praktik Lab Stack</h4>
+                        <p>Skor Terkini: <strong id="stack-sim-live-score" style="color: #38bdf8;">0 pts</strong>. Selesaikan misi di atas lalu simpan nilaimu!</p>
+                    </div>
+                </div>
+                <div class="score-actions-right">
+                    <button class="btn-save-score" onclick="App.saveStackSimScore()">
+                        💾 Simpan Nilai Lab Stack
+                    </button>
+                    <button class="btn-next-level-nav" onclick="UI.goToNextLevel(2)">
+                        ▶ Lanjut: Level 3 (Simulator Queue) ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 5: INTERACTIVE QUEUE SIMULATOR (Lab Level 3)
+             =================================================================== -->
+        <section id="screen-queue-sim" class="app-screen">
+            <div class="section-title-bar">
+                <h3>🧪 <span data-i18n="queueVisualDemo">Simulasi Visual Queue</span> (Level 3)</h3>
+                <button class="btn btn-outline" onclick="UI.switchScreen('home')" data-i18n="btnBack">⬅ Kembali</button>
+            </div>
+
+            <div class="simulator-stage-grid">
+                <!-- Visual Horizontal Queue Viewport -->
+                <div class="sim-visual-viewport">
+                    <div class="sim-queue-track">
+                        <div class="queue-label-flag queue-label-front">FRONT (Keluar) ➔</div>
+                        <div class="queue-label-flag queue-label-rear">➔ REAR (Masuk)</div>
+                        <div id="sim-queue-container" style="display: flex; gap: 12px; align-items: center; width: 100%;">
+                            <!-- Live Queue Items Rendered Here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls & State Inspector -->
+                <div class="sim-controls-panel">
+                    <!-- Mission Checklist Card -->
+                    <div class="mission-checklist-card">
+                        <div class="mission-header">
+                            <h4>🎯 Misi Laboratorium Queue</h4>
+                            <span class="mission-score-tag" id="queue-sim-score-badge">0 / 100 Poin</span>
+                        </div>
+                        <div class="mission-tasks-list">
+                            <div class="mission-task-row" id="qm-enqueue">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Lakukan antrean <strong>ENQUEUE</strong> minimal 2 pelanggan</span>
+                                <span class="task-reward">+30 pts</span>
+                            </div>
+                            <div class="mission-task-row" id="qm-front">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Lihat pelanggan terdepan dengan <strong>FRONT</strong></span>
+                                <span class="task-reward">+20 pts</span>
+                            </div>
+                            <div class="mission-task-row" id="qm-dequeue">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Layani pelanggan di depan antrean dengan <strong>DEQUEUE</strong></span>
+                                <span class="task-reward">+30 pts</span>
+                            </div>
+                            <div class="mission-task-row" id="qm-bound">
+                                <span class="task-checkbox">○</span>
+                                <span class="task-desc">Uji batas kapasitas maksimal atau <strong>CLEAR</strong></span>
+                                <span class="task-reward">+20 pts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sim-card-control">
+                        <h4 data-i18n="selectPersonToAdd">Pilih Pelanggan:</h4>
+                        <div class="sim-input-group">
+                            <select id="sim-queue-select" class="sim-select">
+                                <option value="Siswa Seragam">👦 Siswa Seragam</option>
+                                <option value="Ibu Guru">👩‍🏫 Ibu Guru</option>
+                                <option value="Nenek Ramah">👵 Nenek Ramah</option>
+                                <option value="Anak Ceria">🧒 Anak Ceria</option>
+                            </select>
+                        </div>
+                        <div class="sim-buttons-grid">
+                            <button class="btn btn-success" onclick="App.simEnqueue()">
+                                ➔ ENQUEUE
+                            </button>
+                            <button class="btn btn-amber" onclick="App.simDequeue()">
+                                ➔ DEQUEUE
+                            </button>
+                            <button class="btn btn-outline" onclick="App.simFront()">
+                                👁 FRONT
+                            </button>
+                            <button class="btn btn-choice" onclick="App.simClearQueue()">
+                                🗑 CLEAR
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live State Inspector -->
+                    <div class="sim-state-card">
+                        <h4 data-i18n="queueStateTitle">Status Queue:</h4>
+                        <div class="state-item-row">
+                            <span>Elemen FRONT:</span>
+                            <strong id="sim-queue-front-val">-</strong>
+                        </div>
+                        <div class="state-item-row">
+                            <span>Elemen REAR:</span>
+                            <strong id="sim-queue-rear-val">-</strong>
+                        </div>
+                        <div class="state-item-row">
+                            <span>Panjang Antrean (size):</span>
+                            <strong id="sim-queue-size-val">0</strong>
+                        </div>
+                        <div class="state-item-row">
+                            <span>isEmpty():</span>
+                            <strong id="sim-queue-empty-val">True</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Persistence & Next Level Bar -->
+            <div class="page-score-action-bar" style="margin-top: 1.5rem;">
+                <div class="score-summary-left">
+                    <span class="score-trophy-icon">🧪</span>
+                    <div>
+                        <h4>Nilai Praktik Lab Queue</h4>
+                        <p>Skor Terkini: <strong id="queue-sim-live-score" style="color: #38bdf8;">0 pts</strong>. Selesaikan misi di atas lalu simpan nilaimu!</p>
+                    </div>
+                </div>
+                <div class="score-actions-right">
+                    <button class="btn-save-score" onclick="App.saveQueueSimScore()">
+                        💾 Simpan Nilai Lab Queue
+                    </button>
+                    <button class="btn-next-level-nav" onclick="UI.goToNextLevel(3)">
+                        ▶ Lanjut: Level 4 (Tantangan Mini-Games) ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 6: MINI-GAMES SUITE (Levels 4 & 5)
+             =================================================================== -->
+        <section id="screen-games" class="app-screen">
+            <!-- Tabs Bar -->
+            <div class="game-tabs-bar">
+                <button class="game-tab-btn active" data-game="supermarket">🛒 Kasir Supermarket</button>
+                <button class="game-tab-btn" data-game="cafeteria">🍽 Kantin Sekolah</button>
+                <button class="game-tab-btn" data-game="books">📚 Tumpukan Buku</button>
+                <button class="game-tab-btn" data-game="warehouse">📦 Gudang Logistik</button>
+                <button class="game-tab-btn" data-game="printer">🖨 Printer Spooler</button>
+                <button class="game-tab-btn" data-game="browser">🌐 Browser Back</button>
+            </div>
+
+            <!-- Mini Game 1: Supermarket -->
+            <div id="game-vp-supermarket" class="mini-game-viewport active">
+                <div class="game-header-bar">
+                    <div class="game-title-group">
+                        <h3 data-i18n="gameSupermarketTitle">Kasir Supermarket Rame</h3>
+                        <p data-i18n="gameSupermarketDesc">Layani pelanggan sesuai nomor antrean mereka! Gunakan prinsip FIFO.</p>
+                    </div>
+                    <div class="game-goal-badge" id="supermarket-count">0 / 5</div>
+                </div>
+                <div class="supermarket-stage">
+                    <div class="supermarket-counter-area">
+                        <div class="cashier-desk">
+                            <span>👩‍💼</span>
+                            <strong>Meja Kasir</strong>
+                            <small id="supermarket-front-info">-</small>
+                        </div>
+                        <div class="supermarket-conveyor" id="supermarket-lane">
+                            <!-- Customers rendered here -->
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button class="btn btn-success" onclick="MiniGames.supermarket.serveNext()" data-i18n="serveNextCustomer">
+                            Layani Pelanggan Depan (Dequeue)
+                        </button>
+                        <button class="btn btn-outline" onclick="MiniGames.supermarket.addCustomer('Pelanggan Baru', '👱‍♂️', 'Camilan')">
+                            + Pelanggan Baru Tiba (Enqueue)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Game 2: Cafeteria -->
+            <div id="game-vp-cafeteria" class="mini-game-viewport">
+                <div class="game-header-bar">
+                    <div class="game-title-group">
+                        <h3 data-i18n="gameCafeteriaTitle">Kantin Makan Siang</h3>
+                        <p data-i18n="gameCafeteriaDesc">Siswa lapar berdatangan! Masukkan ke antrean dan layani yang datang pertama.</p>
+                    </div>
+                    <div class="game-goal-badge" id="cafeteria-count">0 / 4</div>
+                </div>
+                <div class="cafeteria-line-container" id="cafeteria-line"></div>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem;">
+                    <button class="btn btn-success" onclick="MiniGames.cafeteria.serveMeal()">
+                        🍱 Berikan Makan ke Siswa Terdepan (Dequeue)
+                    </button>
+                    <button class="btn btn-outline" onclick="MiniGames.cafeteria.addStudent('Siswa Baru', '🧒', 'Bakso')">
+                        + Siswa Baru Antre (Enqueue)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mini Game 3: Books -->
+            <div id="game-vp-books" class="mini-game-viewport">
+                <div class="game-header-bar">
+                    <div class="game-title-group">
+                        <h3 data-i18n="gameBooksTitle">Rak Buku Perpustakaan</h3>
+                        <p data-i18n="gameBooksDesc">Bantu pustakawan mengambil buku yang diminta dengan mengeluarkan buku di atasnya terlebih dahulu!</p>
+                    </div>
+                    <div class="game-goal-badge" id="books-target">Buku IPA (Sains)</div>
+                </div>
+                <div class="books-stage-grid">
+                    <div class="books-column">
+                        <h4>Rak Buku Utama (STACK)</h4>
+                        <div id="books-shelf" style="flex: 1;"></div>
+                    </div>
+                    <div class="books-column">
+                        <h4>Meja Pemindahan Sementara</h4>
+                        <div id="books-desk" style="flex: 1;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="MiniGames.books.popTopToDesk()" data-i18n="takeTopBook">
+                        Ambil Buku Teratas (POP)
+                    </button>
+                    <button class="btn btn-outline" onclick="MiniGames.books.pushBackToStack()" data-i18n="putBookBack">
+                        Tumpuk Buku Kembali (PUSH)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mini Game 4: Warehouse -->
+            <div id="game-vp-warehouse" class="mini-game-viewport">
+                <div class="game-header-bar">
+                    <div class="game-title-group">
+                        <h3 data-i18n="gameWarehouseTitle">Gudang Logistik Kontainer</h3>
+                        <p data-i18n="gameWarehouseDesc">Tumpuk dan bongkar kotak barang di lorong sempit menggunakan metode LIFO.</p>
+                    </div>
+                    <div class="game-goal-badge" id="warehouse-state">Kapasitas: 4</div>
+                </div>
+                <div class="warehouse-stage">
+                    <div class="warehouse-bay" id="warehouse-bay"></div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="MiniGames.warehouse.pushBox()" data-i18n="pushBoxBtn">
+                            Tumpuk Kotak (PUSH)
+                        </button>
+                        <button class="btn btn-amber" onclick="MiniGames.warehouse.popBox()" data-i18n="popBoxBtn">
+                            Bongkar Kotak Teratas (POP)
+                        </button>
+                        <button class="btn btn-outline" onclick="MiniGames.warehouse.peekBox()">
+                            👁 Intip Kotak Teratas (PEEK)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Game 5: Printer -->
+            <div id="game-vp-printer" class="mini-game-viewport">
+                <div class="game-header-bar">
+                    <div class="game-title-group">
+                        <h3 data-i18n="gamePrinterTitle">Antrean Cetak Printer Kantor</h3>
+                        <p data-i18n="gamePrinterDesc">Dokumen masuk ke antrean cetak. Dokumen mana yang akan keluar pertama?</p>
+                    </div>
+                </div>
+                <div class="printer-stage">
+                    <div class="printer-header-banner" id="printer-status-bar">
+                        Printer siap. Dokumen FRONT akan dicetak lebih dulu.
+                    </div>
+                    <div id="printer-queue-list"></div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button class="btn btn-success" onclick="MiniGames.printer.printNext()" data-i18n="printDocBtn">
+                            Cetak Dokumen Terdepan (DEQUEUE)
+                        </button>
+                        <button class="btn btn-outline" onclick="MiniGames.printer.enqueueDoc('Laporan Baru.pdf', 3, 'Siswa Baru')" data-i18n="addDocBtn">
+                            Kirim Dokumen Baru (ENQUEUE)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Game 6: Browser -->
+            <div id="game-vp-browser" class="mini-game-viewport">
+                <div class="game-header-bar">
+                    <div class="game-title-group">
+                        <h3 data-i18n="gameBrowserTitle">Tombol Back Browser Web</h3>
+                        <p data-i18n="gameBrowserDesc">Jelajahi halaman web dan lihat bagaimana tombol Back mengingat riwayat dengan Stack.</p>
+                    </div>
+                </div>
+                <div class="browser-window-frame">
+                    <div class="browser-top-bar">
+                        <button class="browser-btn-back" onclick="MiniGames.browser.goBack()" data-i18n="clickBackBtn">
+                            ⬅ Back
+                        </button>
+                        <div class="browser-url-input" id="browser-current-url">Portal Siswa</div>
+                    </div>
+                    <div class="browser-content-area">
+                        <p>Simulasi Navigasi: Klik link di bawah untuk mengunjungi halaman baru:</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+                            <button class="btn btn-choice" onclick="MiniGames.browser.visit('https://google.com')">Google</button>
+                            <button class="btn btn-choice" onclick="MiniGames.browser.visit('https://youtube.com')">YouTube</button>
+                            <button class="btn btn-choice" onclick="MiniGames.browser.visit('https://wikipedia.org')">Wikipedia</button>
+                            <button class="btn btn-choice" onclick="MiniGames.browser.visit('https://lms-sekolah.id')">LMS Sekolah</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="browser-stack-drawer">
+                    <h5 style="margin-bottom: 0.5rem;" data-i18n="browserStackStatus">Riwayat URL (Stack):</h5>
+                    <div id="browser-history-stack"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar for Games -->
+            <div class="page-score-action-bar" style="margin-top: 1.5rem;">
+                <div class="score-summary-left">
+                    <span class="score-trophy-icon">🎮</span>
+                    <div>
+                        <h4>Petualangan Mini-Games (Level 4 & 5)</h4>
+                        <p>Sudah mencoba semua simulasi kasir, kantin, buku, gudang, printer & browser? Lanjutkan ke Level berikutnya!</p>
+                    </div>
+                </div>
+                <div class="score-actions-right">
+                    <button class="btn-next-level-nav" onclick="UI.goToNextLevel(5)">
+                        ▶ Lanjut: Level 6 (Zona Puzzle Asah Otak) ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 7: PUZZLE ZONE (Level 6)
+             =================================================================== -->
+        <section id="screen-puzzle" class="app-screen">
+            <!-- Puzzle Top Progress & Score Banner -->
+            <div class="puzzle-header-banner" id="puzzle-header-banner">
+                <div class="puzzle-header-info">
+                    <h3>🧩 Zona Puzzle Asah Otak (Level 6)</h3>
+                    <p>Selesaikan teka-teki logika di bawah. Nilai otomatis tersimpan dan kamu bisa langsung naik ke Level 7!</p>
+                </div>
+                <div class="puzzle-header-stats">
+                    <span class="puzzle-score-badge" id="puzzle-live-score">Skor: 0 pts</span>
+                    <span class="puzzle-score-badge" id="puzzle-live-count" style="background: rgba(14, 165, 233, 0.2); color: #38bdf8;">Tuntas: 0 / 5</span>
+                    <button class="btn-puzzle-next" id="puzzle-finish-level-btn" onclick="PuzzlesManager.goToNextLevelFromPuzzle()">
+                        ▶ Naik ke Level 7 ➔
+                    </button>
+                </div>
+            </div>
+
+            <div class="puzzle-tabs-bar">
+                <button class="puzzle-tab-btn active" data-puzzle="A">Puzzle A (FIFO)</button>
+                <button class="puzzle-tab-btn" data-puzzle="B">Puzzle B (LIFO)</button>
+                <button class="puzzle-tab-btn" data-puzzle="C">Puzzle C (Tebak Keluar)</button>
+                <button class="puzzle-tab-btn" data-puzzle="D">Puzzle D (Pasang Konsep)</button>
+                <button class="puzzle-tab-btn" data-puzzle="E">Puzzle E (Kelompok Method)</button>
+            </div>
+
+            <div class="puzzle-viewport-card" id="puzzle-stage">
+                <!-- Rendered by PuzzlesManager.loadPuzzle(...) -->
+            </div>
+
+            <!-- Bottom Persistence & Next Level Bar for Puzzle Zone -->
+            <div class="page-score-action-bar" style="margin-top: 1.5rem;">
+                <div class="score-summary-left">
+                    <span class="score-trophy-icon">🧩</span>
+                    <div>
+                        <h4>Nilai Zona Puzzle Asah Otak</h4>
+                        <p>Kerjakan puzzle di atas lalu simpan nilaimu untuk langsung melangkah ke Level 7!</p>
+                    </div>
+                </div>
+                <div class="score-actions-right">
+                    <button class="btn-save-score" onclick="PuzzlesManager.saveAndFinishPuzzleLevel()">
+                        💾 Simpan & Selesaikan Level 6
+                    </button>
+                    <button class="btn-next-level-nav" onclick="PuzzlesManager.goToNextLevelFromPuzzle()">
+                        ▶ Lanjut: Level 7 (Tantangan Kasus) ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 8: CHALLENGE ARENA (Levels 1, 7, 8)
+             =================================================================== -->
+        <section id="screen-challenge" class="app-screen">
+            <div class="challenge-header-bar">
+                <div class="challenge-meta-group">
+                    <span class="challenge-pill" id="challenge-progress-text">Pertanyaan 1 dari 10</span>
+                </div>
+                <div class="challenge-live-score" id="challenge-live-score">Skor: 100</div>
+            </div>
+
+            <div id="challenge-card-stage">
+                <!-- Question scenario card rendered by ChallengeManager -->
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 9: ACHIEVEMENTS
+             =================================================================== -->
+        <section id="screen-achievements" class="app-screen">
+            <div class="section-title-bar">
+                <h3>🏆 <span data-i18n="achievementsTitle">Piala & Prestasi Petualang</span></h3>
+                <button class="btn btn-outline" onclick="UI.switchScreen('home')" data-i18n="btnBack">⬅ Kembali</button>
+            </div>
+            <div class="achievements-grid" id="achievements-grid">
+                <!-- Populated dynamically by AchievementsManager -->
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 10: FINAL RESULT & EVALUATION REPORT CARD
+             =================================================================== -->
+        <section id="screen-result" class="app-screen">
+            <div class="result-container">
+                <div class="report-card">
+                    <!-- Print Header (Official school banner for paper print) -->
+                    <div class="print-only-block" style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+                        <h2 data-i18n="printTitle">LEMBAR LAPORAN EVALUASI SISWA</h2>
+                        <p data-i18n="printSubject">Mata Pelajaran: Informatika (Struktur Data Stack & Queue)</p>
+                        <p data-i18n="printTargetGrade">Tingkat: SMA Kelas X (Fase E)</p>
+                    </div>
+
+                    <div class="report-card-header">
+                        <div class="report-celebration-badge">🎉</div>
+                        <h2 data-i18n="finalScoreTitle">PETUALANGAN SELESAI!</h2>
+                        <p data-i18n="finalScoreSubtitle">Hasil Evaluasi Pembelajaran Struktur Data Siswa</p>
+                    </div>
+
+                    <div class="student-meta-banner">
+                        <div>
+                            <span data-i18n="playerNameLabel">Nama Siswa</span>: <strong id="result-player-name">Petualang</strong>
+                        </div>
+                        <div>
+                            <span data-i18n="studentClassLabel">Kelas</span>: <strong id="result-player-class">Fase E (Kelas X)</strong>
+                        </div>
+                        <div>
+                            <span data-i18n="studentAbsenLabel">No. Absen</span>: <strong id="result-player-absen">-</strong>
+                        </div>
+                        <div>
+                            <span data-i18n="printDateLabel">Tanggal</span>: <strong id="result-date">2026-10-01</strong>
+                        </div>
+                    </div>
+
+                    <!-- Final Score Showcase -->
+                    <div class="final-score-showcase">
+                        <span class="final-score-label" data-i18n="finalAverageScore">Nilai Rata-Rata Akhir</span>
+                        <div class="final-score-number" id="result-final-score">88</div>
+                        <div class="predicate-badge predicate-good" id="result-predicate-badge">BAIK</div>
+                    </div>
+
+                    <!-- Metrics Summary Grid -->
+                    <div class="metrics-summary-grid">
+                        <div class="metric-box">
+                            <span class="metric-val" id="result-accuracy">88%</span>
+                            <span class="metric-label" data-i18n="metricAccuracy">Akurasi</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val" id="result-correct-count">44</span>
+                            <span class="metric-label" data-i18n="metricCorrect">Jawaban Benar</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val" id="result-wrong-count">6</span>
+                            <span class="metric-label" data-i18n="metricWrong">Jawaban Salah</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val" id="result-play-time">18:42</span>
+                            <span class="metric-label" data-i18n="metricTime">Waktu Bermain</span>
+                        </div>
+                    </div>
+
+                    <!-- Level Breakdown -->
+                    <div class="level-breakdown-section">
+                        <h4 data-i18n="levelScoresSummary">Rincian Skor Tiap Level:</h4>
+                        <div id="result-level-breakdown"></div>
+                    </div>
+
+                    <!-- Concept Mastery Analysis -->
+                    <div class="concept-analysis-grid">
+                        <div class="concept-box mastered">
+                            <h5 data-i18n="masteredConceptsTitle">✓ Konsep yang Dikuasai:</h5>
+                            <ul class="concept-list" id="result-mastered-concepts"></ul>
+                        </div>
+                        <div class="concept-box practice">
+                            <h5 data-i18n="conceptsToPracticeTitle">⚠️ Perlu Dilatih Lagi:</h5>
+                            <ul class="concept-list" id="result-practice-concepts"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Print Signatures Block -->
+                    <div class="print-only-block print-signatures-area">
+                        <div class="signature-box">
+                            <p data-i18n="printTeacherSign">Tanda Tangan Guru</p>
+                            <div class="signature-line"></div>
+                            <span>( Guru Pengampu )</span>
+                        </div>
+                        <div class="signature-box">
+                            <p data-i18n="printStudentSign">Tanda Tangan Siswa</p>
+                            <div class="signature-line"></div>
+                            <span>( Siswa )</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="report-actions-bar">
+                        <button class="btn btn-primary" onclick="UI.startLevelFromMap(1)" data-i18n="btnPlayAgain">
+                            🔄 Main Lagi
+                        </button>
+                        <button class="btn btn-outline" onclick="UI.switchScreen('learn-stack')">
+                            📖 Review Materi
+                        </button>
+                        <button class="btn btn-outline" onclick="UI.openReviewAnswersModal()" data-i18n="btnReview">
+                            🔍 Review Jawaban
+                        </button>
+                        <button class="btn btn-success" onclick="UI.printResult()" data-i18n="btnPrint">
+                            🖨 Cetak Hasil
+                        </button>
+                        <button class="btn btn-amber" onclick="UI.switchScreen('home')" data-i18n="btnBack">
+                            🏠 Kembali ke Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===================================================================
+         MODALS
+         =================================================================== -->
+
+    <!-- Player Profile & Name Prompt Modal -->
+    <div id="name-prompt-modal" class="modal-overlay" role="dialog" aria-labelledby="profile-modal-title" aria-modal="true">
+        <div class="modal-card animate-pop" style="max-width: 480px; text-align: left;">
+            <div style="text-align: center; font-size: 3.5rem; margin-bottom: 0.5rem;">🎒</div>
+            <h2 id="profile-modal-title" data-i18n="whoAreYou" style="font-family: var(--font-heading); margin-bottom: 0.25rem; color: var(--primary-sky); text-align: center;">
+                Profil Petualang Siswa
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem; text-align: center;" data-i18n="welcomeSubtitle">
+                Lengkapi identitasmu agar progres belajar, jawaban, dan lembar evaluasi tersimpan rapi!
+            </p>
+            <form id="player-name-form" novalidate>
+                <!-- Field 1: Nama Siswa -->
+                <div class="form-field-group">
+                    <label for="player-name-input" class="form-label">
+                        <span data-i18n="studentNameLabel">Nama Lengkap Siswa</span> <span class="required-star" aria-hidden="true">*</span>
+                    </label>
+                    <input type="text" id="player-name-input" class="sim-select form-input" 
+                           data-i18n-placeholder="namePlaceholder" placeholder="Contoh: Budi Pratama" 
+                           autocomplete="name" required>
+                    <div id="name-field-error" class="form-error-msg hidden" role="alert">
+                        ⚠️ <span data-i18n="nameValidationRequired">Nama siswa wajib diisi (minimal 2 huruf).</span>
+                    </div>
+                </div>
+
+                <!-- Field 2: Kelas / Fase -->
+                <div class="form-field-group" style="margin-top: 1rem;">
+                    <label for="player-class-input" class="form-label">
+                        <span data-i18n="studentClassLabel">Kelas / Fase</span> <span class="required-star" aria-hidden="true">*</span>
+                    </label>
+                    <input type="text" id="player-class-input" list="class-suggestions" class="sim-select form-input"
+                           data-i18n-placeholder="classPlaceholder" placeholder="Pilih atau ketik kelas (contoh: X-1, Fase E)..."
+                           autocomplete="off" required>
+                    <datalist id="class-suggestions">
+                        <option value="X-1 (Fase E)">
+                        <option value="X-2 (Fase E)">
+                        <option value="X-3 (Fase E)">
+                        <option value="X-4 (Fase E)">
+                        <option value="X-5 (Fase E)">
+                        <option value="X-6 (Fase E)">
+                        <option value="X-7 (Fase E)">
+                        <option value="SMA Fase E (Kelas X)">
+                        <option value="SMA Fase F (Kelas XI)">
+                        <option value="SMA Fase F (Kelas XII)">
+                    </datalist>
+                    <div id="class-field-error" class="form-error-msg hidden" role="alert">
+                        ⚠️ <span data-i18n="classValidationRequired">Kelas / Fase wajib diisi.</span>
+                    </div>
+                </div>
+
+                <!-- Field 3: Nomor Absen -->
+                <div class="form-field-group" style="margin-top: 1rem;">
+                    <label for="player-absen-input" class="form-label">
+                        <span data-i18n="studentAbsenLabel">Nomor Absen Siswa</span> <span class="required-star" aria-hidden="true">*</span>
+                    </label>
+                    <input type="number" id="player-absen-input" class="sim-select form-input" min="1" max="60"
+                           data-i18n-placeholder="absenPlaceholder" placeholder="Contoh: 14 (angka 1 - 60)" required>
+                    <div id="absen-field-error" class="form-error-msg hidden" role="alert">
+                        ⚠️ <span data-i18n="absenValidationRequired">Nomor absen wajib diisi dengan angka (1 - 60).</span>
+                    </div>
+                </div>
+
+                <div class="form-actions-row" style="margin-top: 1.75rem; display: flex; gap: 0.75rem;">
+                    <button type="button" class="btn btn-outline" id="player-form-cancel-btn" onclick="App.cancelProfileModal()" style="flex: 1; display: none;" data-i18n="cancelBtn">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="player-form-submit-btn" style="flex: 2; font-size: 1rem;" data-i18n="saveProfileBtn">
+                        🚀 Simpan & Mulai
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Level Complete Modal -->
+    <div id="level-complete-modal" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal-card animate-pop" style="text-align: center;">
+            <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+            <h2 id="complete-level-title" style="font-family: var(--font-heading); color: var(--primary-sky); margin-bottom: 0.5rem;">
+                Level Selesai!
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Kamu telah menuntaskan misi di lokasi ini dengan sangat baik!</p>
+            <div style="background: var(--surface-soft); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Skor Level Ini:</span>
+                <div id="complete-level-score" style="font-family: var(--font-heading); font-size: 2.5rem; font-weight: 900; color: var(--success-emerald);">
+                    100 / 100
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="modal-next-level-btn" onclick="UI.proceedToNextLevelFromModal()" style="font-size: 1.05rem; padding: 0.75rem 1.5rem;">
+                    ▶ Lanjut ke Level Berikutnya ➔
+                </button>
+                <button class="btn btn-outline" onclick="UI.closeCompleteModal()">
+                    🏠 Ke Beranda Peta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================
+         PUSAT SOAL, RIWAYAT & STUDI KASUS (SEARCH & FILTER MODAL)
+         =================================================================== -->
+    <div id="review-answers-modal" class="modal-overlay" role="dialog" aria-labelledby="review-modal-title" aria-modal="true">
+        <div class="modal-card modal-large animate-slide-up" style="max-width: 860px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <div>
+                    <h3 id="review-modal-title" data-i18n="reviewModalTitle" style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--text-primary); margin-bottom: 2px;">
+                        Pusat Bank Soal & Riwayat Jawaban
+                    </h3>
+                    <small style="color: var(--text-muted);">Cari soal, pantau jawaban tersimpan, dan ulangi soal kapan saja.</small>
+                </div>
+                <button class="modal-close-btn" onclick="UI.closeReviewModal()" aria-label="Tutup Jendela Review">✕</button>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="review-search-filter-panel">
+                <!-- Row 1: Search Box -->
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="search" id="review-search-input" class="search-input-field" 
+                           placeholder="Cari pertanyaan, skenario kasus, konsep LIFO/FIFO, atau kata kunci..." 
+                           aria-label="Cari soal">
+                    <button id="review-search-clear-btn" class="search-clear-btn hidden" onclick="UI.clearReviewSearch()" title="Hapus pencarian">✕</button>
+                </div>
+
+                <!-- Row 2: Filter Selectors & Reset -->
+                <div class="filters-grid-row">
+                    <!-- Filter Level -->
+                    <div class="filter-item">
+                        <label for="review-filter-level" class="filter-label" data-i18n="filterLevelLabel">Level / Tahap:</label>
+                        <select id="review-filter-level" class="filter-select" onchange="UI.applyReviewFilters()">
+                            <option value="all" data-i18n="filterAllLevels">Semua Level</option>
+                            <option value="1">Level 1: Konsep Dasar</option>
+                            <option value="7">Level 7: Kasus Teknologi</option>
+                            <option value="8">Level 8: Evaluasi Akhir</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter Konsep -->
+                    <div class="filter-item">
+                        <label for="review-filter-concept" class="filter-label" data-i18n="filterConceptLabel">Konsep:</label>
+                        <select id="review-filter-concept" class="filter-select" onchange="UI.applyReviewFilters()">
+                            <option value="all" data-i18n="filterAllConcepts">Semua Konsep</option>
+                            <option value="LIFO">LIFO (Stack)</option>
+                            <option value="FIFO">FIFO (Queue)</option>
+                            <option value="push()">push()</option>
+                            <option value="pop()">pop()</option>
+                            <option value="enqueue()">enqueue()</option>
+                            <option value="dequeue()">dequeue()</option>
+                            <option value="isEmpty()">isEmpty()</option>
+                            <option value="Priority Queue">Priority Queue</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter Status Jawaban -->
+                    <div class="filter-item">
+                        <label for="review-filter-status" class="filter-label" data-i18n="filterStatusLabel">Status Jawaban:</label>
+                        <select id="review-filter-status" class="filter-select" onchange="UI.applyReviewFilters()">
+                            <option value="all" data-i18n="filterAllStatuses">Semua Status</option>
+                            <option value="answered" data-i18n="filterStatusAnswered">Sudah Dijawab</option>
+                            <option value="correct" data-i18n="filterStatusCorrect">Jawaban Benar</option>
+                            <option value="wrong" data-i18n="filterStatusWrong">Perlu Koreksi</option>
+                            <option value="draft" data-i18n="filterStatusDraft">Draft Sementara</option>
+                            <option value="unanswered" data-i18n="filterStatusUnanswered">Belum Dikerjakan</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset Filter Button -->
+                    <div class="filter-item filter-reset-col">
+                        <button class="btn btn-outline btn-reset-filter" onclick="UI.resetReviewFilters()" title="Kembalikan semua filter ke awal">
+                            🔄 <span data-i18n="btnResetFilter">Reset Filter</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Results Count -->
+                <div class="filter-status-info-bar">
+                    <span id="review-results-counter">Menampilkan 0 soal</span>
+                </div>
+            </div>
+
+            <!-- List Container (Scrollable) -->
+            <div class="review-list custom-scroll" id="review-list-container" style="flex: 1; overflow-y: auto;">
+                <!-- Log entries populated dynamically by UI.renderReviewList() -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Loading Overlay -->
+    <div id="global-loading-indicator" class="loading-overlay hidden" role="status" aria-live="polite">
+        <div class="loading-modal-card animate-pop">
+            <div class="loading-spinner"></div>
+            <h4 class="loading-text" id="global-loading-text">⏳ Memuat Data...</h4>
+            <div class="loading-progress-track">
+                <div class="loading-progress-fill"></div>
+            </div>
+            <p class="loading-subtext">Mohon tunggu sebentar, sistem sedang memproses permintaanmu...</p>
+        </div>
+    </div>
+
+    <!-- Notification Areas -->
+    <div id="toast-notification-area" aria-live="assertive"></div>
+    <div id="achievement-toast-container" aria-live="polite"></div>
+
+    <!-- JavaScript Application Scripts -->
+    <script src="js/translations.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/stack.js"></script>
+    <script src="js/queue.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/scoring.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/games.js"></script>
+    <script src="js/puzzles.js"></script>
+    <script src="js/challenges.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -45,12 +45,22 @@ const ACHIEVEMENTS_LIST = [
         icon: '👑',
         titleKey: 'achGrandMasterTitle',
         descKey: 'achGrandMasterDesc'
+    },
+    {
+        id: 'TEAM_COLLAB',
+        icon: '👥',
+        titleKey: 'achTeamCollabTitle',
+        descKey: 'achTeamCollabDesc'
     }
 ];
 
 const AchievementsManager = {
     init() {
         this.renderAchievementsGrid();
+    },
+
+    unlockAchievement(achId) {
+        this.check(achId);
     },
 
     check(achId) {

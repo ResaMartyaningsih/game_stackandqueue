@@ -289,19 +289,93 @@ const ChallengeManager = {
     currentLevelId: 8,
     questions: [],
     currentIndex: 0,
+    selectedIdxDraft: null,
     answeredInCurrent: false,
 
     startChallenge(levelId) {
         this.currentLevelId = Number(levelId);
         this.questions = CHALLENGE_BANKS[this.currentLevelId] || CHALLENGE_BANKS[8];
         this.currentIndex = 0;
+        this.selectedIdxDraft = null;
         this.answeredInCurrent = false;
 
         if (window.ScoringSystem) {
             ScoringSystem.startLevel(this.currentLevelId, this.questions.length * 25);
         }
 
+        // Update breadcrumb
+        if (window.UI) {
+            const levelObj = window.LevelsManager ? LevelsManager.getLevel(this.currentLevelId) : null;
+            const levelTitle = levelObj ? t(levelObj.titleKey) : `Level ${this.currentLevelId}`;
+            UI.updateBreadcrumbs([
+                { nameKey: 'breadcrumbHome', screen: 'home' },
+                { name: levelTitle, screen: 'challenge' },
+                { name: `${t('levelNumber', { num: this.currentLevelId })} - Soal ${this.currentIndex + 1}`, active: true }
+            ]);
+        }
+
         this.renderQuestion();
+    },
+
+    jumpToQuestion(targetIndex) {
+        if (targetIndex < 0 || targetIndex >= this.questions.length) return;
+        this.currentIndex = targetIndex;
+        this.selectedIdxDraft = null;
+        
+        // Update breadcrumb to current question
+        if (window.UI) {
+            const levelObj = window.LevelsManager ? LevelsManager.getLevel(this.currentLevelId) : null;
+            const levelTitle = levelObj ? t(levelObj.titleKey) : `Level ${this.currentLevelId}`;
+            UI.updateBreadcrumbs([
+                { nameKey: 'breadcrumbHome', screen: 'home' },
+                { name: levelTitle, screen: 'challenge' },
+                { name: `Soal ${this.currentIndex + 1} dari ${this.questions.length}`, active: true }
+            ]);
+        }
+
+        this.renderQuestion();
+    },
+
+    renderQuestionPalette() {
+        const total = this.questions.length;
+        const tempAnswers = window.StorageManager ? StorageManager.getAllTempAnswers(this.currentLevelId) : {};
+
+        return `
+            <div class="challenge-palette-wrapper">
+                <div class="palette-header-row">
+                    <span class="palette-title">📋 ${t('questionPaletteTitle')}</span>
+                    <span class="palette-autosave-badge" id="palette-autosave-status">
+                        <span class="save-dot">●</span> <span>${t('autoSavedStatus')}</span>
+                    </span>
+                </div>
+                <div class="palette-pills-row" role="tablist" aria-label="Navigasi Nomor Soal">
+                    ${this.questions.map((q, idx) => {
+                        const saved = tempAnswers[idx];
+                        let statusClass = 'empty';
+                        let statusSymbol = idx + 1;
+
+                        if (saved && saved.isSubmitted) {
+                            statusClass = saved.isCorrect ? 'answered-correct' : 'answered-wrong';
+                            statusSymbol = saved.isCorrect ? `✓ ${idx + 1}` : `✗ ${idx + 1}`;
+                        } else if (saved && saved.selectedIndex !== undefined && saved.selectedIndex !== null) {
+                            statusClass = 'draft';
+                            statusSymbol = `✎ ${idx + 1}`;
+                        }
+
+                        const isActive = idx === this.currentIndex ? 'active' : '';
+
+                        return `
+                            <button class="palette-btn ${statusClass} ${isActive}" 
+                                    onclick="ChallengeManager.jumpToQuestion(${idx})"
+                                    title="Pindah ke Soal #${idx + 1} (${statusClass})"
+                                    aria-label="Soal nomor ${idx + 1}">
+                                ${statusSymbol}
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
     },
 
     renderQuestion() {
@@ -313,7 +387,12 @@ const ChallengeManager = {
         const lang = getLanguage();
         const total = this.questions.length;
         const currentQ = this.questions[this.currentIndex];
-        this.answeredInCurrent = false;
+        
+        // Retrieve temporary stored answer for this question if exists
+        const savedAnswer = window.StorageManager ? StorageManager.getTempAnswer(this.currentLevelId, this.currentIndex) : null;
+        
+        this.answeredInCurrent = !!(savedAnswer && savedAnswer.isSubmitted);
+        this.selectedIdxDraft = savedAnswer ? savedAnswer.selectedIndex : null;
 
         if (progressEl) {
             progressEl.textContent = t('challengeQuestion', { current: this.currentIndex + 1, total });
@@ -325,97 +404,301 @@ const ChallengeManager = {
         const qText = lang === 'en' ? (currentQ.questionEn || currentQ.question) : currentQ.question;
         const options = lang === 'en' ? (currentQ.optionsEn || currentQ.options) : currentQ.options;
 
+        const isSubmitted = !!(savedAnswer && savedAnswer.isSubmitted);
+        const isCorrect = savedAnswer ? savedAnswer.isCorrect : false;
+        const explanationText = lang === 'en' ? (currentQ.explanationEn || currentQ.explanation) : currentQ.explanation;
+
         qContainer.innerHTML = `
-            <div class="challenge-scenario-card card animate-slide-up">
+            ${this.renderQuestionPalette()}
+
+            <div class="challenge-scenario-card card animate-slide-up" role="region" aria-label="Pertanyaan ${this.currentIndex + 1}">
                 <div class="scenario-meta">
                     <span class="concept-badge">📌 Konsep: ${currentQ.concept}</span>
-                    <span class="points-tag">+10 Poin</span>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        ${savedAnswer ? `
+                            <span class="draft-indicator-pill" id="draft-saved-pill">
+                                💾 ${savedAnswer.isSubmitted ? 'Tersimpan & Dinilai' : 'Disimpan Sementara'} (${savedAnswer.savedAt || 'Baru Saja'})
+                            </span>
+                        ` : ''}
+                        <span class="points-tag">+10 Poin</span>
+                    </div>
                 </div>
+
                 <h3 class="scenario-question-text">${qText}</h3>
                 
-                <div class="scenario-options-grid">
-                    ${options.map((opt, idx) => `
-                        <button class="btn btn-option-choice" id="opt-btn-${idx}" onclick="ChallengeManager.selectOption(${idx})">
-                            <span class="opt-letter">${String.fromCharCode(65 + idx)}</span>
-                            <span class="opt-label">${opt}</span>
-                        </button>
-                    `).join('')}
+                <div class="scenario-options-grid" role="group" aria-label="Pilihan Jawaban">
+                    ${options.map((opt, idx) => {
+                        let optionClass = '';
+                        if (isSubmitted) {
+                            if (idx === currentQ.correctIndex) {
+                                optionClass = 'correct-choice';
+                            } else if (idx === this.selectedIdxDraft) {
+                                optionClass = 'wrong-choice';
+                            }
+                        } else if (idx === this.selectedIdxDraft) {
+                            optionClass = 'selected-draft-choice';
+                        }
+
+                        return `
+                            <button class="btn btn-option-choice ${optionClass}" 
+                                    id="opt-btn-${idx}" 
+                                    onclick="ChallengeManager.selectOptionDraft(${idx})"
+                                    ${isSubmitted ? 'disabled' : ''}
+                                    aria-pressed="${idx === this.selectedIdxDraft}">
+                                <span class="opt-letter">${String.fromCharCode(65 + idx)}</span>
+                                <span class="opt-label">${opt}</span>
+                                ${idx === this.selectedIdxDraft && !isSubmitted ? '<span class="selected-check">✓ Dipilih</span>' : ''}
+                            </button>
+                        `;
+                    }).join('')}
                 </div>
 
-                <div id="challenge-feedback-box" class="challenge-feedback-box hidden"></div>
+                <!-- Friendly In-Card Error / Alert (Hidden by default) -->
+                <div id="challenge-inline-alert" class="challenge-inline-alert hidden"></div>
 
-                <div class="challenge-footer-controls">
-                    <button class="btn btn-outline" onclick="ChallengeManager.useHint()">${t('btnHint')} (-5 Poin)</button>
-                    <button id="challenge-next-btn" class="btn btn-primary hidden" onclick="ChallengeManager.nextQuestion()">
-                        ${this.currentIndex + 1 >= total ? t('btnContinue') : t('btnNextLevel')} ➔
-                    </button>
+                <!-- Feedback & Explanation Box -->
+                <div id="challenge-feedback-box" class="challenge-feedback-box ${isSubmitted ? (isCorrect ? 'success-callout' : 'error-callout') : 'hidden'}">
+                    ${isSubmitted ? `
+                        <div class="feedback-header">
+                            <span class="${isCorrect ? 'badge-success' : 'badge-danger'}">
+                                ${isCorrect ? t('correctBadge') : t('wrongBadge')}
+                            </span>
+                            <h4>${isCorrect ? t('kikoCorrect') : t('kikoWrong')}</h4>
+                        </div>
+                        <p><strong>${t('explanationTitle')}</strong> ${explanationText}</p>
+                    ` : ''}
+                </div>
+
+                <!-- Main Action Controls Bar -->
+                <div class="challenge-action-toolbar">
+                    <div class="action-left-group">
+                        <button class="btn btn-outline btn-with-icon" 
+                                onclick="ChallengeManager.prevQuestion()" 
+                                ${this.currentIndex === 0 ? 'disabled' : ''}
+                                title="Kembali ke soal sebelumnya tanpa menghapus jawaban">
+                            ⬅ ${t('prevQuestionBtn')}
+                        </button>
+                        
+                        <button class="btn btn-amber-outline btn-with-icon" 
+                                onclick="ChallengeManager.resetThisQuestion()"
+                                title="Ulangi hanya soal ini (jawaban soal lain TIDAK akan terhapus)">
+                            🔄 ${t('resetThisQuestionBtn')}
+                        </button>
+                    </div>
+
+                    <div class="action-right-group">
+                        <button class="btn btn-outline" onclick="ChallengeManager.useHint()">
+                            💡 ${t('btnHint')} (-5)
+                        </button>
+
+                        <button class="btn btn-choice btn-with-icon" 
+                                onclick="ChallengeManager.saveDraftExplicit()" 
+                                ${isSubmitted ? 'disabled' : ''}
+                                title="Simpan pilihan saat ini sebagai draft sementara">
+                            💾 ${t('saveTempAnswerBtn')}
+                        </button>
+
+                        ${!isSubmitted ? `
+                            <button class="btn btn-success" onclick="ChallengeManager.submitCurrentAnswer()">
+                                ✓ ${t('btnCheck')}
+                            </button>
+                        ` : ''}
+
+                        ${this.currentIndex + 1 < total ? `
+                            <button id="challenge-next-btn" class="btn btn-primary" onclick="ChallengeManager.nextQuestion()">
+                                ${t('nextQuestionBtn')} ➔
+                            </button>
+                        ` : `
+                            <button id="challenge-finish-btn" class="btn btn-primary" onclick="ChallengeManager.promptFinishChallenge()">
+                                🏁 ${t('finishChallengeBtn')}
+                            </button>
+                        `}
+                    </div>
                 </div>
             </div>
         `;
     },
 
-    selectOption(selectedIdx) {
+    selectOptionDraft(selectedIdx) {
         if (this.answeredInCurrent) return;
-        this.answeredInCurrent = true;
 
+        this.selectedIdxDraft = selectedIdx;
+        const currentQ = this.questions[this.currentIndex];
+        const lang = getLanguage();
+        const chosenText = (lang === 'en' ? (currentQ.optionsEn || currentQ.options) : currentQ.options)[selectedIdx];
+
+        // Hide inline alert if was shown
+        const alertEl = document.getElementById('challenge-inline-alert');
+        if (alertEl) alertEl.classList.add('hidden');
+
+        // Update UI option buttons selection highlight
+        this.questions[this.currentIndex].options.forEach((_, idx) => {
+            const btn = document.getElementById(`opt-btn-${idx}`);
+            if (btn) {
+                btn.classList.toggle('selected-draft-choice', idx === selectedIdx);
+                const checkBadge = btn.querySelector('.selected-check');
+                if (idx === selectedIdx) {
+                    if (!checkBadge) {
+                        const span = document.createElement('span');
+                        span.className = 'selected-check';
+                        span.textContent = '✓ Dipilih';
+                        btn.appendChild(span);
+                    }
+                } else if (checkBadge) {
+                    checkBadge.remove();
+                }
+            }
+        });
+
+        // Automatically persist temporary answer draft
+        if (window.StorageManager) {
+            StorageManager.saveTempAnswer(this.currentLevelId, this.currentIndex, {
+                selectedIndex: selectedIdx,
+                isSubmitted: false,
+                isCorrect: null,
+                chosenText: chosenText,
+                questionId: currentQ.id
+            });
+        }
+
+        // Update live indicator & palette
+        this.updateAutosaveIndicator();
+    },
+
+    updateAutosaveIndicator() {
+        const statusEl = document.getElementById('palette-autosave-status');
+        if (statusEl) {
+            statusEl.innerHTML = `<span>✓</span> <span>${t('autoSavedStatus')} (${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })})</span>`;
+            statusEl.classList.add('pulse-once');
+            setTimeout(() => statusEl.classList.remove('pulse-once'), 1000);
+        }
+        
+        // Re-render only palette pill for this question to reflect draft
+        const paletteBtns = document.querySelectorAll('.palette-btn');
+        if (paletteBtns && paletteBtns[this.currentIndex]) {
+            const btn = paletteBtns[this.currentIndex];
+            if (!btn.classList.contains('answered-correct') && !btn.classList.contains('answered-wrong')) {
+                btn.className = `palette-btn draft active`;
+                btn.textContent = `✎ ${this.currentIndex + 1}`;
+            }
+        }
+    },
+
+    saveDraftExplicit() {
+        if (this.selectedIdxDraft === null || this.selectedIdxDraft === undefined) {
+            this.showInlineAlert(t('pleaseSelectOptionWarning'));
+            if (window.SoundManager) SoundManager.play('wrong');
+            return;
+        }
+
+        const currentQ = this.questions[this.currentIndex];
+        const lang = getLanguage();
+        const chosenText = (lang === 'en' ? (currentQ.optionsEn || currentQ.options) : currentQ.options)[this.selectedIdxDraft];
+
+        if (window.StorageManager) {
+            StorageManager.saveTempAnswer(this.currentLevelId, this.currentIndex, {
+                selectedIndex: this.selectedIdxDraft,
+                isSubmitted: false,
+                isCorrect: null,
+                chosenText: chosenText,
+                questionId: currentQ.id
+            });
+        }
+
+        if (window.UI) {
+            UI.showToast(t('tempAnswerSavedNotice'));
+            UI.setKikoDialogue('Jawaban sementara soal ini tersimpan! Kamu bisa beralih ke soal lain kapan saja.', 'happy');
+        }
+        if (window.SoundManager) SoundManager.play('click');
+        this.renderQuestion();
+    },
+
+    submitCurrentAnswer() {
+        if (this.selectedIdxDraft === null || this.selectedIdxDraft === undefined) {
+            this.showInlineAlert(t('pleaseSelectOptionWarning'));
+            if (window.SoundManager) SoundManager.play('wrong');
+            return;
+        }
+
+        const selectedIdx = this.selectedIdxDraft;
         const currentQ = this.questions[this.currentIndex];
         const isCorrect = selectedIdx === currentQ.correctIndex;
         const lang = getLanguage();
-
-        const selectedBtn = document.getElementById(`opt-btn-${selectedIdx}`);
-        const correctBtn = document.getElementById(`opt-btn-${currentQ.correctIndex}`);
-        const feedbackBox = document.getElementById('challenge-feedback-box');
-        const nextBtn = document.getElementById('challenge-next-btn');
-
-        if (selectedBtn) {
-            selectedBtn.classList.add(isCorrect ? 'correct-choice' : 'wrong-choice');
-        }
-        if (correctBtn && !isCorrect) {
-            correctBtn.classList.add('correct-choice');
-        }
-
-        const explanationText = lang === 'en' ? (currentQ.explanationEn || currentQ.explanation) : currentQ.explanation;
         const chosenText = (lang === 'en' ? (currentQ.optionsEn || currentQ.options) : currentQ.options)[selectedIdx];
+
+        this.answeredInCurrent = true;
+
+        // Persist verified answer to StorageManager
+        if (window.StorageManager) {
+            StorageManager.saveTempAnswer(this.currentLevelId, this.currentIndex, {
+                selectedIndex: selectedIdx,
+                isSubmitted: true,
+                isCorrect: isCorrect,
+                chosenText: chosenText,
+                questionId: currentQ.id
+            });
+        }
+
+        // Record in scoring system
+        if (window.ScoringSystem) {
+            ScoringSystem.recordAnswer(isCorrect, currentQ, chosenText);
+        }
 
         if (isCorrect) {
             if (window.SoundManager) SoundManager.play('correct');
-            feedbackBox.className = 'challenge-feedback-box success-callout animate-bounce-subtle';
-            feedbackBox.innerHTML = `
-                <div class="feedback-header">
-                    <span class="badge-success">${t('correctBadge')}</span>
-                    <h4>${t('kikoCorrect')}</h4>
-                </div>
-                <p><strong>${t('explanationTitle')}</strong> ${explanationText}</p>
-            `;
+            if (window.UI) UI.setKikoDialogue(t('kikoCorrect'), 'happy');
         } else {
             if (window.SoundManager) SoundManager.play('wrong');
-            feedbackBox.className = 'challenge-feedback-box error-callout animate-shake';
-            feedbackBox.innerHTML = `
-                <div class="feedback-header">
-                    <span class="badge-danger">${t('wrongBadge')}</span>
-                    <h4>${t('kikoWrong')}</h4>
-                </div>
-                <p><strong>${t('explanationTitle')}</strong> ${explanationText}</p>
-            `;
+            if (window.UI) UI.setKikoDialogue(t('kikoWrong'), 'thinking');
         }
 
-        feedbackBox.classList.remove('hidden');
-        if (nextBtn) nextBtn.classList.remove('hidden');
+        this.renderQuestion();
+    },
 
-        // Record in scoring system & history
-        if (window.ScoringSystem) {
-            ScoringSystem.recordAnswer(isCorrect, currentQ, chosenText);
-            const scoreEl = document.getElementById('challenge-live-score');
-            if (scoreEl) {
-                scoreEl.textContent = `${t('scoreLabel')} ${ScoringSystem.currentLevelState.baseScore}`;
-            }
+    resetThisQuestion() {
+        const currentQ = this.questions[this.currentIndex];
+        const savedAnswer = window.StorageManager ? StorageManager.getTempAnswer(this.currentLevelId, this.currentIndex) : null;
+
+        if (!savedAnswer && (this.selectedIdxDraft === null || this.selectedIdxDraft === undefined)) {
+            if (window.UI) UI.showToast("Soal ini belum dijawab, silakan pilih salah satu opsi.");
+            return;
+        }
+
+        // Reset ONLY this question, preserving all other questions!
+        if (window.StorageManager) {
+            StorageManager.resetQuestionAnswer(this.currentLevelId, this.currentIndex, currentQ.id, currentQ.question);
+        }
+
+        this.selectedIdxDraft = null;
+        this.answeredInCurrent = false;
+
+        if (window.SoundManager) SoundManager.play('pop');
+        if (window.UI) {
+            UI.showToast(t('resetQuestionSuccessNotice'));
+            UI.setKikoDialogue("Soal ini siap diulang! Pikirkan kembali pilihan yang paling tepat ya.", 'thinking');
+        }
+
+        this.renderQuestion();
+    },
+
+    showInlineAlert(message) {
+        const alertEl = document.getElementById('challenge-inline-alert');
+        if (alertEl) {
+            alertEl.className = 'challenge-inline-alert error animate-shake';
+            alertEl.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
+                    <div>${message}</div>
+                    <button class="btn btn-outline" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" onclick="this.parentElement.parentElement.classList.add('hidden')">✕</button>
+                </div>
+            `;
+            alertEl.classList.remove('hidden');
         }
     },
 
     useHint() {
         const currentQ = this.questions[this.currentIndex];
-        const hint = `Petunjuk: Perhatikan konsep ${currentQ.concept}. Apakah operasi ini masuk dari ujung atau dari atas?`;
-        UI.showFeedback(true, hint, currentQ.concept);
+        const hint = `💡 Petunjuk Konsep: ${currentQ.concept}. Pikirkan apakah data masuk/keluar dari arah depan, belakang, atau tumpukan atas!`;
+        if (window.UI) UI.showFeedback(true, hint, currentQ.concept);
         if (window.ScoringSystem) {
             ScoringSystem.useHint();
             const scoreEl = document.getElementById('challenge-live-score');
@@ -425,16 +708,39 @@ const ChallengeManager = {
         }
     },
 
+    prevQuestion() {
+        if (this.currentIndex > 0) {
+            this.jumpToQuestion(this.currentIndex - 1);
+        }
+    },
+
     nextQuestion() {
-        this.currentIndex++;
-        if (this.currentIndex < this.questions.length) {
-            this.renderQuestion();
+        if (this.currentIndex + 1 < this.questions.length) {
+            this.jumpToQuestion(this.currentIndex + 1);
         } else {
-            // Level challenge finished!
+            this.promptFinishChallenge();
+        }
+    },
+
+    promptFinishChallenge() {
+        const total = this.questions.length;
+        const tempAnswers = window.StorageManager ? StorageManager.getAllTempAnswers(this.currentLevelId) : {};
+        const answeredCount = Object.values(tempAnswers).filter(a => a && a.isSubmitted).length;
+
+        if (answeredCount < total) {
+            const unanswered = total - answeredCount;
+            const proceed = confirm(`Kamu telah menyelesaikan ${answeredCount} dari ${total} soal. Masih ada ${unanswered} soal yang belum diperiksa/dijawab.\n\nApakah kamu yakin ingin menyelesaikan sekarang? Tekan 'Batal' untuk memeriksa kembali.`);
+            if (!proceed) return;
+        }
+
+        // Finish Challenge!
+        if (window.UI) UI.showLoading("Menghitung skor evaluasi akhir...");
+        setTimeout(() => {
+            if (window.UI) UI.hideLoading();
             const finalScore = window.ScoringSystem ? ScoringSystem.finishLevel() : 85;
             LevelsManager.completeLevel(this.currentLevelId, finalScore);
             UI.showLevelCompleteModal(this.currentLevelId, finalScore);
-        }
+        }, 600);
     }
 };
 

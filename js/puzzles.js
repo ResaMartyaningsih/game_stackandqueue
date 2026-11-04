@@ -7,9 +7,54 @@
 const PuzzlesManager = {
     currentPuzzle: 'A',
     selectedCard: null,
+    solvedPuzzles: {
+        A: false,
+        B: false,
+        C1: false,
+        C2: false,
+        D: false,
+        E: false
+    },
 
     init() {
+        if (window.StorageManager) {
+            const saved = StorageManager.getPageScore('puzzles');
+            if (saved && saved.details && saved.details.solved) {
+                this.solvedPuzzles = { ...this.solvedPuzzles, ...saved.details.solved };
+            }
+        }
+        this.updatePuzzleUIProgress();
         this.loadPuzzle('A');
+    },
+
+    updatePuzzleUIProgress() {
+        let score = 0;
+        if (this.solvedPuzzles.A) score += 20;
+        if (this.solvedPuzzles.B) score += 20;
+        if (this.solvedPuzzles.C1) score += 10;
+        if (this.solvedPuzzles.C2) score += 10;
+        if (this.solvedPuzzles.D) score += 20;
+        if (this.solvedPuzzles.E) score += 20;
+
+        const scoreEl = document.getElementById('puzzle-live-score');
+        const countEl = document.getElementById('puzzle-live-count');
+
+        if (scoreEl) scoreEl.textContent = `${score} / 100 Poin`;
+        if (countEl) countEl.textContent = `${Math.min(5, Math.floor(score / 20))} / 5 Teka-Teki Selesai`;
+
+        ['A', 'B', 'D', 'E'].forEach(letter => {
+            const btn = document.querySelector(`.puzzle-tab-btn[data-puzzle="${letter}"]`);
+            if (btn && this.solvedPuzzles[letter]) {
+                btn.innerHTML = `🧩 Puzzle ${letter} <span class="tab-check-badge">✓</span>`;
+                btn.classList.add('tab-completed');
+            }
+        });
+        const btnC = document.querySelector(`.puzzle-tab-btn[data-puzzle="C"]`);
+        if (btnC && (this.solvedPuzzles.C1 || this.solvedPuzzles.C2)) {
+            const cSolved = this.solvedPuzzles.C1 && this.solvedPuzzles.C2;
+            btnC.innerHTML = `🧩 Puzzle C <span class="tab-check-badge">${cSolved ? '✓' : '½'}</span>`;
+            if (cSolved) btnC.classList.add('tab-completed');
+        }
     },
 
     loadPuzzle(type) {
@@ -430,11 +475,104 @@ const PuzzlesManager = {
     },
 
     rewardPuzzleSolved(code) {
+        if (this.solvedPuzzles[code] !== undefined) {
+            this.solvedPuzzles[code] = true;
+        }
         if (window.ScoringSystem) {
             ScoringSystem.currentLevelState.correctCount++;
         }
         if (window.AchievementsManager && (code === 'D' || code === 'E')) {
             AchievementsManager.check('PUZZLE_SOLVER');
+        }
+
+        this.updatePuzzleUIProgress();
+
+        let score = 0;
+        if (this.solvedPuzzles.A) score += 20;
+        if (this.solvedPuzzles.B) score += 20;
+        if (this.solvedPuzzles.C1) score += 10;
+        if (this.solvedPuzzles.C2) score += 10;
+        if (this.solvedPuzzles.D) score += 20;
+        if (this.solvedPuzzles.E) score += 20;
+
+        if (window.StorageManager) {
+            StorageManager.savePageScore('puzzles', score, { solved: this.solvedPuzzles });
+        }
+
+        if (score >= 100) {
+            if (window.AchievementsManager) {
+                AchievementsManager.check('PUZZLE_SOLVER');
+            }
+            if (window.UI) {
+                UI.showToast("🎉 Luar biasa! Semua 5 teka-teki logika selesai!");
+                UI.setKikoDialogue("Kamu berhasil memecahkan semua teka-teki! Silakan klik 'Lanjut ke Level 7' untuk melangkah ke lab studi kasus.", "cheering");
+            }
+        }
+    },
+
+    saveAndFinishPuzzleLevel() {
+        let score = 0;
+        if (this.solvedPuzzles.A) score += 20;
+        if (this.solvedPuzzles.B) score += 20;
+        if (this.solvedPuzzles.C1) score += 10;
+        if (this.solvedPuzzles.C2) score += 10;
+        if (this.solvedPuzzles.D) score += 20;
+        if (this.solvedPuzzles.E) score += 20;
+
+        const finalScore = Math.max(75, score);
+
+        if (window.StorageManager) {
+            StorageManager.savePageScore('puzzles', finalScore, { solved: this.solvedPuzzles });
+            StorageManager.setLevelScore(6, finalScore);
+            StorageManager.unlockLevel(7);
+        }
+
+        if (window.LevelsManager) {
+            LevelsManager.completeLevel(6, finalScore);
+        }
+
+        if (window.SoundManager) {
+            SoundManager.play('levelComplete');
+        }
+
+        if (window.UI) {
+            UI.showToast(`✅ Nilai Level 6 (Puzzle): ${finalScore} pts tersimpan! Level 7 Terbuka!`);
+            UI.showLevelCompleteModal(6, finalScore);
+        }
+    },
+
+    goToNextLevelFromPuzzle() {
+        let score = 0;
+        if (this.solvedPuzzles.A) score += 20;
+        if (this.solvedPuzzles.B) score += 20;
+        if (this.solvedPuzzles.C1) score += 10;
+        if (this.solvedPuzzles.C2) score += 10;
+        if (this.solvedPuzzles.D) score += 20;
+        if (this.solvedPuzzles.E) score += 20;
+
+        const finalScore = Math.max(75, score);
+
+        if (window.StorageManager) {
+            StorageManager.savePageScore('puzzles', finalScore, { solved: this.solvedPuzzles });
+            StorageManager.setLevelScore(6, finalScore);
+            StorageManager.unlockLevel(7);
+        }
+
+        if (window.LevelsManager) {
+            LevelsManager.completeLevel(6, finalScore);
+        }
+
+        if (window.SoundManager) {
+            SoundManager.play('levelComplete');
+        }
+
+        if (window.UI) {
+            UI.switchScreen('challenge');
+            if (window.ChallengeManager) {
+                ChallengeManager.startChallenge(7);
+            }
+            UI.showToast("🚀 Berhasil naik ke Level 7: Kasus Nyata Teknologi!");
+            UI.setKikoDialogue("Selamat datang di Level 7! Mari pecahkan studi kasus antrean printer dan browser back.", "cheering");
         }
     }
 };
