@@ -5,14 +5,14 @@
 
 const Player = {
     name: '',
-    className: 'Fase E (Kelas X)',
+    className: 'Kelas X.1',
     absen: '',
     currentSessionStartTime: Date.now(),
 
     init() {
         if (window.StorageManager) {
             this.name = StorageManager.getPlayerName();
-            this.className = StorageManager.getPlayerClass();
+            this.className = StorageManager.getPlayerClass() || 'Kelas X.1';
             this.absen = StorageManager.getPlayerAbsen();
         }
         this.updatePlayerUI();
@@ -31,11 +31,11 @@ const Player = {
     },
 
     getClass() {
-        return this.className || 'Fase E (Kelas X)';
+        return this.className || 'Kelas X.1';
     },
 
     setClass(newClass) {
-        this.className = (newClass || 'Fase E (Kelas X)').trim();
+        this.className = (newClass || 'Kelas X.1').trim();
         if (window.StorageManager) {
             StorageManager.setPlayerClass(this.className);
         }
@@ -56,7 +56,7 @@ const Player = {
 
     setProfile(newName, newClass, newAbsen) {
         this.name = (newName || '').trim();
-        this.className = (newClass || 'Fase E (Kelas X)').trim();
+        this.className = (newClass || 'Kelas X.1').trim();
         this.absen = (newAbsen !== undefined && newAbsen !== null) ? String(newAbsen).trim() : '';
         if (window.StorageManager) {
             StorageManager.setProfile(this.name, this.className, this.absen);

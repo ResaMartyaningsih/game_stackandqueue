@@ -240,6 +240,9 @@ const UI = {
         } else if (screenId === 'group-project') {
             this.setKikoDialogue("Selamat datang di Lembar Kerja Tugas Kelompok! Pilih salah satu studi kasus dan selesaikan bersama tim.", 'cheering');
             if (window.App) App.initGroupProject();
+        } else if (screenId === 'enrichment') {
+            this.setKikoDialogue("Modul Pengayaan & Remedial! Perdalam materi lanjut atau mantapkan pemahaman dasar melalui latihan soal bertingkat.", 'happy');
+            if (window.PBLAcademic) PBLAcademic.renderRemedialQuiz();
         } else if (screenId === 'puzzle') {
             this.setKikoDialogue("Zona Teka-Teki Logika! Pecahkan teka-teki untuk mengumpulkan 100 poin dan lanjut ke Level 7.", 'happy');
             if (window.PuzzlesManager) PuzzlesManager.updatePuzzleUIProgress();

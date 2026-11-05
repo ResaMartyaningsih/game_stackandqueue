@@ -1,6 +1,9 @@
 /**
  * levels.js
- * Definitions and orchestration of the 8 major adventure levels
+ * Definitions and orchestration of the adventure levels aligned with UKIN RPM (90 Menit)
+ * Level 1-4: Aktivitas Inti Pembelajaran (15 Menit)
+ * Level 5-7: Tantangan Tambahan / Pengayaan Opsional
+ * Level 8: Evaluasi Akhir (Asesmen Sumatif 5 Menit)
  */
 
 const LEVELS_CONFIG = [
@@ -12,6 +15,8 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locSchool',
         type: 'intro-learning',
         targetTime: 90,
+        isCore: true,
+        category: 'Aktivitas Inti Pembelajaran',
         objective: 'Pahami perbedaan mendasar LIFO (Stack) dan FIFO (Queue) melalui peragaan visual.'
     },
     {
@@ -22,6 +27,8 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locWarehouse',
         type: 'stack-sim',
         targetTime: 120,
+        isCore: true,
+        category: 'Aktivitas Inti Pembelajaran',
         objective: 'Lakukan operasi push, pop, peek, dan amati status TOP pada simulator Stack sesungguhnya.'
     },
     {
@@ -32,6 +39,8 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locCafeteria',
         type: 'queue-sim',
         targetTime: 120,
+        isCore: true,
+        category: 'Aktivitas Inti Pembelajaran',
         objective: 'Kuasai operasi enqueue, dequeue, front, dan amati pergerakan FRONT antrean sesungguhnya.'
     },
     {
@@ -42,6 +51,8 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locLibrary',
         type: 'stack-games',
         targetTime: 150,
+        isCore: true,
+        category: 'Aktivitas Inti Pembelajaran',
         objective: 'Selesaikan tantangan tumpukan buku perpustakaan dan muatan kargo gudang logistik.'
     },
     {
@@ -52,6 +63,8 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locSupermarket',
         type: 'queue-games',
         targetTime: 150,
+        isCore: false,
+        category: 'Tantangan Tambahan / Pengayaan Opsional',
         objective: 'Layani kasir supermarket dan barisan kantin sekolah secara adil tanpa melanggar FIFO.'
     },
     {
@@ -62,6 +75,8 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locPuzzle',
         type: 'puzzle-zone',
         targetTime: 180,
+        isCore: false,
+        category: 'Tantangan Tambahan / Pengayaan Opsional',
         objective: 'Pecahkan teka-teki drag-and-drop: penyusunan urutan elemen dan pengelompokan operasi.'
     },
     {
@@ -72,6 +87,8 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locTechLab',
         type: 'tech-challenges',
         targetTime: 180,
+        isCore: false,
+        category: 'Tantangan Tambahan / Pengayaan Opsional',
         objective: 'Selesaikan studi kasus antrean cetak printer kantor dan riwayat tombol back browser.'
     },
     {
@@ -82,7 +99,10 @@ const LEVELS_CONFIG = [
         locationNameKey: 'locArena',
         type: 'final-exam',
         targetTime: 240,
-        objective: 'Tuntaskan evaluasi akhir 10 soal skenario menantang untuk mendapatkan skor kelulusan petualangan!'
+        isCore: false,
+        category: 'Evaluasi Sumatif Terpadu',
+        targetScreen: 'evaluation',
+        objective: 'Tuntaskan evaluasi akhir 5 butir soal HOTS untuk mengukur capaian pembelajaran.'
     }
 ];
 

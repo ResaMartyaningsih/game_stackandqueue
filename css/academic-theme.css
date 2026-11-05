@@ -1440,16 +1440,114 @@ body {
     color: #714236 !important;
 }
 
+.methods-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 1.15rem !important;
+    margin: 1.25rem 0 1.75rem 0 !important;
+}
+
 .method-card {
-    background: #FAF8F5 !important;
-    border: 1.5px solid #D8D4BC !important;
-    border-radius: 10px !important;
+    background: #FFFFFF !important;
+    border: 2px solid #D8D4BC !important;
+    border-radius: 14px !important;
+    padding: 1.25rem 1.15rem !important;
+    box-shadow: 0 4px 14px rgba(113, 66, 54, 0.08) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.method-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(113, 66, 54, 0.12) !important;
+    border-color: #E76814 !important;
 }
 
 .method-card code {
+    display: inline-block !important;
+    background: #FAF6ED !important;
+    border: 1px solid #D8D4BC !important;
+    border-radius: 6px !important;
+    padding: 0.4rem 0.65rem !important;
     font-family: 'Space Mono', monospace !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
+    font-size: 0.95rem !important;
     color: #891A10 !important;
+    line-height: 1.4 !important;
+}
+
+.method-card p {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 0.92rem !important;
+    font-weight: 500 !important;
+    color: #2B1D19 !important;
+    line-height: 1.55 !important;
+    margin: 0 !important;
+}
+
+/* ===============================================
+   REMEDIAL MODULE QUIZ STYLING
+   =============================================== */
+.remedial-opt-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #FAF8F5;
+    border: 1.5px solid #D8D4BC;
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.92rem;
+    color: #2B1D19;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.remedial-opt-btn:hover {
+    background: #FAF6ED;
+    border-color: #E76814;
+    transform: translateX(4px);
+}
+
+.remedial-opt-btn .opt-key {
+    font-family: 'Space Mono', monospace;
+    font-weight: 800;
+    color: #891A10;
+    background: #FFFFFF;
+    border: 1px solid #D8D4BC;
+    border-radius: 6px;
+    padding: 0.25rem 0.55rem;
+    min-width: 28px;
+    text-align: center;
+}
+
+.remedial-opt-btn.is-correct {
+    background: #f0fdf4 !important;
+    border-color: #22c55e !important;
+    color: #15803d !important;
+    font-weight: 700;
+}
+
+.remedial-opt-btn.is-correct .opt-key {
+    background: #22c55e !important;
+    color: #ffffff !important;
+    border-color: #22c55e !important;
+}
+
+.remedial-opt-btn.is-wrong {
+    background: #fef2f2 !important;
+    border-color: #ef4444 !important;
+    color: #b91c1c !important;
+}
+
+.remedial-opt-btn.is-wrong .opt-key {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+    border-color: #ef4444 !important;
 }
 
 .concept-photo-card {

@@ -1,144 +1,172 @@
-# DAILY RUSH: STACK & QUEUE ADVENTURE
-### *Petualangan Interaktif Struktur Data Stack (LIFO) & Queue (FIFO)*
-
-**Daily Rush** adalah media pembelajaran berbasis game edukasi interaktif *(educational game)* yang dirancang untuk siswa SMA Kelas X (Fase E) dalam mata pelajaran **Informatika**. Game ini membantu siswa memahami konsep abstrak struktur data **Stack** dan **Queue** melalui skenario kehidupan sehari-hari, simulasi langsung *(hands-on simulation)*, teka-teki logika *(puzzles)*, mini-games, dan evaluasi hasil belajar yang komprehensif.
-
----
-
-## 🎯 1. Capaian & Tujuan Pembelajaran (Learning Objectives)
-
-### STACK (Tumpukan)
-* Memahami prinsip dasar **LIFO** *(Last In, First Out)*: elemen yang terakhir dimasukkan adalah yang pertama kali dikeluarkan.
-* Menguasai method & operasi Stack:
-  * `push(item)`: Menambahkan elemen baru ke puncak *(TOP)* tumpukan.
-  * `pop()`: Mengambil & menghapus elemen teratas *(TOP)*.
-  * `peek()`: Melihat isi elemen teratas tanpa mengubah ukuran tumpukan.
-  * `isEmpty()`: Memeriksa apakah tumpukan kosong untuk mencegah kondisi *Underflow*.
-* Contoh penerapan nyata:
-  * Tumpukan piring bersih di kafetaria.
-  * Susunan kardus kargo di lorong gudang sempit.
-  * Tumpukan buku di meja perpustakaan.
-  * Riwayat tombol *Back* pada web browser.
-  * Fitur pembatalan tindakan *Undo* (Ctrl+Z) pada aplikasi pengolah kata/grafis.
-
-### QUEUE (Antrean)
-* Memahami prinsip dasar **FIFO** *(First In, First Out)*: elemen yang pertama kali datang adalah yang pertama kali dilayani/keluar.
-* Menguasai method & operasi Queue:
-  * `enqueue(item)`: Menambahkan elemen baru di posisi paling belakang *(REAR)* antrean.
-  * `dequeue()`: Melayani dan mengeluarkan elemen terdepan *(FRONT)*.
-  * `front()`: Melihat elemen paling depan tanpa mengubah antrean.
-  * `isEmpty()`: Memeriksa kekosongan antrean.
-* Contoh penerapan nyata:
-  * Antrean pembayaran di kasir supermarket.
-  * Barisan pengambilan makan siang di kantin sekolah.
-  * Antrean loket tiket bioskop dan bank.
-  * Penjadwalan cetak dokumen pada printer *(Printer Spooler Queue)*.
+# LARASLOGIKA: MEDIA PEMBELAJARAN BERPIKIR KOMPUTASIONAL
+### *Struktur Data Stack (LIFO) & Queue (FIFO) Berbasis Problem Based Learning (PBL)*
+**Mata Pelajaran:** Informatika SMA Kelas X (Fase E)  
+**Alokasi Waktu:** 2 JP (2 × 45 Menit = 90 Menit)  
+**Model Pembelajaran:** Problem Based Learning (PBL)  
+**Kebutuhan:** Uji Kinerja (UKIN) Program Pendidikan Profesi Guru (PPG)  
+**Pengembang:** Resa Martyaningsih, S.Pd.  
 
 ---
 
-## 🗺 2. Struktur 8 Level Petualangan (World Map)
+## 🌟 1. Identitas & Deskripsi Media
 
-Game ini menyajikan peta petualangan interaktif dengan sistem pembukaan level bertahap *(progressive unlocking)*:
+**LarasLogika** adalah website media pembelajaran interaktif yang dirancang khusus untuk memfasilitasi pembelajaran Informatika SMA Kelas X (Fase E) pada materi **Berpikir Komputasional: Struktur Data Linier (Stack dan Queue)**. 
 
-| Level | Lokasi | Topik Pembelajaran | Mode Interaksi |
-|---|---|---|---|
-| **Level 1** | 🏫 Sekolah *(School)* | Gerbang Pengenalan Stack & Queue | Konseptual, peragaan visual, dan kuis pemahaman awal |
-| **Level 2** | 📦 Gudang *(Warehouse)* | Laboratorium Simulasi Stack | Hands-on push, pop, peek pada simulator Stack sesungguhnya |
-| **Level 3** | 🍽 Kantin *(Cafeteria)* | Laboratorium Simulasi Queue | Hands-on enqueue, dequeue, front pada simulator Queue sesungguhnya |
-| **Level 4** | 📚 Perpustakaan *(Library)* | Tantangan Tumpukan Buku & Kardus Gudang | Mini-game pencarian buku target dan bongkar muat kargo LIFO |
-| **Level 5** | 🛒 Supermarket | Tantangan Kasir Rame & Kantin Sekolah | Mini-game antrean pelanggan kasir ber-ticket dan barisan makan FIFO |
-| **Level 6** | 🧩 Zona Puzzle *(Puzzle Zone)* | 5 Teka-Teki Logika Interaktif | Drag-and-drop urutan kedatangan, penarikan tumpukan, matching konsep |
-| **Level 7** | 🎫 Loket & Lab *(Tech Lab)* | Simulasi Kasus Nyata Tingkat Lanjut | Studi kasus printer spooler, URL browser history stack, dan undo |
-| **Level 8** | 🏆 Arena Juara *(Champion Arena)* | Evaluasi Akhir Juara Petualang | Ujian komprehensif 10 skenario kontekstual untuk penilaian akhir |
+Media ini menerapkan sintaks **Problem Based Learning (PBL)** secara terpadu melalui stimulus kontekstual pelayanan kantin sekolah pada jam istirahat. Siswa diajak mengidentifikasi masalah penumpukan antrean, menganalisis perbedaan prinsip kerja **Stack (LIFO - Last In, First Out)** dan **Queue (FIFO - First In, First Out)**, melakukan simulasi langsung operasi dasar komputer, menyelesaikan tugas penyelidikan mandiri bertingkat, berkolaborasi dalam LKPD kelompok 6 orang, serta menuntaskan evaluasi sumatif HOTS.
 
----
-
-## 🎮 3. Fitur Utama Aplikasi
-
-1. **Implementasi Struktur Data Murni (OOP)**:
-   * Bukan simulasi palsu: logika aplikasi dijalankan oleh `class Stack` dan `class Queue` JavaScript asli dengan method `push`, `pop`, `peek`, `enqueue`, `dequeue`, dan `front`.
-2. **Sistem Bilingual Penuh (ID 🇮🇩 / EN 🇬🇧)**:
-   * Dilengkapi kamus terpusat (`translations.js`) yang memungkinkan pergantian bahasa secara instan tanpa memuat ulang halaman.
-3. **Penyimpanan Lokal (LocalStorage Persistence)**:
-   * Menyimpan nama siswa, level yang sudah terbuka, perolehan skor tiap level, riwayat log seluruh jawaban, dan piala prestasi.
-4. **Sintesis Audio Web Audio API**:
-   * Menghasilkan efek suara interaktif (arpeggio benar, boop salah, swoosh push/pop, nada enqueue/dequeue, dan fanfare kelulusan) tanpa dependensi file eksternal (100% offline).
-5. **Karakter Pemandu Siswa ("Kiko")**:
-   * Karakter robot pemandu yang ramah dan interaktif memberikan tips belajar, reaksi ekspresi wajah, serta umpan balik motivatif.
-6. **Zona Puzzle Drag-and-Drop & Touch-Friendly**:
-   * Mendukung interaksi mouse dan sentuhan layar *(touch)* dengan mode klik-lalu-tempatkan sehingga nyaman dimainkan di tablet maupun HP.
-7. **Rapor Hasil Belajar & Lembar Cetak Guru (`window.print`)**:
-   * Menampilkan Nilai Rata-rata Akhir (Skala 100), Predikat Hasil Belajar (*Sangat Baik, Baik, Cukup, Perlu Berlatih, Perlu Belajar Lagi*), Akurasi Jawaban, Waktu Pengerjaan, serta Rincian Penguasaan Konsep.
-   * Mode cetak otomatis menghasilkan lembar laporan resmi lengkap dengan kolom tanda tangan guru dan siswa.
-8. **Fitur Review Jawaban**:
-   * Siswa dan guru dapat meninjau kembali setiap pertanyaan yang telah dijawab, melihat pilihan siswa vs jawaban benar, serta membaca penjelasan konsep secara mendalam.
+Website ini mengusung estetika visual editorial modern bergaya **two26.studio** dengan palet 6 warna hangat arsitektural:
+- `#E76814` (Terracotta Warm Accent)
+- `#D8D4BC` (Sand Linen Neutral)
+- `#891A10` (Deep Crimson Rust)
+- `#DC8236` (Tuscan Ochre)
+- `#B8210F` (Cadmium Red Alert)
+- `#714236` (Dark Espresso Umber)
 
 ---
 
-## 💻 4. Struktur Berkas (Project Structure)
+## 🎯 2. Capaian & Tujuan Pembelajaran (TP)
 
-```text
-daily-rush/
-│
-├── index.html              # Halaman utama aplikasi (Single Page Application)
-├── README.md               # Dokumentasi pedagogis dan teknis
-│
+Berdasarkan Capaian Pembelajaran (CP) Informatika Fase E Elemen Berpikir Komputasional dan Rancangan Pembelajaran Mendalam (RPM) UKIN:
+
+1. **TP 1 (Analisis Konsep - C4):**  
+   Melalui pengamatan dan analisis studi kasus pelayanan kantin sekolah, peserta didik dapat menganalisis perbedaan prinsip kerja struktur data Stack (LIFO) dan Queue (FIFO) dengan tepat, sekurang-kurangnya 4 dari 5 pernyataan atau contoh kasus.
+2. **TP 2 (Penerapan Operasi Dasar - C3):**  
+   Melalui penggunaan simulasi interaktif struktur data Stack dan Queue, peserta didik dapat mempraktikkan operasi dasar `push`, `pop`, `peek`, `enqueue`, dan `dequeue` serta menjelaskan perubahan elemen pada masing-masing struktur data dengan ketepatan minimal 80%.
+3. **TP 3 (Perancangan Solusi Algoritmik - C4/C6):**  
+   Melalui kegiatan diskusi dan penyelesaian LKPD secara berkelompok, peserta didik dapat merancang solusi algoritmik untuk mengatasi permasalahan pelayanan kantin sekolah dengan menerapkan konsep Stack dan Queue secara tepat berdasarkan minimal 3 kriteria penilaian: ketepatan konsep, urutan langkah penyelesaian, dan kejelasan solusi.
+
+---
+
+## ⏱ 3. Alur Pembelajaran 2 JP (90 Menit Sesuai RPM UKIN)
+
+| No | Tahapan Pembelajaran PBL | Alokasi Waktu | Aktivitas Siswa & Fitur LarasLogika |
+|:--:|:-------------------------|:-------------:|:-------------------------------------|
+| 1 | **Kegiatan Awal** | 8 Menit | Pengisian identitas profil siswa, asesmen diagnostik awal, apersepsi, dan penyampaian 3 Tujuan Pembelajaran. |
+| 2 | **Orientasi terhadap Masalah** | 10 Menit | Mengamati narasi stimulus kekacauan antrean kantin sekolah di Beranda (`#screen-home`) dan menjawab pertanyaan pemantik komputasional. |
+| 3 | **Memahami Materi & Video Edukatif** | 12 Menit | Mempelajari konsep Stack dan Queue, menonton video animasi kontekstual (tumpukan piring & antrean kasir), serta mencoba mini simulasi interaktif. |
+| 4 | **Penyelidikan Mandiri (Tugas Individu)** | 15 Menit | Mengerjakan **4 Level Tugas Inti Bertingkat** secara mandiri: Level 1 (Konsep Dasar), Level 2 (Antrean Kasir), Level 3 (Tumpukan Piring), dan Level 4 (Tracing & Rekayasa). |
+| 5 | **Penyelidikan Kelompok (LKPD PBL)** | 20 Menit | Berkolaborasi dalam kelompok beranggotakan **6 siswa** dengan pembagian peran terstruktur, memilih 1 dari 2 studi kasus kantin, simulasi data, dan menyusun lembar analisis solusi. |
+| 6 | **Menyajikan Hasil Karya (Presentasi)** | 12 Menit | Perwakilan kelompok mempresentasikan berkas hasil LKPD di depan kelas, kelompok lain memberikan tanggapan reflektif. |
+| 7 | **Evaluasi Sumatif & Refleksi Individu** | 10 Menit | Menyelesaikan **5 butir soal evaluasi HOTS** (5 Menit) dengan kriteria ketercapaian KKTP ≥ 75, serta mengisi lembar refleksi diri model 3-2-1 (5 Menit). |
+| 8 | **Penutup** | 3 Menit | Penarikan kesimpulan bersama guru, umpan balik proses belajar, dan tindak lanjut pengumpulan berkas digital. |
+| **TOTAL** | **2 Jam Pelajaran (2 JP)** | **90 Menit** | **Selaras Penuh dengan Skenario Praktik Mengajar UKIN** |
+
+---
+
+## 🧩 4. Fitur Utama & Struktur Modul
+
+### A. Beranda & Orientasi Masalah (`#screen-home`)
+- **Hero Showcase:** Tajuk utama, identitas mata pelajaran Fase E, alokasi waktu 2 JP, dan demonstrasi live simulator tumpukan piring saji serta antrean kasir kantin.
+- **Problem Orientation Card:** Stimulus narasi kekacauan kantin sekolah (pembeli menumpuk, pesanan tertukar, penyerobotan antrean) dan pertanyaan pemantik HOTS.
+- **Duel Konsep LIFO vs FIFO:** Komparasi berdampingan antara prinsip Stack dan Queue beserta visualisasi arah panah operasional.
+
+### B. Materi Pembelajaran & Video Animasi Edukatif (`#screen-learn-*`)
+- **Pemahaman Awal:** Jembatan konsep 4 Pilar Berpikir Komputasional (Dekomposisi, Pengenalan Pola, Abstraksi, Algoritma) menuju struktur data.
+- **Materi Stack (Tumpukan):** Dilengkapi pemutar video animasi edukatif berdurasi 10 detik (`video_stack.mp4`) yang memperagakan petugas kantin menata piring saji (*push*) dan siswa mengambil piring dari puncak (*pop*).
+- **Materi Queue (Antrean):** Dilengkapi pemutar video animasi edukatif berdurasi 10 detik (`video_queue.mp4`) yang memperagakan antrean kasir kantin dari ujung *Front* (*dequeue*) hingga *Rear* (*enqueue*).
+
+### C. Laboratorium Simulator Interaktif (`#screen-stack-sim` & `#screen-queue-sim`)
+- Simulator Stack dengan chamber vertikal berdinding tebal, kontrol operasi `push`, `pop`, `peek`, penunjuk posisi *TOP*, dan deteksi *Stack Overflow / Underflow*.
+- Simulator Queue dengan lintasan horizontal, kontrol operasi `enqueue`, `dequeue`, `front`, penunjuk posisi *Front* dan *Rear*, serta log transaksi real-time.
+
+### D. Tugas Individu 4 Level Inti (`#screen-individual-tasks`)
+- **Level 1 (C2):** Pengenalan Konsep & Karakteristik Kantin Sekolah.
+- **Level 2 (C3):** Simulasi Antrean Kasir (Operasi Enqueue & Dequeue).
+- **Level 3 (C3):** Simulasi Tumpukan Piring Bersih (Operasi Push & Pop).
+- **Level 4 (C4):** Tracing Penelusuran & Rekayasa Urutan Operasi Beruntun.
+*(Level 5–7 pada sistem lama dialihkan sebagai arena tantangan pengayaan opsional).*
+
+### E. Lembar Kerja Peserta Didik (LKPD) Kelompok (`#screen-group-project`)
+- **Identitas 6 Anggota Kelompok:** Menampilkan langsung 6 baris formulir lengkap dengan Nama Siswa, Nomor Absen, dan pilihan peran:
+  1. 👑 *Ketua / Koordinator Tim*
+  2. 📝 *Notulis / Perumus Masalah*
+  3. 🧪 *Operator Simulasi & Pengujian*
+  4. 🔍 *Analis Struktur Data*
+  5. ⚙️ *Perancang Solusi Algoritmik*
+  6. 📢 *Presenter / Juru Bicara*
+- **2 Pilihan Studi Kasus Kontekstual Kantin:**
+  - **Kasus 1 (Queue - FIFO):** *Optimalisasi Sistem Antrean Kasir & Pemesanan Kantin Sekolah*.
+  - **Kasus 2 (Stack - LIFO):** *Manajemen Tumpukan Baki Saji & Piring Bersih Kantin Sekolah*.
+- **Konsol Simulasi Khusus Kasus:** Memungkinkan siswa menguji langsung alur data kasus sebelum menuliskan analisis.
+- **Rubrik Penilaian Objektif (Bukan Skor Otomatis 100):** Skor kelompok dihitung secara transparan (0–100) berdasarkan 5 kriteria RPM:
+  1. Kolaborasi & Identitas 6 Anggota (Maks. 15 poin)
+  2. Ketepatan Konsep Struktur Data (Maks. 20 poin)
+  3. Kedalaman Argumentasi Konseptual (Maks. 20 poin)
+  4. Urutan Langkah Solusi Algoritmik (Maks. 25 poin)
+  5. Kesimpulan & Kejelasan Solusi (Maks. 20 poin)
+- **Ekspor Dokumen Resmi:** Fitur cetak/unduh format dokumen Microsoft Word (`.doc`) dan cetak PDF resmi untuk bahan presentasi.
+
+### F. Evaluasi Akhir: Asesmen Sumatif HOTS (`#screen-evaluation`)
+Menguji TP1 (C4) dan TP2 (C3) melalui 5 butir soal HOTS:
+1. **Soal 1 (C4):** Menganalisis ketidaktepatan sistem antrean kantin sekolah tanpa FIFO.
+2. **Soal 2 (C4):** Menganalisis urutan elemen Stack setelah serangkaian operasi beruntun (*tracing*).
+3. **Soal 3 (C3):** Menentukan hasil operasi dasar `push`, `pop`, dan `peek` pada dispenser piring.
+4. **Soal 4 (C3):** Menentukan hasil operasi `enqueue` dan `dequeue` pada antrean loket kasir.
+5. **Soal 5 (C4):** Mengevaluasi dampak kesalahan pemilihan Stack alih-alih Queue pada sistem pemesanan kantin.
+- Menampilkan rincian pembahasan per butir soal setelah pengiriman jawaban. Kriteria Ketercapaian Tujuan Pembelajaran (KKTP) minimal adalah 75.
+
+### G. Pengayaan, Remedial & Refleksi Diri (`#screen-enrichment` & `#screen-reflection`)
+- **Pengayaan:** Mengenal konsep lanjutan *Circular Queue*, *Priority Queue*, dan *Deque*.
+- **Remedial:** Rangkuman ringkas perbedaan konsep Stack dan Queue beserta panduan perbaikan pemahaman.
+- **Refleksi 3-2-1:**
+  - 3 Konsep penting yang dipelajari.
+  - 2 Hal yang paling menantang dan cara mengatasinya.
+  - 1 Tindakan nyata penerapan berpikir komputasional dalam kehidupan sehari-hari.
+
+---
+
+## 💻 5. Struktur Berkas Proyek
+
+```
+Buat Game/
+├── index.html                 # Halaman utama aplikasi (SPA terintegrasi)
+├── README.md                  # Dokumentasi resmi media pembelajaran
+├── assets/
+│   ├── videos/
+│   │   ├── video_stack.mp4    # Video animasi konsep Stack (tumpukan piring kantin)
+│   │   └── video_queue.mp4    # Video animasi konsep Queue (antrean kasir kantin)
+│   ├── icons/                 # Aset ikon visual web
+│   └── images/                # Aset ilustrasi grafis
 ├── css/
-│   ├── style.css           # Desain token, header, navbar, kartu, tombol 3D
-│   ├── home.css            # Tampilan World Map & hero banner
-│   ├── learning.css        # Simulator visual Stack & Queue
-│   ├── game.css            # Tampilan 6 mini-game kontekstual
-│   ├── puzzle.css          # Desain zona puzzle & kartu drag-and-drop
-│   ├── challenge.css       # Tampilan arena soal kontekstual & opsi
-│   ├── result.css          # Kartu rapor hasil akhir & cetak resmi
-│   └── animations.css      # Animasi micro-interactions, awan, getar, & partikel
-│
+│   ├── academic-theme.css     # Universal two26.studio Design System & Palet 6 Warna
+│   ├── style.css              # Tata letak dasar & variabel tema
+│   ├── home.css               # Hero showcase & orientasi masalah
+│   ├── learning.css           # Tampilan materi pembelajaran & LKPD kelompok
+│   ├── game.css               # Styling game simulasi
+│   ├── puzzle.css             # Styling zona puzzle
+│   ├── challenge.css          # Styling tantangan waktu
+│   ├── result.css             # Lembar laporan & cetak rapor evaluasi
+│   └── animations.css         # Keyframe animasi & efek transisi
 └── js/
-    ├── translations.js     # Kamus bilingual (Indonesia & English)
-    ├── audio.js            # Generator efek suara Web Audio API
-    ├── storage.js          # Pengelola data LocalStorage
-    ├── stack.js            # Real Stack Object Class (LIFO)
-    ├── queue.js            # Real Queue Object Class (FIFO)
-    ├── player.js           # Profil pemain & session tracker
-    ├── scoring.js          # Mesin penilaian, predikat, & analitik belajar
-    ├── achievements.js     # Sistem penghargaan & badge prestasi
-    ├── levels.js           # Konfigurasi 8 level petualangan
-    ├── games.js            # Logika 6 mini-game interaktif
-    ├── puzzles.js          # Logika 5 puzzle interaktif
-    ├── challenges.js       # Bank soal kontekstual & evaluasi
-    ├── ui.js               # Pengendali antarmuka & karakter Kiko
-    ├── app.js              # Koordinator event global & simulator lab
-    └── main.js             # Bootstrap inisialisasi aplikasi
+    ├── app.js                 # Orkestrasi LKPD kelompok, simulator kasus, & rubrik
+    ├── pbl-academic.js        # Logika tugas individu, 5 soal HOTS, & refleksi
+    ├── levels.js              # Konfigurasi 4 level inti & pengayaan
+    ├── stack.js               # Enjin struktur data Stack & method-methodnya
+    ├── queue.js               # Enjin struktur data Queue & method-methodnya
+    ├── storage.js             # Manajemen penyimpanan lokal (LocalStorage)
+    ├── player.js              # Pengelolaan profil dan identitas siswa
+    ├── scoring.js             # Sistem skor & progres ketercapaian
+    ├── audio.js               # Efek suara interaktif
+    ├── achievements.js        # Penghargaan lencana komputasional
+    ├── puzzles.js             # Teka-teki logika drag & drop
+    ├── challenges.js          # Skenario studi kasus tantangan
+    ├── games.js               # Mini-games simulasi
+    ├── ui.js                  # Penanganan perpindahan layar & dialog
+    ├── translations.js        # Kamus istilah & teks terjemahan
+    └── main.js                # Inisialisasi awal aplikasi
 ```
 
 ---
 
-## 🚀 5. Cara Menjalankan
+## 🚀 6. Petunjuk Penggunaan untuk Praktik Mengajar UKIN
 
-Game ini dibuat murni menggunakan teknologi standar web: **HTML5, CSS3, dan Vanilla JavaScript**, tanpa memerlukan build step *(no npm install, no bundler, no backend server)*.
-
-1. Buka folder proyek di file explorer komputer Anda.
-2. Klik ganda pada berkas `index.html` untuk langsung membukanya di browser modern mana pun (Google Chrome, Microsoft Edge, Mozilla Firefox, Safari).
-3. Anda juga dapat menjalankannya melalui server lokal sederhana seperti VS Code Live Server atau Python HTTP server:
-   ```bash
-   python -m http.server 8080
-   ```
-   Lalu buka `http://localhost:8080` pada peramban web.
-
-
-## Versi Ruang CT (Perombakan Media UKIN)
-
-Proyek ini telah diperbarui menjadi media pembelajaran Informatika kelas X/Fase E dengan pendekatan Problem Based Learning pada materi Computational Thinking: Struktur Data Stack dan Queue.
-
-### Menjalankan secara lokal
-1. Pastikan Node.js sudah terpasang.
-2. Buka folder proyek di VS Code.
-3. Jalankan `npm install` jika diperlukan.
-4. Jalankan `npm start`.
-5. Buka alamat lokal yang ditampilkan oleh server di terminal.
-
-Tidak diperlukan akun siswa, database, atau dashboard guru. Identitas siswa pada fitur lama tidak lagi diwajibkan saat membuka media. Halaman evaluasi dan refleksi baru berjalan di browser; jawaban tidak dikirim ke server.
-
-
-## Navigasi terbaru
-Navigasi utama menggunakan menu horizontal di bagian atas (sticky top navigation), bukan sidebar kiri. Pada layar sempit, menu dapat digulir secara horizontal.
+1. Buka berkas `index.html` menggunakan peramban web modern (Google Chrome, Microsoft Edge, Mozilla Firefox, atau Safari).
+2. Siswa mengisi Nama Lengkap, Nomor Absen, dan Kelas pada dialog awal untuk inisialisasi profil belajar.
+3. Ikuti alur sintaks PBL sesuai rundown 90 menit:
+   - Mulai dari Beranda (Orientasi Masalah)
+   - Buka Materi Stack & Queue, tonton video animasi konsep
+   - Kerjakan Tugas Individu 4 Level Inti (15 Menit)
+   - Masuk ke menu Tugas Kelompok (LKPD), bentuk kelompok 6 orang, pilih Kasus 1 atau Kasus 2, coba simulasinya, jawab pertanyaan analisis HOTS, dan simpan nilai rubrik
+   - Unduh hasil LKPD dalam format Word (.doc) untuk bahan presentasi
+   - Kerjakan Evaluasi Akhir 5 Soal HOTS (5 Menit) dan isi Refleksi Diri 3-2-1
+4. Seluruh progres dan nilai siswa tersimpan aman pada peramban lokal perangkat.

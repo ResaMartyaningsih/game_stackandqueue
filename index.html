@@ -592,7 +592,7 @@
                     <div class="academic-card-header">
                         <div>
                             <h2 class="academic-card-title">
-                                <span>📝</span> Evaluasi Akhir: Asesmen Sumatif (90 Menit)
+                                <span>📝</span> Evaluasi Akhir: Asesmen Sumatif (5 Menit)
                             </h2>
                             <p class="academic-card-subtitle">
                                 Uji pemahaman komprehensifmu terhadap struktur data Stack dan Queue melalui 5 butir soal analisis HOTS berbasis kasus nyata kantin sekolah. Kriteria Ketercapaian Tujuan Pembelajaran (KKTP) minimal adalah 75.
@@ -604,132 +604,167 @@
                     <!-- Form Evaluasi Sumatif -->
                     <form id="evaluation-form" onsubmit="event.preventDefault(); PBLAcademic.submitEvaluation();">
                         <!-- Soal 1 -->
-                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
-                            <p style="font-weight: 700; font-size: 0.98rem; color: #0f172a; margin-bottom: 0.75rem;">
-                                1. Mengapa antrean pemesanan kasir kantin sekolah paling tepat dimodelkan dengan struktur data Queue (FIFO)?
+                        <div style="background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(113, 66, 54, 0.04);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+                                <span class="academic-badge academic-badge-indigo" style="font-size: 0.75rem;">Butir Soal #1 &bull; C4 - Analisis Ketidaktepatan Antrean</span>
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #891A10; font-weight: 700;">BOBOT: 20 POIN</span>
+                            </div>
+                            <div style="background: #FAF6ED; border-left: 4px solid #E76814; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 0.85rem; font-size: 0.92rem; color: #4A3832; line-height: 1.6;">
+                                <strong>Stimulus Kasus:</strong> Pada jam istirahat sekolah, kantin dipadati 30 siswa tanpa jalur antrean fisik. Siswa yang baru saja datang dari pintu samping langsung menyerobot ke dekat meja kasir dan dilayani lebih dahulu oleh penjual, sedangkan siswa yang telah mengantre tertib selama 10 menit di barisan depan belum dilayani. Akibatnya terjadi kegaduhan dan keluhan ketidakadilan waktu tunggu.
+                            </div>
+                            <p style="font-weight: 800; font-size: 0.98rem; color: #714236; margin-bottom: 0.85rem; line-height: 1.5;">
+                                Berdasarkan prinsip berpikir komputasional dan struktur data, analisislah pelanggaran mendasar yang terjadi pada skenario pelayanan kantin tersebut serta tentukan pemodelan solusi algoritmik yang paling tepat!
                             </p>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; color: #334155;">
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q1" value="0" style="margin-top: 3px;" required>
-                                    <span>A. Karena pelanggan yang datang pertama harus dilayani dan menerima pesanan pertama kali demi keadilan pelayanan.</span>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q1" value="0" style="margin-top: 4px;" required>
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>A.</strong> Pelayanan melanggar prinsip FIFO (First In, First Out) dari struktur data Queue; solusinya adalah menerapkan jalur antrean fisik tunggal di mana siswa yang tiba lebih awal (Front) wajib dilayani dan keluar lebih dahulu (dequeue) sebelum melayani siswa di belakangnya (Rear).</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q1" value="1" style="margin-top: 3px;">
-                                    <span>B. Karena pesanan terakhir harus didahulukan agar koki tidak menunggu lama.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q1" value="1" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>B.</strong> Pelayanan melanggar prinsip LIFO (Last In, First Out) dari struktur data Stack; solusinya adalah mewajibkan siswa yang baru datang dilayani terlebih dahulu agar tidak menumpuk di pintu masuk kantin.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q1" value="2" style="margin-top: 3px;">
-                                    <span>C. Karena data antrean dapat dimasukkan dan dikeluarkan dari ujung yang sama.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q1" value="2" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>C.</strong> Pelayanan melanggar prinsip Priority Queue; solusinya adalah memberikan prioritas pelayanan kepada siswa yang membeli makanan dengan harga tertinggi tanpa melihat waktu kedatangan.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q1" value="3" style="margin-top: 3px;">
-                                    <span>D. Karena kapasitas memori kantin tidak terbatas.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q1" value="3" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>D.</strong> Pelayanan melanggar prinsip Array dua dimensi; solusinya adalah membagi siswa ke dalam baris dan kolom acak di seluruh ruangan kantin.</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Soal 2 -->
-                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
-                            <p style="font-weight: 700; font-size: 0.98rem; color: #0f172a; margin-bottom: 0.75rem;">
-                                2. Operasi pengambilan dan penghapusan elemen dari posisi puncak tumpukan (Stack) dinamakan dengan operasi...
+                        <div style="background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(113, 66, 54, 0.04);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+                                <span class="academic-badge academic-badge-indigo" style="font-size: 0.75rem;">Butir Soal #2 &bull; C4 - Analisis Tracing Operasi Stack</span>
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #891A10; font-weight: 700;">BOBOT: 20 POIN</span>
+                            </div>
+                            <div style="background: #FAF6ED; border-left: 4px solid #E76814; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 0.85rem; font-size: 0.92rem; color: #4A3832; line-height: 1.6;">
+                                <strong>Stimulus Kasus:</strong> Petugas kantin menata baki saji makanan menggunakan mekanisme tumpukan vertikal (Stack) dengan kapasitas maksimal 5 baki. Sistem mencatat riwayat operasi berturut-turut: push(Baki Merah) → push(Baki Kuning) → push(Baki Hijau) → pop() → push(Baki Biru) → pop() → push(Baki Ungu).
+                            </div>
+                            <p style="font-weight: 800; font-size: 0.98rem; color: #714236; margin-bottom: 0.85rem; line-height: 1.5;">
+                                Lakukan penelusuran (tracing) terhadap riwayat operasi tersebut. Analisislah baki mana saja yang telah berhasil dikeluarkan dari tumpukan serta tentukan baki mana yang saat ini menempati posisi puncak (Top of Stack)!
                             </p>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; color: #334155;">
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q2" value="0" style="margin-top: 3px;" required>
-                                    <span>A. pop()</span>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q2" value="0" style="margin-top: 4px;" required>
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>A.</strong> Baki yang telah dikeluarkan adalah Baki Hijau lalu Baki Biru; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Ungu.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q2" value="1" style="margin-top: 3px;">
-                                    <span>B. push()</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q2" value="1" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>B.</strong> Baki yang telah dikeluarkan adalah Baki Merah lalu Baki Kuning; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Hijau.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q2" value="2" style="margin-top: 3px;">
-                                    <span>C. dequeue()</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q2" value="2" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>C.</strong> Baki yang telah dikeluarkan adalah Baki Biru lalu Baki Hijau; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Merah.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q2" value="3" style="margin-top: 3px;">
-                                    <span>D. enqueue()</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q2" value="3" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>D.</strong> Baki yang telah dikeluarkan adalah Baki Ungu lalu Baki Biru; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Kuning.</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Soal 3 -->
-                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
-                            <p style="font-weight: 700; font-size: 0.98rem; color: #0f172a; margin-bottom: 0.75rem;">
-                                3. Tumpukan piring saji kantin berisi 3 piring: Piring A di bawah, Piring B di tengah, dan Piring C di atas. Urutan piring yang akan diambil oleh siswa secara berurutan adalah...
+                        <div style="background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(113, 66, 54, 0.04);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+                                <span class="academic-badge academic-badge-indigo" style="font-size: 0.75rem;">Butir Soal #3 &bull; C3 - Penerapan Operasi Dasar Stack</span>
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #891A10; font-weight: 700;">BOBOT: 20 POIN</span>
+                            </div>
+                            <div style="background: #FAF6ED; border-left: 4px solid #E76814; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 0.85rem; font-size: 0.92rem; color: #4A3832; line-height: 1.6;">
+                                <strong>Stimulus Kasus:</strong> Di meja prasmanan kantin, sebuah dispenser piring bersih menampung piring keramik menggunakan prinsip Stack. Saat ini tumpukan berisi dua piring dari bawah ke atas: [Piring A, Piring B] di mana Piring B berada di posisi Top. Asisten kantin kemudian menjalankan urutan instruksi: 1) Melakukan peek(); 2) Melakukan push(Piring C); 3) Melakukan pop(); 4) Melakukan peek() kembali.
+                            </div>
+                            <p style="font-weight: 800; font-size: 0.98rem; color: #714236; margin-bottom: 0.85rem; line-height: 1.5;">
+                                Tentukan secara berurutan hasil identifikasi piring dari operasi peek() pertama, piring yang terambil saat pop(), dan hasil dari operasi peek() kedua!
                             </p>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; color: #334155;">
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q3" value="0" style="margin-top: 3px;" required>
-                                    <span>A. Piring C, lalu B, dan terakhir A</span>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q3" value="0" style="margin-top: 4px;" required>
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>A.</strong> peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring B.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q3" value="1" style="margin-top: 3px;">
-                                    <span>B. Piring A, lalu B, dan terakhir C</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q3" value="1" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>B.</strong> peek() pertama menghasilkan Piring A; pop() mengeluarkan Piring B; dan peek() kedua menghasilkan Piring C.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q3" value="2" style="margin-top: 3px;">
-                                    <span>C. Piring B, lalu A, dan terakhir C</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q3" value="2" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>C.</strong> peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring A; dan peek() kedua menghasilkan Piring C.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q3" value="3" style="margin-top: 3px;">
-                                    <span>D. Piring A, lalu C, dan terakhir B</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q3" value="3" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>D.</strong> peek() pertama menghasilkan Piring C; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring A.</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Soal 4 -->
-                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
-                            <p style="font-weight: 700; font-size: 0.98rem; color: #0f172a; margin-bottom: 0.75rem;">
-                                4. Manakah di bawah ini yang merupakan contoh penerapan struktur data Stack dalam aplikasi perangkat lunak sehari-hari?
+                        <div style="background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(113, 66, 54, 0.04);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+                                <span class="academic-badge academic-badge-indigo" style="font-size: 0.75rem;">Butir Soal #4 &bull; C3 - Penerapan Operasi Dasar Queue</span>
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #891A10; font-weight: 700;">BOBOT: 20 POIN</span>
+                            </div>
+                            <div style="background: #FAF6ED; border-left: 4px solid #E76814; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 0.85rem; font-size: 0.92rem; color: #4A3832; line-height: 1.6;">
+                                <strong>Stimulus Kasus:</strong> Sebuah sistem antrean digital pemesanan makanan kasir kantin menerapkan struktur data Queue dengan representasi antrean saat ini dari depan ke belakang (Front ke Rear): [Rizky, Siti] di mana Rizky berada di posisi Front. Selanjutnya terjadi urutan aktivitas: 1) Ahmad mengambil nomor antrean (enqueue); 2) Kasir selesai memproses pesanan dan memanggil siswa di posisi terdepan (dequeue); 3) Budi mengambil nomor antrean (enqueue); 4) Citra mengambil nomor antrean (enqueue).
+                            </div>
+                            <p style="font-weight: 800; font-size: 0.98rem; color: #714236; margin-bottom: 0.85rem; line-height: 1.5;">
+                                Tentukan siswa yang dipanggil keluar dari antrean pada langkah ke-2, serta susunan urutan antrean siswa yang tersisa di depan kasir saat ini mulai dari Front hingga Rear!
                             </p>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; color: #334155;">
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q4" value="0" style="margin-top: 3px;" required>
-                                    <span>A. Fitur Undo (Ctrl + Z) pada aplikasi pengolah kata dan tombol Back pada peramban web.</span>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q4" value="0" style="margin-top: 4px;" required>
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>A.</strong> Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Siti, Ahmad, Budi, Citra].</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q4" value="1" style="margin-top: 3px;">
-                                    <span>B. Antrean pencetakan dokumen pada printer sekolah (print spooler).</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q4" value="1" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>B.</strong> Siswa yang keluar adalah Siti; dan susunan antrean saat ini dari Front ke Rear adalah [Rizky, Ahmad, Budi, Citra].</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q4" value="2" style="margin-top: 3px;">
-                                    <span>C. Antrean panggilan telepon masuk di pusat layanan pelanggan.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q4" value="2" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>C.</strong> Siswa yang keluar adalah Ahmad; dan susunan antrean saat ini dari Front ke Rear adalah [Citra, Budi, Siti, Rizky].</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q4" value="3" style="margin-top: 3px;">
-                                    <span>D. Sistem reservasi tiket bioskop online.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q4" value="3" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>D.</strong> Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Citra, Budi, Ahmad, Siti].</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Soal 5 -->
-                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
-                            <p style="font-weight: 700; font-size: 0.98rem; color: #0f172a; margin-bottom: 0.75rem;">
-                                5. Apa yang terjadi jika sistem kasir mencoba memproses pesanan dengan memanggil fungsi dequeue() pada saat antrean pembeli sedang kosong?
+                        <div style="background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(113, 66, 54, 0.04);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+                                <span class="academic-badge academic-badge-indigo" style="font-size: 0.75rem;">Butir Soal #5 &bull; C4 - Analisis & Evaluasi Struktur Data</span>
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #891A10; font-weight: 700;">BOBOT: 20 POIN</span>
+                            </div>
+                            <div style="background: #FAF6ED; border-left: 4px solid #E76814; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 0.85rem; font-size: 0.92rem; color: #4A3832; line-height: 1.6;">
+                                <strong>Stimulus Kasus:</strong> Kantin sekolah membuat aplikasi pemesanan makan siang berbasis web agar siswa dapat memesan menu sebelum jam istirahat. Namun, programmer pemula yang membuat aplikasi tersebut salah memilih struktur data: ia mengimplementasikan Stack (LIFO) untuk daftar tunggu pemesanan makanan, bukan Queue (FIFO). Siswa pertama (Andi) memesan pada pukul 09.00, disusul Bella pada 09.15, dan Candra pada 09.25.
+                            </div>
+                            <p style="font-weight: 800; font-size: 0.98rem; color: #714236; margin-bottom: 0.85rem; line-height: 1.5;">
+                                Evaluasilah dampak yang dialami oleh para pemesan akibat kesalahan pemilihan struktur data tersebut, dan tentukan alasan komputasional mengapa sistem tersebut gagal memenuhi keadilan layanan!
                             </p>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; color: #334155;">
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q5" value="0" style="margin-top: 3px;" required>
-                                    <span>A. Terjadi kondisi galat Queue Underflow sehingga program memerlukan validasi pengecekan isEmpty().</span>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q5" value="0" style="margin-top: 4px;" required>
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>A.</strong> Candra akan dilayani paling awal sedangkan Andi (pemesan paling awal) justru dilayani paling akhir; hal ini terjadi karena Stack memprioritaskan elemen yang paling akhir masuk (Last In First Out), sehingga melanggar asas keadilan waktu pemesanan.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q5" value="1" style="margin-top: 3px;">
-                                    <span>B. Terjadi kondisi Queue Overflow.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q5" value="1" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>B.</strong> Andi akan dilayani paling awal tetapi pesanan Candra otomatis terhapus karena kapasitas memori Stack langsung penuh (Overflow).</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q5" value="2" style="margin-top: 3px;">
-                                    <span>C. Sistem otomatis membuat pesanan fiktif baru.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q5" value="2" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>C.</strong> Seluruh pesanan Andi, Bella, dan Candra akan diproses secara serentak (paralel) sehingga dapur kantin mengalami kelebihan beban komputasi.</span>
                                 </label>
-                                <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-                                    <input type="radio" name="eval-q5" value="3" style="margin-top: 3px;">
-                                    <span>D. Kapasitas memori komputer otomatis bertambah tanpa batas.</span>
+                                <label class="academic-option-btn" style="display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; padding: 0.85rem 1rem; border: 1.5px solid #D8D4BC; border-radius: 10px; margin-bottom: 0.5rem; background: #FAF8F5;">
+                                    <input type="radio" name="eval-q5" value="3" style="margin-top: 4px;" >
+                                    <span style="font-size: 0.92rem; color: #2B1D19; line-height: 1.5;"><strong>D.</strong> Tidak ada dampak yang terjadi karena struktur data Stack dan Queue memiliki mekanisme urutan pemrosesan data yang sama persis dalam antrean.</span>
                                 </label>
                             </div>
                         </div>
 
                         <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
-                            <button type="submit" class="academic-btn academic-btn-primary" style="font-size: 1rem; padding: 0.75rem 1.75rem;">
+                            <button type="submit" class="academic-btn academic-btn-primary" style="font-size: 1rem; padding: 0.85rem 2rem;">
                                 🚀 Kirim &amp; Hitung Nilai Evaluasi
                             </button>
                         </div>
@@ -840,20 +875,49 @@
 
                         <!-- Tab 2: Remedial -->
                         <div class="academic-tab-pane" data-pane="tab-remedial">
-                            <div style="background: #FAF6ED; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
-                                <h4 style="color: #891A10; font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">
+                            <div style="background: #FAF6ED; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
+                                <h4 style="color: #891A10; font-size: 1.05rem; font-weight: 800; font-family: var(--font-heading); margin-bottom: 0.5rem;">
                                     💡 Rangkuman Kunci Pemantapan Konsep:
                                 </h4>
                                 <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.92rem; line-height: 1.6; color: #714236;">
-                                    <li><strong>Queue = FIFO:</strong> Yang masuk duluan, keluar duluan. Memiliki 2 pintu: masuk dari <em>REAR</em> (belakang), keluar dari <em>FRONT</em> (depan). Contoh: antrean loket kasir.</li>
-                                    <li><strong>Stack = LIFO:</strong> Yang masuk terakhir, keluar duluan. Hanya memiliki 1 pintu: masuk dan keluar dari ujung <em>TOP</em> (atas). Contoh: tumpukan piring bersih.</li>
-                                    <li><strong>Operasi Queue:</strong> <code>enqueue()</code> untuk menambah antre, <code>dequeue()</code> untuk melayani/mengeluarkan.</li>
-                                    <li><strong>Operasi Stack:</strong> <code>push()</code> untuk menaruh di atas, <code>pop()</code> untuk mengambil dari atas.</li>
+                                    <li><strong>Queue = FIFO (First In First Out):</strong> Yang masuk duluan, keluar duluan. Memiliki 2 pintu: masuk dari <em>REAR</em> (belakang), keluar dari <em>FRONT</em> (depan). Contoh: antrean kasir kantin.</li>
+                                    <li><strong>Stack = LIFO (Last In First Out):</strong> Yang masuk terakhir, keluar duluan. Hanya memiliki 1 pintu: masuk dan keluar dari ujung <em>TOP</em> (atas). Contoh: tumpukan piring bersih dispenser kantin.</li>
+                                    <li><strong>Operasi Queue:</strong> <code>enqueue()</code> untuk menambah antrean, <code>dequeue()</code> untuk melayani/mengeluarkan data terdepan.</li>
+                                    <li><strong>Operasi Stack:</strong> <code>push()</code> untuk menumpuk di atas, <code>pop()</code> untuk mengambil dari atas.</li>
                                 </ul>
                             </div>
-                            <div style="display: flex; justify-content: flex-end;">
+
+                            <!-- Interactive Remedial Practice Questions Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 2px solid #D8D4BC; padding-bottom: 0.75rem;">
+                                <div>
+                                    <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 800; color: #714236; margin: 0 0 0.25rem 0;">
+                                        📝 Latihan Soal Pemantapan Remedial (Variatif)
+                                    </h3>
+                                    <p style="font-size: 0.88rem; color: #714236; margin: 0;">
+                                        Selesaikan 4 soal latihan interaktif di bawah ini untuk memantapkan konsep sebelum mencoba evaluasi ulang:
+                                    </p>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                                    <span id="remedial-score-badge" class="quiz-score-badge" style="background: #FFFFFF; border: 2px solid #D8D4BC; color: #E76814; font-size: 0.9rem; padding: 0.4rem 0.85rem;">
+                                        Skor Remedial: 0 / 100 Poin
+                                    </span>
+                                    <button type="button" class="btn btn-outline" style="font-size: 0.82rem; padding: 0.4rem 0.75rem;" onclick="PBLAcademic.resetRemedialQuiz()">
+                                        🔄 Reset Latihan
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Questions Container Populated by PBLAcademic.renderRemedialQuiz() -->
+                            <div id="remedial-questions-container">
+                                <!-- Populated dynamically by PBLAcademic.renderRemedialQuiz() -->
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+                                <button type="button" class="btn btn-outline" onclick="PBLAcademic.resetRemedialQuiz()">
+                                    🔄 Ulangi Latihan Remedial
+                                </button>
                                 <button type="button" class="academic-btn academic-btn-primary" data-screen-target="evaluation">
-                                    🔄 Ulangi Mengerjakan Evaluasi ➔
+                                    📝 Lanjut ke Evaluasi Akhir ➔
                                 </button>
                             </div>
                         </div>
@@ -1092,43 +1156,65 @@
                         <div class="academic-tab-pane" data-pane="tab-notifikasi">
                             <div style="background: #FAF6ED; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1.25rem;">
                                 <h4 style="font-size: 1rem; font-weight: 700; color: #891A10; margin-bottom: 0.5rem;">
-                                    ⏱ Pengingat Manajemen Waktu Pembelajaran 2 JP (90 Menit):
+                                    ⏱ Alur &amp; Manajemen Waktu Pembelajaran PBL 2 JP (90 Menit Sesuai RPM UKIN):
                                 </h4>
                                 <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.5rem;">
                                     <thead>
                                         <tr style="border-bottom: 1.5px solid #D8D4BC; text-align: left; color: #714236;">
-                                            <th style="padding: 0.4rem 0;">Tahap Pembelajaran</th>
-                                            <th style="padding: 0.4rem 0;">Waktu</th>
-                                            <th style="padding: 0.4rem 0;">Aktivitas Siswa</th>
+                                            <th style="padding: 0.4rem 0.5rem;">Tahap Pembelajaran</th>
+                                            <th style="padding: 0.4rem 0.5rem; text-align: center; width: 95px;">Waktu</th>
+                                            <th style="padding: 0.4rem 0.5rem;">Aktivitas Siswa &amp; Fitur LarasLogika</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr style="border-bottom: 1px solid #D8D4BC;">
-                                            <td style="padding: 0.5rem 0;"><strong>Orientasi Masalah</strong></td>
-                                            <td style="padding: 0.5rem 0;">15 Menit</td>
-                                            <td style="padding: 0.5rem 0;">Membaca stimulus kantin &amp; menjawab pertanyaan pemantik</td>
+                                            <td style="padding: 0.5rem;"><strong>1. Kegiatan Awal</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">8 Menit</td>
+                                            <td style="padding: 0.5rem;">Pengisian profil siswa, apersepsi diagnostik, dan pemahaman tujuan pembelajaran.</td>
                                         </tr>
                                         <tr style="border-bottom: 1px solid #D8D4BC;">
-                                            <td style="padding: 0.5rem 0;"><strong>Eksplorasi Konsep</strong></td>
-                                            <td style="padding: 0.5rem 0;">15 Menit</td>
-                                            <td style="padding: 0.5rem 0;">Mempelajari materi Stack &amp; Queue serta mencoba simulator</td>
+                                            <td style="padding: 0.5rem;"><strong>2. Orientasi Masalah</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">10 Menit</td>
+                                            <td style="padding: 0.5rem;">Mengamati stimulus kekacauan antrean kantin sekolah di Beranda &amp; menjawab pertanyaan pemantik.</td>
                                         </tr>
-                                        <tr style="border-bottom: 1px solid #dcfce7;">
-                                            <td style="padding: 0.5rem 0;"><strong>Tugas Individu</strong></td>
-                                            <td style="padding: 0.5rem 0;">25 Menit</td>
-                                            <td style="padding: 0.5rem 0;">Menyelesaikan 6 level tugas terfokus secara mandiri</td>
+                                        <tr style="border-bottom: 1px solid #D8D4BC;">
+                                            <td style="padding: 0.5rem;"><strong>3. Memahami Materi &amp; Video</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">12 Menit</td>
+                                            <td style="padding: 0.5rem;">Mempelajari konsep Stack (LIFO) &amp; Queue (FIFO), menonton video animasi edukatif, dan mencoba mini simulasi.</td>
                                         </tr>
-                                        <tr style="border-bottom: 1px solid #dcfce7;">
-                                            <td style="padding: 0.5rem 0;"><strong>Tugas Kelompok</strong></td>
-                                            <td style="padding: 0.5rem 0;">25 Menit</td>
-                                            <td style="padding: 0.5rem 0;">Diskusi tim, mengisi LKPD, dan mengunduh berkas presentasi</td>
+                                        <tr style="border-bottom: 1px solid #D8D4BC;">
+                                            <td style="padding: 0.5rem;"><strong>4. Penyelidikan Mandiri (Tugas Individu)</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">15 Menit</td>
+                                            <td style="padding: 0.5rem;">Mengerjakan 4 level tugas inti bertingkat (konsep dasar, antrean kasir, tumpukan piring, dan tracing).</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #D8D4BC;">
+                                            <td style="padding: 0.5rem;"><strong>5. Penyelidikan Kelompok (LKPD)</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">20 Menit</td>
+                                            <td style="padding: 0.5rem;">Kolaborasi 6 anggota per kelompok, menganalisis 1 dari 2 studi kasus kantin, simulasi, dan mengisi LKPD.</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #D8D4BC;">
+                                            <td style="padding: 0.5rem;"><strong>6. Presentasi &amp; Tanggapan</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">12 Menit</td>
+                                            <td style="padding: 0.5rem;">Penyajian hasil analisis solusi kelompok dan pemberian tanggapan reflektif antarkelompok.</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #D8D4BC;">
+                                            <td style="padding: 0.5rem;"><strong>7. Evaluasi Sumatif &amp; Refleksi</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">10 Menit</td>
+                                            <td style="padding: 0.5rem;">Mengerjakan 5 soal evaluasi HOTS (5 Menit) dan mengisi lembar refleksi diri 3-2-1 (5 Menit).</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 0.5rem 0;"><strong>Evaluasi &amp; Refleksi</strong></td>
-                                            <td style="padding: 0.5rem 0;">10 Menit</td>
-                                            <td style="padding: 0.5rem 0;">Mengerjakan 5 butir soal evaluasi dan mengisi lembar refleksi</td>
+                                            <td style="padding: 0.5rem;"><strong>8. Penutup</strong></td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10;">3 Menit</td>
+                                            <td style="padding: 0.5rem;">Rangkuman kesimpulan pembelajaran, umpan balik guru, dan tindak lanjut pengumpulan berkas.</td>
                                         </tr>
                                     </tbody>
+                                    <tfoot>
+                                        <tr style="border-top: 2px solid #714236; font-weight: bold; background: #FAF3F0; color: #714236;">
+                                            <td style="padding: 0.5rem;">TOTAL ALOKASI WAKTU</td>
+                                            <td style="padding: 0.5rem; text-align: center; font-family: 'Space Mono', monospace; font-size: 1rem; color: #891A10;">90 Menit</td>
+                                            <td style="padding: 0.5rem;">2 Jam Pelajaran (2 JP) Terintegrasi Penuh dengan RPM UKIN</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -1225,7 +1311,16 @@
                         </div>
                         <div class="gp-form-group">
                             <label class="gp-label" for="gp-group-class">Kelas / Fase: <span class="required">*</span></label>
-                            <input type="text" id="gp-group-class" class="gp-input-modern" placeholder="Contoh: SMA Kelas X-A (Fase E)" oninput="App.onGroupClassInput(this.value)">
+                            <select id="gp-group-class" class="gp-select-modern" onchange="App.onGroupClassInput(this.value)">
+                                <option value="">-- Pilih Kelas Kelompok (X.1 - X.7) --</option>
+                                <option value="Kelas X.1">Kelas X.1</option>
+                                <option value="Kelas X.2">Kelas X.2</option>
+                                <option value="Kelas X.3">Kelas X.3</option>
+                                <option value="Kelas X.4">Kelas X.4</option>
+                                <option value="Kelas X.5">Kelas X.5</option>
+                                <option value="Kelas X.6">Kelas X.6</option>
+                                <option value="Kelas X.7">Kelas X.7</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1619,6 +1714,26 @@
                          TAB PANE 1: KONSEP & OPERASI DASAR
                          ========================================== -->
                     <div class="learn-tab-pane active" data-tab-pane="concept">
+                        <!-- Video Animasi Edukatif Konsep Stack (LIFO) -->
+                        <div class="theory-card studio-video-card" style="margin-bottom: 1.75rem; background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(113, 66, 54, 0.06);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <span class="academic-badge academic-badge-indigo" style="font-size: 0.75rem;">🎬 Video Animasi Konsep Stack</span>
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #891A10; font-weight: 700;">DURASI: 10 DETIK &bull; LIFO DEMO</span>
+                            </div>
+                            <h3 style="font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: #714236; margin: 0 0 0.5rem 0;">
+                                Simulasi Visual: Prinsip Kerja Stack pada Tumpukan Piring Saji Kantin
+                            </h3>
+                            <p style="font-size: 0.92rem; color: #4A3832; line-height: 1.6; margin-bottom: 1rem;">
+                                Tonton animasi interaktif berikut untuk melihat bagaimana petugas kantin menaruh piring saji dari atas tumpukan (<em>push</em>) dan siswa mengambil piring dari posisi paling atas (<em>pop</em>). Piring yang terakhir kali ditaruh menjadi yang pertama diambil (<em>Last In, First Out</em>).
+                            </p>
+                            <div style="position: relative; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 8px 24px rgba(0,0,0,0.15); max-width: 720px; margin: 0 auto;">
+                                <video controls playsinline style="width: 100%; max-height: 420px; display: block; margin: 0 auto; background: #000;">
+                                    <source src="assets/videos/video_stack.mp4" type="video/mp4">
+                                    Browser Anda tidak mendukung pemutar video HTML5.
+                                </video>
+                            </div>
+                        </div>
+
                         <p style="font-size: 1.05rem; line-height: 1.65; margin-bottom: 0.85rem;">
                             <strong>Stack (Tumpukan)</strong> adalah cara mengorganisasi data/benda di mana penambahan elemen baru dan pengambilan elemen lama hanya dapat dilakukan dari <strong>satu pintu/ujung yang sama</strong>, yaitu posisi paling atas (<em>TOP</em>). Berlaku prinsip mutlak <strong>LIFO (Last In, First Out)</strong>: data yang masuk paling akhir justru menjadi yang pertama dikeluarkan.
                         </p>
@@ -1648,7 +1763,7 @@
                         </div>
 
                         <!-- 4 Metode / Operasi Inti Stack -->
-                        <h4 style="font-family: var(--font-heading); margin-bottom: 0.75rem; color: var(--primary-sky);">
+                        <h4 style="font-family: var(--font-heading); margin-bottom: 0.85rem; color: #891A10; font-size: 1.15rem; font-weight: 800;">
                             ⚙️ 4 Operasi Dasar pada Struktur Data Stack:
                         </h4>
                         <div class="methods-grid" style="margin-bottom: 1.5rem;">
@@ -1662,7 +1777,7 @@
                             </div>
                             <div class="method-card">
                                 <code>👁 Mengintip: peek() / top()</code>
-                                <p>Melihat nilai elemen puncak tanpa mengambil atau mengubah tumpukan.</p>
+                                <p>Melihat nilai elemen puncak tanpa mengambil atau mengubah isi tumpukan.</p>
                             </div>
                             <div class="method-card">
                                 <code>🔍 Cek Status: isEmpty()</code>
@@ -2064,6 +2179,26 @@
                          TAB PANE 1: KONSEP & OPERASI DASAR
                          ========================================== -->
                     <div class="learn-tab-pane active" data-tab-pane="concept">
+                        <!-- Video Animasi Edukatif Konsep Queue (FIFO) -->
+                        <div class="theory-card studio-video-card" style="margin-bottom: 1.75rem; background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(113, 66, 54, 0.06);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <span class="academic-badge academic-badge-blue" style="font-size: 0.75rem;">🎬 Video Animasi Konsep Queue</span>
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #E76814; font-weight: 700;">DURASI: 10 DETIK &bull; FIFO DEMO</span>
+                            </div>
+                            <h3 style="font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: #714236; margin: 0 0 0.5rem 0;">
+                                Simulasi Visual: Prinsip Kerja Queue pada Pelayanan Kasir Kantin
+                            </h3>
+                            <p style="font-size: 0.92rem; color: #4A3832; line-height: 1.6; margin-bottom: 1rem;">
+                                Tonton animasi interaktif berikut untuk melihat bagaimana siswa yang datang lebih awal berada di posisi depan (<em>Front</em>) dan dilayani pertama kali saat kasir memproses pesanan (<em>dequeue</em>), sementara siswa baru bergabung di barisan paling belakang (<em>Rear / enqueue</em>) demi keadilan layanan (<em>First In, First Out</em>).
+                            </p>
+                            <div style="position: relative; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 8px 24px rgba(0,0,0,0.15); max-width: 720px; margin: 0 auto;">
+                                <video controls playsinline style="width: 100%; max-height: 420px; display: block; margin: 0 auto; background: #000;">
+                                    <source src="assets/videos/video_queue.mp4" type="video/mp4">
+                                    Browser Anda tidak mendukung pemutar video HTML5.
+                                </video>
+                            </div>
+                        </div>
+
                         <p style="font-size: 1.05rem; line-height: 1.65; margin-bottom: 0.85rem;">
                             <strong>Queue (Antrean)</strong> adalah cara mengorganisasi data/benda yang masuk dari ujung belakang (<em>REAR</em>) dan keluar dari ujung depan (<em>FRONT</em>). Berlaku prinsip mutlak <strong>FIFO (First In, First Out)</strong>: data atau orang yang masuk pertama kali akan dilayani dan keluar pertama kali.
                         </p>
@@ -2093,24 +2228,24 @@
                         </div>
 
                         <!-- 4 Metode / Operasi Inti Queue -->
-                        <h4 style="font-family: var(--font-heading); margin-bottom: 0.75rem; color: var(--success-dark);">
+                        <h4 style="font-family: var(--font-heading); margin-bottom: 0.85rem; color: #891A10; font-size: 1.15rem; font-weight: 800;">
                             ⚙️ 4 Operasi Dasar pada Struktur Data Queue:
                         </h4>
                         <div class="methods-grid" style="margin-bottom: 1.5rem;">
                             <div class="method-card">
-                                <code>📥 Masuk Antrean: enqueue(item)</code>
-                                <p>Menambahkan data/elemen baru ke posisi paling belakang antrean (REAR).</p>
+                                <code>📥 Menambah: enqueue(item)</code>
+                                <p>Menambahkan data atau elemen baru ke posisi paling belakang antrean (REAR).</p>
                             </div>
                             <div class="method-card">
-                                <code>📤 Keluar Antrean: dequeue()</code>
+                                <code>📤 Mengambil: dequeue()</code>
                                 <p>Mengambil dan menghapus data paling depan (FRONT) yang sudah selesai diproses.</p>
                             </div>
                             <div class="method-card">
-                                <code>👁 Cek Terdepan: front() / peek()</code>
+                                <code>👁 Mengintip: front() / peek()</code>
                                 <p>Melihat nilai data yang ada di posisi paling depan tanpa mengeluarkannya.</p>
                             </div>
                             <div class="method-card">
-                                <code>🔍 Cek Kosong: isEmpty()</code>
+                                <code>🔍 Cek Status: isEmpty()</code>
                                 <p>Memeriksa apakah antrean sedang kosong sebelum melakukan proses dequeue.</p>
                             </div>
                         </div>
@@ -3129,23 +3264,18 @@
                     <label for="player-class-input" class="form-label">
                         <span data-i18n="studentClassLabel">Kelas / Fase</span> <span class="required-star" aria-hidden="true">*</span>
                     </label>
-                    <input type="text" id="player-class-input" list="class-suggestions" class="sim-select form-input"
-                           data-i18n-placeholder="classPlaceholder" placeholder="Pilih atau ketik kelas (contoh: X-1, Fase E)..."
-                           autocomplete="off" required>
-                    <datalist id="class-suggestions">
-                        <option value="X-1 (Fase E)">
-                        <option value="X-2 (Fase E)">
-                        <option value="X-3 (Fase E)">
-                        <option value="X-4 (Fase E)">
-                        <option value="X-5 (Fase E)">
-                        <option value="X-6 (Fase E)">
-                        <option value="X-7 (Fase E)">
-                        <option value="SMA Fase E (Kelas X)">
-                        <option value="SMA Fase F (Kelas XI)">
-                        <option value="SMA Fase F (Kelas XII)">
-                    </datalist>
+                    <select id="player-class-input" class="sim-select form-input" required>
+                        <option value="">-- Pilih Kelas (Fase E) --</option>
+                        <option value="Kelas X.1">Kelas X.1</option>
+                        <option value="Kelas X.2">Kelas X.2</option>
+                        <option value="Kelas X.3">Kelas X.3</option>
+                        <option value="Kelas X.4">Kelas X.4</option>
+                        <option value="Kelas X.5">Kelas X.5</option>
+                        <option value="Kelas X.6">Kelas X.6</option>
+                        <option value="Kelas X.7">Kelas X.7</option>
+                    </select>
                     <div id="class-field-error" class="form-error-msg hidden" role="alert">
-                        ⚠️ <span data-i18n="classValidationRequired">Kelas / Fase wajib diisi.</span>
+                        ⚠️ <span data-i18n="classValidationRequired">Silakan pilih kelas antara X.1 sampai X.7.</span>
                     </div>
                 </div>
 
@@ -3154,10 +3284,10 @@
                     <label for="player-absen-input" class="form-label">
                         <span data-i18n="studentAbsenLabel">Nomor Absen Siswa</span> <span class="required-star" aria-hidden="true">*</span>
                     </label>
-                    <input type="number" id="player-absen-input" class="sim-select form-input" min="1" max="60"
-                           data-i18n-placeholder="absenPlaceholder" placeholder="Contoh: 14 (angka 1 - 60)" required>
+                    <input type="number" id="player-absen-input" class="sim-select form-input" min="1" max="36"
+                           data-i18n-placeholder="absenPlaceholder" placeholder="Nomor absen siswa (1 - 36)" required>
                     <div id="absen-field-error" class="form-error-msg hidden" role="alert">
-                        ⚠️ <span data-i18n="absenValidationRequired">Nomor absen wajib diisi dengan angka (1 - 60).</span>
+                        ⚠️ <span data-i18n="absenValidationRequired">Nomor absen wajib diisi dengan angka (1 - 36).</span>
                     </div>
                 </div>
 

@@ -1,13 +1,13 @@
 /**
  * js/pbl-academic.js
  * Modul Interaktif Problem Based Learning (PBL) Informatika Fase E
- * Meliputi: Tugas Individu (6 Level Progresif 90 Menit), Evaluasi Sumatif,
+ * Meliputi: Tugas Individu (4 Level Inti 15 Menit), Evaluasi Sumatif (5 Menit),
  * Pengayaan & Remedial, Refleksi Individu, serta Panduan & Glosarium.
  */
 
 const PBLAcademic = {
     // ----------------------------------------------------
-    // DATA TUGAS INDIVIDU (6 LEVEL PROGRESIF - 2 JP / 90 MENIT)
+    // DATA TUGAS INDIVIDU (4 LEVEL INTI BERJENJANG - 15 MENIT)
     // ----------------------------------------------------
     individualTasks: [
         {
@@ -80,6 +80,7 @@ const PBLAcademic = {
         this.restoreTaskProgress();
         this.bindEvents();
         this.initHeroSim();
+        this.renderRemedialQuiz();
     },
 
     bindEvents() {
@@ -94,7 +95,11 @@ const PBLAcademic = {
                 btn.classList.add('active');
 
                 parent.querySelectorAll('.academic-tab-pane').forEach(p => {
-                    p.classList.toggle('active', p.getAttribute('data-pane') === targetTab);
+                    const isTarget = p.getAttribute('data-pane') === targetTab;
+                    p.classList.toggle('active', isTarget);
+                    if (isTarget && targetTab === 'tab-remedial') {
+                        PBLAcademic.renderRemedialQuiz();
+                    }
                 });
             });
         });
@@ -1003,63 +1008,90 @@ const PBLAcademic = {
     },
 
     // ----------------------------------------------------
-    // EVALUASI AKHIR (ASESMEN SUMATIF 90 MENIT)
+    // ----------------------------------------------------
+    // EVALUASI AKHIR (ASESMEN SUMATIF HOTS 5 MENIT)
+    // Sesuai Capaian Pembelajaran & RPM UKIN:
+    // Soal 1: Analisis Ketidaktepatan Antrean Kasir (C4)
+    // Soal 2: Analisis Tracing Operasi Beruntun Stack (C4)
+    // Soal 3: Penerapan Operasi Push, Pop, Peek (C3)
+    // Soal 4: Penerapan Operasi Enqueue & Dequeue (C3)
+    // Soal 5: Evaluasi Kesalahan Pemilihan Struktur Data (C4)
     // ----------------------------------------------------
     evalQuestions: [
         {
-            q: "1. Mengapa antrean pemesanan kasir kantin sekolah paling tepat dimodelkan dengan struktur data Queue (FIFO)?",
+            id: 1,
+            cognitive: "C4 - Analisis",
+            title: "Analisis Ketidaktepatan Sistem Antrean Kantin",
+            stimulus: "Pada jam istirahat sekolah, kantin dipadati 30 siswa tanpa jalur antrean fisik. Siswa yang baru saja datang dari pintu samping langsung menyerobot ke dekat meja kasir dan dilayani lebih dahulu oleh penjual, sedangkan siswa yang telah mengantre tertib selama 10 menit di barisan depan belum dilayani.",
+            q: "Berdasarkan prinsip berpikir komputasional dan struktur data, analisislah pelanggaran mendasar yang terjadi pada skenario pelayanan kantin tersebut serta tentukan pemodelan solusi algoritmik yang paling tepat!",
             options: [
-                "Karena pelanggan yang datang pertama harus dilayani dan menerima makanan pertama kali demi keadilan pelayanan",
-                "Karena pesanan terakhir harus didahulukan agar koki tidak menunggu",
-                "Karena data antrean dapat dimasukkan dan dikeluarkan dari ujung yang sama",
-                "Karena kapasitas kantin tidak terbatas"
+                "Pelayanan melanggar prinsip FIFO (First In, First Out) dari struktur data Queue; solusinya adalah menerapkan jalur antrean teratur di mana siswa yang tiba lebih awal (Front) wajib dilayani dan keluar lebih dahulu (dequeue) sebelum melayani siswa di belakangnya (Rear).",
+                "Pelayanan melanggar prinsip LIFO (Last In, First Out) dari struktur data Stack; solusinya adalah mewajibkan siswa yang baru datang dilayani terlebih dahulu agar tidak menumpuk di pintu masuk kantin.",
+                "Pelayanan melanggar prinsip Priority Queue; solusinya adalah memberikan prioritas pelayanan kepada siswa yang membeli makanan dengan harga tertinggi tanpa melihat waktu kedatangan.",
+                "Pelayanan melanggar prinsip Array dua dimensi; solusinya adalah membagi siswa ke dalam baris dan kolom acak di seluruh ruangan kantin."
             ],
             correct: 0,
-            note: "Prinsip dasar Queue adalah FIFO (First In First Out), memastikan keadilan pelayanan bagi pelanggan yang datang lebih dulu."
+            note: "Analisis C4: Pelayanan kantin wajib menganut keadilan antrean linear FIFO (Queue). Siswa yang pertama masuk (Front) berhak dilayani pertama kali (dequeue). Pelayanan kepada orang yang baru datang melanggar keadilan waktu tunggu antrean."
         },
         {
-            q: "2. Operasi pengambilan dan penghapusan elemen dari puncak tumpukan (Stack) disebut dengan operasi...",
+            id: 2,
+            cognitive: "C4 - Analisis",
+            title: "Analisis Tracing Operasi Beruntun Stack",
+            stimulus: "Petugas kantin menata baki saji menggunakan wadah tumpukan vertikal (Stack) dengan kapasitas maksimal 5 baki. Sistem mencatat riwayat operasi berturut-turut: push(Baki Merah) → push(Baki Kuning) → push(Baki Hijau) → pop() → push(Baki Biru) → pop() → push(Baki Ungu).",
+            q: "Lakukan penelusuran (tracing) terhadap riwayat operasi tersebut. Analisislah baki mana saja yang telah berhasil dikeluarkan dari tumpukan serta tentukan baki mana yang saat ini menempati posisi puncak (Top of Stack)!",
             options: [
-                "pop()",
-                "push()",
-                "dequeue()",
-                "enqueue()"
+                "Baki yang telah dikeluarkan adalah Baki Hijau lalu Baki Biru; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Ungu.",
+                "Baki yang telah dikeluarkan adalah Baki Merah lalu Baki Kuning; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Hijau.",
+                "Baki yang telah dikeluarkan adalah Baki Biru lalu Baki Hijau; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Merah.",
+                "Baki yang telah dikeluarkan adalah Baki Ungu lalu Baki Biru; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Kuning."
             ],
             correct: 0,
-            note: "pop() adalah operasi standar Stack untuk mengambil dan menghapus elemen di posisi TOP."
+            note: "Analisis C4: Penelusuran operasi: push(M), push(K), push(H) -> Stack=[M, K, H(Top)]. Operasi pop() pertama mengeluarkan H. Lalu push(B) -> Stack=[M, K, B(Top)]. Operasi pop() kedua mengeluarkan B. Lalu push(U) -> Stack=[M, K, U(Top)]. Maka baki yang dikeluarkan: Hijau lalu Biru; puncak (Top): Ungu."
         },
         {
-            q: "3. Tumpukan piring saji kantin berisi 3 piring: Piring A di bawah, Piring B di tengah, dan Piring C di atas. Urutan piring yang akan diambil oleh siswa secara berurutan adalah...",
+            id: 3,
+            cognitive: "C3 - Penerapan",
+            title: "Penerapan Operasi Push, Pop, dan Peek",
+            stimulus: "Di meja prasmanan, sebuah dispenser piring bersih menampung piring keramik menggunakan prinsip Stack. Saat ini tumpukan berisi dua piring dari bawah ke atas: [Piring A, Piring B] di mana Piring B berada di posisi Top. Asisten kantin kemudian menjalankan urutan instruksi: 1) Melakukan peek(); 2) Melakukan push(Piring C); 3) Melakukan pop(); 4) Melakukan peek() kembali.",
+            q: "Tentukan secara berurutan hasil identifikasi piring dari operasi peek() pertama, piring yang terambil saat pop(), dan hasil dari operasi peek() kedua!",
             options: [
-                "C, B, lalu A",
-                "A, B, lalu C",
-                "B, A, lalu C",
-                "A, C, lalu B"
+                "peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring B.",
+                "peek() pertama menghasilkan Piring A; pop() mengeluarkan Piring B; dan peek() kedua menghasilkan Piring C.",
+                "peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring A; dan peek() kedua menghasilkan Piring C.",
+                "peek() pertama menghasilkan Piring C; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring A."
             ],
             correct: 0,
-            note: "Stack menganut prinsip LIFO (Last In First Out), maka piring C di posisi paling atas (TOP) diambil pertama, lalu B, dan terakhir A."
+            note: "Penerapan C3: Operasi peek() membaca elemen TOP tanpa menghapusnya (maka peek ke-1 membaca Piring B). Operasi push(C) menjadikan C sebagai TOP baru. Operasi pop() mengambil elemen TOP yaitu Piring C sehingga tumpukan kembali [A, B(Top)]. Operasi peek() ke-2 kembali membaca Piring B."
         },
         {
-            q: "4. Manakah di bawah ini yang merupakan contoh penerapan struktur data Stack dalam aplikasi perangkat lunak sehari-hari?",
+            id: 4,
+            cognitive: "C3 - Penerapan",
+            title: "Penerapan Operasi Enqueue dan Dequeue",
+            stimulus: "Sebuah sistem antrean digital pemesanan kasir kantin menerapkan struktur data Queue dengan representasi antrean saat ini dari depan ke belakang (Front ke Rear): [Rizky, Siti] di mana Rizky berada di posisi Front. Selanjutnya terjadi urutan aktivitas: 1) Ahmad mengambil nomor antrean (enqueue); 2) Kasir selesai melayani dan memanggil nomor terdepan (dequeue); 3) Budi mengambil nomor antrean (enqueue); 4) Citra mengambil nomor antrean (enqueue).",
+            q: "Tentukan siswa yang dipanggil keluar dari antrean pada langkah ke-2, serta susunan urutan antrean siswa yang tersisa di depan kasir saat ini mulai dari Front hingga Rear!",
             options: [
-                "Fitur Undo (Ctrl + Z) pada aplikasi pengolah kata dan tombol Back pada browser web",
-                "Antrean pencetakan dokumen pada printer sekolah (print spooler)",
-                "Antrean panggilan telepon masuk di pusat layanan bantuan",
-                "Sistem pemesanan tiket kereta api online"
+                "Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Siti, Ahmad, Budi, Citra].",
+                "Siswa yang keluar adalah Siti; dan susunan antrean saat ini dari Front ke Rear adalah [Rizky, Ahmad, Budi, Citra].",
+                "Siswa yang keluar adalah Ahmad; dan susunan antrean saat ini dari Front ke Rear adalah [Citra, Budi, Siti, Rizky].",
+                "Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Citra, Budi, Ahmad, Siti]."
             ],
             correct: 0,
-            note: "Fitur Undo dan tombol Back browser mengingat riwayat tindakan terakhir untuk dibalikkan terlebih dahulu (LIFO)."
+            note: "Penerapan C3: Antrean awal: [Rizky(Front), Siti(Rear)]. 1) Enqueue Ahmad -> [Rizky, Siti, Ahmad]. 2) Dequeue -> Rizky keluar karena berada di posisi FRONT. Antrean tersisa [Siti(Front), Ahmad(Rear)]. 3) Enqueue Budi -> [Siti, Ahmad, Budi]. 4) Enqueue Citra -> [Siti(Front), Ahmad, Budi, Citra(Rear)]."
         },
         {
-            q: "5. Apa yang terjadi jika kasir mencoba melayani pesanan baru dengan memanggil dequeue() pada saat antrean pembeli sedang kosong?",
+            id: 5,
+            cognitive: "C4 - Analisis & Evaluasi",
+            title: "Evaluasi Kesalahan Pemilihan Struktur Data",
+            stimulus: "Kantin sekolah membuat aplikasi web pemesanan makanan agar siswa dapat memesan menu sebelum jam istirahat. Namun, programmer pemula yang membuat aplikasi tersebut keliru mengimplementasikan struktur data Stack (LIFO) untuk daftar tunggu pemesanan makanan, bukan Queue (FIFO). Siswa pertama (Andi) memesan pukul 09.00, disusul Bella pukul 09.15, dan Candra pukul 09.25.",
+            q: "Evaluasilah dampak yang dialami oleh para pemesan akibat kesalahan pemilihan struktur data tersebut, dan tentukan alasan komputasional mengapa sistem tersebut gagal memenuhi keadilan layanan!",
             options: [
-                "Terjadi kondisi Queue Underflow sehingga program memerlukan validasi pengecekan isEmpty()",
-                "Terjadi kondisi Queue Overflow",
-                "Program otomatis membuat pesanan fiktif baru",
-                "Sistem komputer otomatis menambah memori antrean"
+                "Candra akan dilayani paling awal sedangkan Andi (pemesan paling awal) justru dilayani paling akhir; hal ini terjadi karena Stack memprioritaskan elemen yang paling akhir masuk (Last In First Out), sehingga melanggar asas keadilan waktu pemesanan.",
+                "Andi akan dilayani paling awal tetapi pesanan Candra otomatis terhapus karena kapasitas memori Stack langsung penuh (Overflow).",
+                "Seluruh pesanan Andi, Bella, dan Candra akan diproses secara serentak (paralel) sehingga dapur kantin mengalami kelebihan beban komputasi.",
+                "Tidak ada dampak yang terjadi karena struktur data Stack dan Queue memiliki mekanisme urutan pemrosesan data yang sama persis dalam antrean."
             ],
             correct: 0,
-            note: "Mengambil data dari wadah antrean yang kosong disebut Underflow."
+            note: "Evaluasi C4: Struktur data Stack bekerja dengan prinsip LIFO (Last In First Out). Akibatnya, pemesan terakhir (Candra) berada di Top dan diproses duluan, sedangkan Andi yang memesan paling awal tertahan di dasar tumpukan. Ini membuktikan bahwa antrean layanan manusia/kasir mutlak memerlukan Queue FIFO, bukan Stack LIFO."
         }
     ],
 
@@ -1070,19 +1102,31 @@ const PBLAcademic = {
         let score = 0;
         let answeredCount = 0;
         const total = this.evalQuestions.length;
+        const answerDetails = [];
 
         this.evalQuestions.forEach((item, idx) => {
             const selected = form.querySelector(`input[name="eval-q${idx + 1}"]:checked`);
             if (selected) {
                 answeredCount++;
-                if (parseInt(selected.value, 10) === item.correct) {
+                const chosenIdx = parseInt(selected.value, 10);
+                const isCorrect = (chosenIdx === item.correct);
+                if (isCorrect) {
                     score += 20; // 5 soal x 20 = 100
                 }
+                answerDetails.push({
+                    id: item.id,
+                    cognitive: item.cognitive,
+                    title: item.title,
+                    isCorrect,
+                    chosenIdx,
+                    correctIdx: item.correct,
+                    note: item.note
+                });
             }
         });
 
         if (answeredCount < total) {
-            alert(`Mohon lengkapi semua soal evaluasi! Kamu baru menjawab ${answeredCount} dari ${total} soal.`);
+            alert(`Mohon lengkapi seluruh 5 butir soal evaluasi HOTS! Kamu baru menjawab ${answeredCount} dari ${total} soal.`);
             return;
         }
 
@@ -1093,19 +1137,58 @@ const PBLAcademic = {
         const noteEl = document.getElementById('eval-recommendation-text');
 
         if (scoreVal) scoreVal.textContent = score;
-        const isPassed = score >= 75; // KKTP 75
+        const isPassed = score >= 75; // KKTP 75 (minimal 4 dari 5 benar = 80)
 
         if (statusBadge) {
             statusBadge.className = `academic-badge ${isPassed ? 'academic-badge-emerald' : 'academic-badge-amber'}`;
-            statusBadge.textContent = isPassed ? '✓ Tuntas (Memenuhi KKTP)' : '⚠️ Perlu Remedial (Belum Tuntas)';
+            statusBadge.textContent = isPassed ? `✓ Tuntas (Memenuhi KKTP ≥ 75)` : `⚠️ Perlu Penguatan (Belum Tuntas)`;
         }
 
         if (noteEl) {
             if (isPassed) {
-                noteEl.innerHTML = `Selamat! Kamu telah mencapai Kriteria Ketercapaian Tujuan Pembelajaran (KKTP). Sangat direkomendasikan untuk melanjutkan ke menu <strong>💡 Pengayaan</strong> guna memperdalam wawasan seputar <em>Priority Queue</em> dan <em>Circular Queue</em>.`;
+                noteEl.innerHTML = `Selamat! Skor evaluasimu <strong>${score}/100</strong> telah melampaui Kriteria Ketercapaian Tujuan Pembelajaran (KKTP ≥ 75). Kamu telah menguasai analisis perbedaan prinsip kerja Stack (LIFO) dan Queue (FIFO) serta operasi dasar push, pop, enqueue, dan dequeue. Sangat disarankan untuk melanjutkan ke menu <strong>💡 Pengayaan</strong> dan mengisi <strong>🪞 Refleksi Individu</strong>.`;
             } else {
-                noteEl.innerHTML = `Nilaimu belum mencapai KKTP minimal 75. Silakan buka menu <strong>💡 Pengayaan &amp; Remedial</strong> (Tab Remedial) untuk mereview ringkasan konsep, lalu coba evaluasi kembali!`;
+                noteEl.innerHTML = `Skor evaluasimu <strong>${score}/100</strong> belum mencapai KKTP minimal 75. Silakan amati pembahasan pada rincian butir soal di bawah, pelajari kembali ringkasan materi di menu <strong>💡 Pengayaan &amp; Remedial</strong>, lalu lakukan evaluasi ulang!`;
             }
+        }
+
+        // Render per-question review list
+        let reviewContainer = document.getElementById('eval-review-list');
+        if (!reviewContainer && resultCard) {
+            reviewContainer = document.createElement('div');
+            reviewContainer.id = 'eval-review-list';
+            reviewContainer.style.marginTop = '1.5rem';
+            reviewContainer.style.borderTop = '1.5px solid #D8D4BC';
+            reviewContainer.style.paddingTop = '1.25rem';
+            resultCard.appendChild(reviewContainer);
+        }
+
+        if (reviewContainer) {
+            reviewContainer.innerHTML = `
+                <h4 style="font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 800; color: #714236; margin-bottom: 1rem;">
+                    🔍 Rincian Pembahasan Analisis 5 Soal HOTS:
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    ${answerDetails.map((ans, i) => `
+                        <div style="background: ${ans.isCorrect ? '#f0fdf4' : '#fef2f2'}; border: 1.5px solid ${ans.isCorrect ? '#86efac' : '#fca5a5'}; border-radius: 10px; padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                                <strong style="color: ${ans.isCorrect ? '#166534' : '#991b1b'}; font-size: 0.92rem;">
+                                    ${ans.isCorrect ? '✓' : '✗'} Butir Soal #${i + 1}: ${ans.title} (${ans.cognitive})
+                                </strong>
+                                <span class="academic-badge ${ans.isCorrect ? 'academic-badge-emerald' : 'academic-badge-blue'}" style="font-size: 0.72rem;">
+                                    ${ans.isCorrect ? '+20 Poin' : '0 Poin'}
+                                </span>
+                            </div>
+                            <p style="font-size: 0.88rem; color: #374151; margin: 0 0 0.4rem 0;">
+                                <strong>Kunci Jawaban:</strong> Pilihan A (Opsi Tepat)
+                            </p>
+                            <p style="font-size: 0.85rem; color: #4b5563; line-height: 1.5; margin: 0;">
+                                💡 <em>Pembahasan:</em> ${ans.note}
+                            </p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
 
         if (resultCard) {
@@ -1299,6 +1382,139 @@ const PBLAcademic = {
         if (!clueEl) return;
         const isOpen = clueEl.classList.contains('open');
         clueEl.classList.toggle('open', !isOpen);
+    },
+
+    // ----------------------------------------------------
+    // MODUL REMEDIAL: LATIHAN SOAL BERVARIASI (UKIN PPG)
+    // ----------------------------------------------------
+    remedialAnswers: {},
+    remedialQuestions: [
+        {
+            id: 1,
+            badge: "Soal 1 • Konseptual & Prinsip Kerja (LIFO vs FIFO)",
+            question: "Kasir kantin sekolah melayani siswa yang memesan makanan sesuai urutan kedatangan siswa, sedangkan piring saji yang bersih ditumpuk vertikal dan siswa mengambil piring yang paling baru diletakkan oleh petugas. Pasangan struktur data yang tepat untuk memodelkan kedua sistem tersebut adalah...",
+            options: [
+                { key: "A", text: "Antrean Kasir: Stack (LIFO) | Piring Saji: Queue (FIFO)", isCorrect: false, explanation: "Salah. Melayani siswa yang baru datang terlebih dahulu akan melanggar prinsip keadilan antrean." },
+                { key: "B", text: "Antrean Kasir: Queue (FIFO) | Piring Saji: Stack (LIFO)", isCorrect: true, explanation: "Tepat sekali! Antrean kasir menjamin yang datang pertama dilayani pertama (FIFO), sedangkan piring saji diambil dari yang paling atas/terakhir ditumpuk (LIFO)." },
+                { key: "C", text: "Antrean Kasir: Stack (LIFO) | Piring Saji: Stack (LIFO)", isCorrect: false, explanation: "Salah. Antrean kasir tidak boleh memakai Stack karena siswa pertama akan terjebak di posisi bawah." },
+                { key: "D", text: "Antrean Kasir: Queue (FIFO) | Piring Saji: Queue (FIFO)", isCorrect: false, explanation: "Salah. Piring saji bertumpuk vertikal tidak dapat diambil dari bagian bawah tanpa merusak tumpukan." }
+            ]
+        },
+        {
+            id: 2,
+            badge: "Soal 2 • Tracing Operasi Stack (LIFO)",
+            question: "Sebuah wadah tumpukan Stack mula-mula kosong. Dilakukan serangkaian operasi secara berurutan:\n1) push('Piring Biru')\n2) push('Piring Hijau')\n3) push('Piring Merah')\n4) pop()\n5) push('Piring Kuning')\n\nJika sekarang program mengeksekusi operasi peek(), piring manakah yang berada di posisi puncak (TOP)?",
+            options: [
+                { key: "A", text: "Piring Merah", isCorrect: false, explanation: "Salah. Piring Merah sudah dikeluarkan dari tumpukan saat operasi pop() dieksekusi." },
+                { key: "B", text: "Piring Hijau", isCorrect: false, explanation: "Salah. Piring Hijau berada di bawah Piring Kuning." },
+                { key: "C", text: "Piring Kuning", isCorrect: true, explanation: "Tepat sekali! Operasi pop() menghapus 'Piring Merah', lalu operasi push('Piring Kuning') menaruh Kuning di posisi paling atas (TOP)." },
+                { key: "D", text: "Piring Biru", isCorrect: false, explanation: "Salah. Piring Biru adalah elemen pertama yang berada di dasar tumpukan." }
+            ]
+        },
+        {
+            id: 3,
+            badge: "Soal 3 • Tracing Operasi Queue (FIFO)",
+            question: "Barisan antrean kantin (Queue) saat ini berisi 3 siswa secara berurutan: [FRONT] Doni -> Eka -> Fajar [REAR]. Kasir melayani satu siswa terdepan (dequeue), kemudian siswa bernama Gilang baru saja datang dan bergabung ke antrean (enqueue). Siapakah siswa yang saat ini berada di posisi FRONT (depan) dan REAR (belakang)?",
+            options: [
+                { key: "A", text: "FRONT: Doni | REAR: Fajar", isCorrect: false, explanation: "Salah. Doni sudah selesai dilayani dan keluar dari antrean (dequeue)." },
+                { key: "B", text: "FRONT: Eka | REAR: Gilang", isCorrect: true, explanation: "Tepat sekali! Dequeue mengeluarkan Doni sehingga Eka maju menjadi FRONT, sedangkan Enqueue menambah Gilang di posisi paling belakang (REAR)." },
+                { key: "C", text: "FRONT: Gilang | REAR: Eka", isCorrect: false, explanation: "Salah. Gilang baru datang sehingga harus berada di posisi REAR (belakang)." },
+                { key: "D", text: "FRONT: Fajar | REAR: Doni", isCorrect: false, explanation: "Salah. Urutan tidak terbalik seperti itu dalam struktur data Queue." }
+            ]
+        },
+        {
+            id: 4,
+            badge: "Soal 4 • Analisis Galat Komputasional (Underflow & Overflow)",
+            question: "Sebuah dispenser tumpukan baki saji memiliki kapasitas maksimum 5 baki dan saat ini kondisinya kosong sama sekali (isEmpty() == true). Jika seorang siswa tetap mencoba menekan tombol pop() untuk mengambil baki, kondisi galat apakah yang akan terjadi pada sistem komputasi?",
+            options: [
+                { key: "A", text: "Stack Overflow, karena sistem kelebihan kapasitas memori", isCorrect: false, explanation: "Salah. Stack Overflow terjadi jika menambah data saat wadah sudah PENUH." },
+                { key: "B", text: "Stack Underflow, karena mencoba mengambil elemen dari wadah yang KOSONG", isCorrect: true, explanation: "Tepat sekali! Mengambil data (pop) dari struktur data yang kosong memicu galat Underflow." },
+                { key: "C", text: "Queue Dequeue Error, karena tumpukan otomatis berubah menjadi antrean", isCorrect: false, explanation: "Salah. Struktur data tumpukan piring adalah Stack, bukan Queue." },
+                { key: "D", text: "Sistem tetap berjalan normal dan memberikan piring cadangan secara acak", isCorrect: false, explanation: "Salah. Secara komputasi, operasi pop pada wadah kosong adalah galat logika/runtime." }
+            ]
+        }
+    ],
+
+    renderRemedialQuiz() {
+        const container = document.getElementById('remedial-questions-container');
+        if (!container) return;
+
+        let correctCount = 0;
+
+        container.innerHTML = this.remedialQuestions.map((q) => {
+            const userChoice = this.remedialAnswers[q.id];
+            const hasAnswered = userChoice !== undefined;
+            const selectedOpt = hasAnswered ? q.options[userChoice] : null;
+            if (selectedOpt && selectedOpt.isCorrect) correctCount++;
+
+            const optionsHTML = q.options.map((opt, optIdx) => {
+                const isSelected = userChoice === optIdx;
+                let btnClass = "remedial-opt-btn";
+                if (hasAnswered) {
+                    if (opt.isCorrect) {
+                        btnClass += " is-correct";
+                    } else if (isSelected && !opt.isCorrect) {
+                        btnClass += " is-wrong";
+                    }
+                }
+
+                return `
+                    <button type="button" class="${btnClass}" onclick="PBLAcademic.answerRemedial(${q.id}, ${optIdx})">
+                        <span class="opt-key">${opt.key}</span>
+                        <span class="opt-text">${opt.text}</span>
+                    </button>
+                `;
+            }).join('');
+
+            let feedbackHTML = '';
+            if (hasAnswered && selectedOpt) {
+                feedbackHTML = `
+                    <div class="gp-feedback-alert ${selectedOpt.isCorrect ? 'correct' : 'info'}" style="margin-top: 0.75rem;">
+                        <strong>${selectedOpt.isCorrect ? '✅ Jawaban Benar!' : '💡 Pembahasan Konsep:'}</strong>
+                        ${selectedOpt.explanation}
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="academic-task-card" style="margin-bottom: 1.25rem; background: #FFFFFF; border: 2px solid #D8D4BC; border-radius: 14px; padding: 1.25rem; box-shadow: 0 4px 14px rgba(113, 66, 54, 0.06);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.4rem;">
+                        <span class="academic-badge academic-badge-amber" style="font-size: 0.8rem;">${q.badge}</span>
+                        <span style="font-family: 'Space Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #891A10;">Bobot: 25 Poin</span>
+                    </div>
+                    <p style="font-size: 0.95rem; font-weight: 600; color: #2B1D19; line-height: 1.55; white-space: pre-wrap; margin-bottom: 1rem;">${q.question}</p>
+                    <div class="remedial-options-grid" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        ${optionsHTML}
+                    </div>
+                    ${feedbackHTML}
+                </div>
+            `;
+        }).join('');
+
+        const score = correctCount * 25;
+        const scoreBadge = document.getElementById('remedial-score-badge');
+        if (scoreBadge) {
+            scoreBadge.textContent = `Skor Remedial: ${score} / 100 Poin`;
+            scoreBadge.style.color = score >= 75 ? '#10b981' : '#E76814';
+        }
+    },
+
+    answerRemedial(qId, optIdx) {
+        this.remedialAnswers[qId] = optIdx;
+        this.renderRemedialQuiz();
+        const q = this.remedialQuestions.find(item => item.id === qId);
+        const isCorrect = q && q.options[optIdx] && q.options[optIdx].isCorrect;
+        if (window.SoundManager) SoundManager.play(isCorrect ? 'correct' : 'wrong');
+        if (window.UI) {
+            UI.showToast(isCorrect ? "✅ Tepat! Jawaban remedial kamu benar." : "💡 Cermati kembali prinsip dasar LIFO/FIFO pada pembahasan.");
+        }
+    },
+
+    resetRemedialQuiz() {
+        this.remedialAnswers = {};
+        this.renderRemedialQuiz();
+        if (window.SoundManager) SoundManager.play('click');
+        if (window.UI) UI.showToast("🔄 Latihan soal remedial telah di-reset. Silakan coba kembali!");
     }
 };
 

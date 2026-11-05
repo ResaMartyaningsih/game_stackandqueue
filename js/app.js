@@ -102,8 +102,11 @@ const App = {
                 }
 
                 const numAbsen = parseInt(absenVal, 10);
-                if (!absenVal || isNaN(numAbsen) || numAbsen < 1 || numAbsen > 60) {
-                    if (absenErrorMsg) absenErrorMsg.classList.remove('hidden');
+                if (!absenVal || isNaN(numAbsen) || numAbsen < 1 || numAbsen > 36) {
+                    if (absenErrorMsg) {
+                        absenErrorMsg.textContent = '⚠️ Nomor absen wajib diisi dengan angka antara 1 sampai 36.';
+                        absenErrorMsg.classList.remove('hidden');
+                    }
                     if (absenInput) {
                         absenInput.classList.add('input-has-error');
                         if (!hasError) absenInput.focus();
@@ -942,173 +945,122 @@ const App = {
     // ----------------------------------------------------
     groupProjectState: {
         groupName: '',
-        groupClass: 'SMA Kelas X (Fase E)',
+        groupClass: 'Kelas X.1',
         identitySaved: false,
         members: [
-            { name: '', role: '👑 Ketua Kelompok' },
-            { name: '', role: '🔍 Analis Struktur Data' },
-            { name: '', role: '📝 Notulis / Penyusun' }
+            { name: '', absen: '', role: '👑 Ketua / Koordinator Tim' },
+            { name: '', absen: '', role: '📝 Notulis / Perumus Masalah' },
+            { name: '', absen: '', role: '🧪 Operator Simulasi & Pengujian' },
+            { name: '', absen: '', role: '🔍 Analis Struktur Data' },
+            { name: '', absen: '', role: '⚙️ Perancang Solusi Algoritmik' },
+            { name: '', absen: '', role: '📢 Presenter / Juru Bicara' }
         ],
         selectedCase: 'case1',
         cases: {
             case1: {
                 id: 'case1',
-                icon: '🏥',
-                badge: 'Kasus 1: Medis & Gawat Darurat',
-                title: 'Sistem Triase & Antrean IGD Rumah Sakit',
-                category: 'Kesehatan & Sistem Darurat',
-                desc: 'Di Instalasi Gawat Darurat (IGD) RS Medika, pasien datang sewaktu-waktu dengan tingkat keparahan yang berbeda: Pasien Kritis (henti jantung/stroke butuh tindakan detik ini juga), Pasien Sedang (patah tulang/luka sobek), dan Pasien Ringan (demam biasa/flu). Dokter bedah IGD memiliki kapasitas terbatas. Jika rumah sakit hanya menerapkan antrean FIFO murni tanpa prioritas (siapa datang lebih awal dilayani duluan), pasien kritis yang datang belakangan terancam meninggal dunia karena tertahan di belakang antrean pasien flu ringan.',
-                problemChallenge: 'Bagaimana merancang arsitektur antrean agar pasien berstatus gawat darurat (kritis) langsung mendapatkan penanganan medis tercepat tanpa membatalkan pasien umum yang sudah mengantre secara tertib?',
-                recommendedStructure: 'Priority Queue (atau Kombinasi Queue & Stack Kedaruratan)',
-                defaultItems: ['[Ringan] Pasien Ahmad (Flu)', '[Sedang] Pasien Dewi (Patah Tangan)'],
+                icon: '🍽️',
+                badge: 'Kasus 1: Antrean Kasir Kantin Sekolah (Mewakili Queue - FIFO)',
+                title: 'Optimalisasi Sistem Antrean Kasir & Pemesanan Kantin Sekolah',
+                category: 'Manajemen Layanan Publik & Pemesanan Kantin',
+                desc: 'Pada jam istirahat sekolah yang hanya berdurasi 30 menit, kantin dipadati lebih dari 60 siswa. Karena tidak ada jalur antrean yang teratur, siswa yang baru datang sering kali langsung menyerobot ke dekat meja kasir dan dilayani duluan, sementara siswa yang sudah antre 10 menit di depan justru terabaikan. Kasir juga kewalahan mencatat urutan pemesan sehingga pesanan sering kali salah buat atau tertukar. Kondisi ini menimbulkan kegaduhan, ketidakadilan waktu tunggu, dan keterlambatan kembali ke kelas.',
+                problemChallenge: 'Bagaimana merancang model antrean berbasis struktur data Queue (FIFO) dengan penetapan posisi Front (kasir) dan Rear (ujung antrean siswa baru), serta bagaimana operasi Enqueue dan Dequeue diterapkan untuk menjamin keadilan pelayanan dan mencegah antrean macet?',
+                recommendedStructure: 'Queue (FIFO - First In First Out)',
+                defaultItems: ['1. Antrean Siswa Budi (09.30)', '2. Antrean Siswa Siti (09.31)', '3. Antrean Siswa Ahmad (09.32)'],
                 hots: {
                     mc: {
-                        question: 'Jika rumah sakit menerapkan sistem FIFO murni tanpa sistem prioritas pada ruang IGD di atas, kegagalan komputasional dan operasional apa yang paling berbahaya terjadi?',
+                        question: 'Mengapa sistem antrean kasir kantin sekolah wajib menerapkan struktur data Queue (FIFO) dan BUKAN Stack (LIFO)?',
                         options: [
-                            { key: 'A', text: 'Waktu tunggu seluruh pasien akan meningkat dua kali lipat secara merata.' },
-                            { key: 'B', text: 'Terjadi fatalitas pasien darurat karena waktu respons terhalang oleh antrean pasien bergejala ringan yang datang lebih awal.', isCorrect: true, feedback: 'Tepat sekali! FIFO murni tidak mempertimbangkan bobot urgensi (urgency weight). Dalam skenario gawat darurat, mekanisme pemotongan antrean (preemption) berdasarkan tingkat prioritas sangat esensial menyelamatkan nyawa.' },
-                            { key: 'C', text: 'Komputer rekam medis rumah sakit akan mengalami crash Stack Overflow.' },
-                            { key: 'D', text: 'Mesin antrean otomatis mencetak tiket dengan nomor acak.' }
+                            { key: 'A', text: 'Karena prinsip FIFO menjamin siswa yang datang lebih awal berada di posisi Front dan dilayani pertama kali (dequeue), sehingga menciptakan keadilan pelayanan dan kepastian waktu tunggu.', isCorrect: true, feedback: 'Tepat sekali! Asas keadilan pelayanan waktu tunggu hanya dapat dijamin oleh Queue (FIFO).' },
+                            { key: 'B', text: 'Karena Queue memperbolehkan siswa yang baru datang menyerobot langsung ke posisi Front.', isCorrect: false, feedback: 'Salah, penyerobotan antrean melanggar aturan komputasional FIFO.' },
+                            { key: 'C', text: 'Karena memori Queue tidak memerlukan pemrosesan komputer.', isCorrect: false, feedback: 'Salah, Queue tetap membutuhkan struktur memori teratur.' },
+                            { key: 'D', text: 'Karena Queue otomatis membatalkan pesanan yang belum selesai.', isCorrect: false, feedback: 'Salah, Queue memproses secara berurutan, bukan membatalkan data.' }
                         ]
                     },
                     tf: [
                         {
                             id: 'tf1',
-                            statement: 'Penerapan antrean murni FIFO (First In First Out) tanpa bobot urgensi adalah metode paling adil dan aman untuk ruang Instalasi Gawat Darurat (IGD).',
-                            correct: false,
-                            explanation: 'SALAH. Keadilan medis berbasis urgensi nyawa (triase), bukan semata urutan waktu kedatangan. FIFO murni sangat berbahaya jika pasien kritis tiba belakangan.'
+                            statement: 'Ketika seorang siswa baru datang ke kantin dan bergabung ke barisan belakang, operasi komputasional yang terjadi adalah Enqueue pada posisi Rear.',
+                            isTrue: true,
+                            correct: true,
+                            explanation: 'Tepat! Elemen baru dalam Queue selalu ditambahkan di bagian belakang (Rear) melalui operasi Enqueue.',
+                            feedback: 'Tepat! Elemen baru dalam Queue selalu ditambahkan di bagian belakang (Rear) melalui operasi Enqueue.'
                         },
                         {
                             id: 'tf2',
-                            statement: 'Pada Priority Queue, saat pasien berstatus "Kritis" tiba, data pasien dapat langsung ditempatkan di posisi paling depan untuk segera di-dequeue (ditangani dokter bedah).',
+                            statement: 'Jika kasir melayani siswa yang berdiri paling belakang alih-alih siswa di depan, maka kasir tersebut sedang menjalankan operasi Dequeue yang sah.',
+                            isTrue: false,
+                            correct: false,
+                            explanation: 'Salah! Dequeue selalu mengambil elemen dari posisi paling depan (Front), bukan dari belakang.',
+                            feedback: 'Salah! Dequeue selalu mengambil elemen dari posisi paling depan (Front), bukan dari belakang.'
+                        },
+                        {
+                            id: 'tf3',
+                            statement: 'Kondisi Queue Underflow terjadi saat kasir memanggil pesanan berikutnya (dequeue), namun tidak ada lagi siswa yang berdiri di dalam antrean.',
+                            isTrue: true,
                             correct: true,
-                            explanation: 'BENAR. Priority Queue mengatur elemen berdasarkan nilai prioritas (urgensi tertinggi di posisi FRONT), sehingga langsung diproses tanpa menunggu antrean reguler.'
+                            explanation: 'Tepat! Mengambil elemen dari Queue yang kosong menghasilkan galat Underflow.',
+                            feedback: 'Tepat! Mengambil elemen dari Queue yang kosong menghasilkan galat Underflow.'
                         }
                     ],
                     essay: {
-                        prompt: 'Rancanglah solusi algoritma: Jika ada 2 pasien berkategori "Kritis" tiba pada menit yang persis sama, aturan atau struktur data sekunder apa yang harus diterapkan untuk menentukan siapa yang masuk ruang operasi lebih dulu?',
-                        placeholder: 'Tuliskan aturan kelompokmu (misal: memadukan parameter prioritas medis dengan tie-breaker FIFO waktu kedatangan atau sub-level skala ESI 1-5)...'
-                    }
+                        prompt: 'Jelaskan bagaimana konsep Front dan Rear pada Queue mencegah penyerobotan antrean di kasir kantin, serta apa rekomendasi algoritmik kelompokmu jika kasir mulai kewalahan!',
+                        placeholder: 'Tuliskan rancangan solusi kelompok: bagaimana penetapan posisi Front dan Rear serta alur pemesanan yang adil dan efisien...'
+                    },
+                    essayGuide: 'Jelaskan bagaimana konsep Front dan Rear pada Queue mencegah penyerobotan antrean di kasir kantin!'
                 }
             },
             case2: {
                 id: 'case2',
-                icon: '🎨',
-                badge: 'Kasus 2: Perangkat Lunak & Grafis',
-                title: 'Mekanisme Multi-Level Undo & Redo Text / Image Editor',
-                category: 'Software Engineering & UI History',
-                desc: 'Pada aplikasi desain grafis atau text editor seperti Canva, Figma, atau VS Code, pengguna secara berkelanjutan mengetik kalimat, menggambar bentuk, mewarnai bidang, dan menghapus objek. Ketika pengguna salah melakukan aksi, mereka menekan Ctrl+Z (Undo) untuk membatalkan langkah paling akhir. Saat menekan Ctrl+Y (Redo), langkah yang baru dibatalkan dapat dipulihkan kembali. Namun, jika setelah Undo pengguna langsung melakukan aksi baru, seluruh histori Redo wajib dibersihkan.',
-                problemChallenge: 'Bagaimana cara aplikasi menyimpan jejak riwayat aksi secara efisien sehingga aksi terakhir selalu menjadi yang pertama dibatalkan, dan status kanvas dapat dipulihkan bolak-balik tanpa membebani memori RAM?',
-                recommendedStructure: 'Stack (LIFO) Ganda (Undo Stack & Redo Stack)',
-                defaultItems: ['1. Ketik Judul Dokumen', '2. Warnai Latar Biru', '3. Sisipkan Gambar'],
+                icon: '🥞',
+                badge: 'Kasus 2: Tumpukan Piring Bersih & Baki Kantin (Mewakili Stack - LIFO)',
+                title: 'Manajemen Tumpukan Baki Saji & Piring Bersih Kantin Sekolah',
+                category: 'Pengelolaan Inventaris Saji & Mekanisme LIFO',
+                desc: 'Petugas dapur kantin bertugas mencuci, mengeringkan, dan menata piring saji serta baki makan untuk siswa. Piring-piring bersih ditumpuk secara vertikal di atas meja dispenser saji (kapasitas maksimal 5 piring). Siswa mengambil piring bersih dari bagian paling atas tumpukan untuk mengambil makanan. Ketika jam sibuk, petugas terus menambahkan piring bersih dari atas (push), sementara siswa terus mengambil piring teratas (pop). Jika piring ditumpuk melebihi 5, tumpukan tidak stabil dan rawan jatuh pecah (Stack Overflow). Sebaliknya, jika piring habis dan siswa tetap mencoba mengambil, terjadi keterlambatan saji (Stack Underflow).',
+                problemChallenge: 'Bagaimana menganalisis alur sirkulasi piring saji menggunakan struktur data Stack (LIFO), dan bagaimana menetapkan algoritma kontrol kapasitas tumpukan agar tidak terjadi kondisi Stack Overflow maupun Stack Underflow?',
+                recommendedStructure: 'Stack (LIFO - Last In First Out)',
+                defaultItems: ['Piring Keramik Putih #1 (Dasar)', 'Piring Keramik Putih #2', 'Piring Keramik Putih #3 (TOP)'],
                 hots: {
                     mc: {
-                        question: 'Mengapa fitur Undo mutlak memerlukan struktur data Stack (LIFO) dan BUKAN Queue (FIFO)?',
+                        question: 'Mengapa mekanisme dispenser piring bersih di meja saji kantin secara alami memodelkan struktur data Stack (LIFO)?',
                         options: [
-                            { key: 'A', text: 'Karena aksi yang pertama kali dilakukan pengguna harus menjadi yang pertama kali dibatalkan.' },
-                            { key: 'B', text: 'Karena aksi yang paling terakhir dilakukan (paling baru) harus menjadi yang pertama kali dibatalkan untuk mengembalikan kondisi aplikasi sebelumnya.', isCorrect: true, feedback: 'Tepat sekali! Karakteristik Last In First Out (LIFO) menjamin state yang paling baru ditaruh di puncak (TOP) adalah yang pertama kali diangkat (POP) saat pembatalan dilakukan.' },
-                            { key: 'C', text: 'Karena Stack dapat menyimpan data berukuran tanpa batas di memori RAM.' },
-                            { key: 'D', text: 'Karena Queue hanya dapat digunakan untuk file teks dan tidak bisa untuk gambar.' }
+                            { key: 'A', text: 'Karena piring yang terakhir kali ditaruh oleh petugas di posisi puncak (TOP) adalah piring yang pertama kali diambil oleh siswa (Last In First Out).', isCorrect: true, feedback: 'Tepat sekali! Akses penambahan (push) dan pengambilan (pop) piring hanya dapat dilakukan melalui satu pintu akses yaitu di posisi paling atas (TOP).' },
+                            { key: 'B', text: 'Karena siswa dapat mengambil piring dari bagian paling bawah tumpukan tanpa menyentuh piring di atasnya.', isCorrect: false, feedback: 'Salah, mengambil dari bawah merusak tumpukan dan bukan sifat Stack.' },
+                            { key: 'C', text: 'Karena piring bersih yang masuk pertama kali akan diambil pertama kali oleh siswa.', isCorrect: false, feedback: 'Salah, itu adalah prinsip FIFO, sedangkan tumpukan adalah LIFO.' },
+                            { key: 'D', text: 'Karena dispenser piring memiliki dua pintu keluar masuk di atas dan di bawah.', isCorrect: false, feedback: 'Salah, Stack hanya memiliki satu ujung akses terbuka (TOP).' }
                         ]
                     },
                     tf: [
                         {
                             id: 'tf1',
-                            statement: 'Ketika tombol Undo (Ctrl+Z) ditekan, aksi teratas di-pop dari Undo Stack dan secara otomatis di-push ke dalam Redo Stack.',
+                            statement: 'Saat petugas kantin meletakkan piring bersih baru ke atas tumpukan, operasi komputasional yang dieksekusi adalah operasi Push pada posisi TOP.',
+                            isTrue: true,
                             correct: true,
-                            explanation: 'BENAR. Aksi yang dibatalkan tidak langsung dimusnahkan dari memori, melainkan dipindahkan ke Redo Stack agar pengguna bisa mengembalikannya jika berubah pikiran.'
+                            explanation: 'Benar! Operasi push menambahkan elemen ke puncak tumpukan Stack.',
+                            feedback: 'Benar! Operasi push menambahkan elemen ke puncak tumpukan Stack.'
                         },
                         {
                             id: 'tf2',
-                            statement: 'Jika setelah menekan Undo 2 kali pengguna menggambar lingkaran baru di kanvas, data riwayat di dalam Redo Stack tetap tersimpan utuh.',
+                            statement: 'Operasi peek() pada tumpukan piring bersih bertujuan untuk mengambil dan memindahkan piring teratas ke meja makan siswa.',
+                            isTrue: false,
                             correct: false,
-                            explanation: 'SALAH. Memulai cabang riwayat baru (new branch action) setelah Undo mewajibkan sistem mengosongkan (clear) Redo Stack agar integritas state tidak bertabrakan.'
+                            explanation: 'Salah! Operasi peek() hanya melihat atau memeriksa status elemen teratas (TOP) tanpa menghapus atau mengambilnya.',
+                            feedback: 'Salah! Operasi peek() hanya melihat atau memeriksa status elemen teratas (TOP) tanpa menghapus atau mengambilnya.'
+                        },
+                        {
+                            id: 'tf3',
+                            statement: 'Kondisi Stack Overflow terjadi ketika dispenser piring yang sudah mencapai kapasitas maksimal (5 piring) tetap dipaksakan untuk ditambah piring baru oleh petugas.',
+                            isTrue: true,
+                            correct: true,
+                            explanation: 'Tepat! Menambahkan elemen ke wadah Stack yang sudah penuh memicu kondisi galat Stack Overflow.',
+                            feedback: 'Tepat! Menambahkan elemen ke wadah Stack yang sudah penuh memicu kondisi galat Stack Overflow.'
                         }
                     ],
                     essay: {
-                        prompt: 'Untuk mencegah kehabisan memori RAM (Stack Overflow), kapasitas Undo Stack dibatasi 50 aksi. Apa langkah algoritma yang harus dilakukan sistem ketika aksi ke-51 masuk ke dalam Undo Stack?',
-                        placeholder: 'Jelaskan mekanisme penghapusan aksi paling lama (elemen paling bawah/dasar stack) untuk memberi ruang bagi aksi baru di TOP...'
-                    }
-                }
-            },
-            case3: {
-                id: 'case3',
-                icon: '📦',
-                badge: 'Kasus 3: Logistik & Rantai Pasok',
-                title: 'Gudang Logistik E-Commerce & Jalur Kontainer Buntu',
-                category: 'Logistik Industri & Supply Chain',
-                desc: 'Pusat distribusi kargo belanja online menyimpan peti kemas di lorong kontainer sempit yang berujung buntu (hanya memiliki 1 pintu akses keluar-masuk di ujung depan). Forklift hanya dapat memasukkan peti dari satu arah. Peti A dimasukkan paling awal ke dasar lorong, lalu ditumpuk Peti B, C, dan D di depannya. Di sisi lain, peti yang sudah dikeluarkan diletakkan di atas sabuk konveyor berjalan (conveyor belt) otomatis menuju pintu muat truk ekspedisi luar kota.',
-                problemChallenge: 'Bagaimana menganalisis kombinasi struktur data pada lorong sempit satu pintu (LIFO) dan sabuk konveyor pengiriman (FIFO) agar proses pembongkaran peti tidak memakan waktu lama dan tidak merusak barang?',
-                recommendedStructure: 'Kombinasi Stack & Queue (Lorong Buntu = Stack LIFO, Sabuk Konveyor = Queue FIFO)',
-                defaultItems: ['Peti A (Elektronik)', 'Peti B (Pakaian)', 'Peti C (Peralatan)'],
-                hots: {
-                    mc: {
-                        question: 'Peti A, B, dan C berturut-turut dimasukkan ke lorong buntu satu pintu (A paling dasar). Jika pesanan mendesak membutuhkan Peti A, langkah algoritma forklift yang tepat adalah...',
-                        options: [
-                            { key: 'A', text: 'Menarik paksa peti A menembus dinding belakang lorong gudang.' },
-                            { key: 'B', text: 'Melakukan operasi pop pada Peti C terlebih dahulu, lalu pop Peti B, barulah Peti A dapat diakses dan diambil.', isCorrect: true, feedback: 'Tepat sekali! Lorong satu pintu adalah tumpukan Stack LIFO. Akses ke dasar tumpukan mengharuskan pengangkatan seluruh elemen di atasnya satu demi satu.' },
-                            { key: 'C', text: 'Menjalankan operasi dequeue dari bagian belakang lorong secara langsung.' },
-                            { key: 'D', text: 'Memasukkan Peti D agar Peti A otomatis terdorong keluar ke depan.' }
-                        ]
+                        prompt: 'Jelaskan bagaimana algoritma pengecekan kapasitas (isFull dan isEmpty) mencegah kecelakaan piring pecah (Overflow) atau piring kosong (Underflow)!',
+                        placeholder: 'Tuliskan rancangan algoritma kelompok: langkah pengecekan sebelum push dan sebelum pop...'
                     },
-                    tf: [
-                        {
-                            id: 'tf1',
-                            statement: 'Sabuk berjalan (conveyor belt) yang memindahkan peti ke pintu muat truk beroperasi menggunakan prinsip Queue (FIFO - First In First Out).',
-                            correct: true,
-                            explanation: 'BENAR. Peti yang ditaruh pertama kali di ujung sabuk konveyor akan tiba dan diturunkan pertama kali ke truk pengangkut.'
-                        },
-                        {
-                            id: 'tf2',
-                            statement: 'Pada lorong buntu, menaruh peti yang jadwal pengirimannya paling pagi di posisi paling dasar lorong adalah strategi penataan gudang yang paling efisien.',
-                            correct: false,
-                            explanation: 'SALAH. Ini strategi yang sangat tidak efisien karena forklift harus membongkar seluruh peti lain di atasnya terlebih dahulu hanya untuk mengambil peti paling dasar.'
-                        }
-                    ],
-                    essay: {
-                        prompt: 'Rancanglah strategi penyusunan barang di lorong buntu agar forklift tidak perlu memindahkan peti lain saat jam keberangkatan tiba! Barang dengan jadwal keberangkatan paling akhir harus diletakkan di mana?',
-                        placeholder: 'Jelaskan konsep penataan LIFO terencana (jadwal paling akhir diletakkan di dasar lorong, jadwal paling awal ditaruh paling depan/TOP)...'
-                    }
-                }
-            },
-            case4: {
-                id: 'case4',
-                icon: '🖨️',
-                badge: 'Kasus 4: Jaringan Komputer & OS',
-                title: 'Antrean Spooling Printer Jaringan WiFi Laboratorium',
-                category: 'Sistem Operasi & Jaringan Komputer',
-                desc: 'Di laboratorium komputer sekolah dengan 36 siswa, semua PC terhubung ke 1 printer laser bersama. Saat bel tanda tugas selesai berbunyi, 15 siswa serentak menekan tombol "Print". Kecepatan cetak fisik printer adalah 1 dokumen per 20 detik, sedangkan pengiriman berkas melalui WiFi hanya 0,1 detik per dokumen. Layanan Print Spooler di sistem operasi bertugas menampung limpahan berkas ini di memori sementara (buffer).',
-                problemChallenge: 'Bagaimana sistem operasi mengatur berkas cetak yang masuk serentak agar tidak tertukar halamannya, tercetak sesuai urutan pengiriman yang adil, dan tidak terjadi buffer overflow saat memori printer penuh?',
-                recommendedStructure: 'Queue (FIFO - First In First Out)',
-                defaultItems: ['Laporan_Ahmad.pdf', 'Tugas_Dewi.docx', 'Makalah_Rian.pdf'],
-                hots: {
-                    mc: {
-                        question: 'Mengapa modul Print Spooler pada sistem operasi wajib menerapkan struktur data Queue (FIFO)?',
-                        options: [
-                            { key: 'A', text: 'Agar dokumen yang berukuran paling besar dicetak lebih dahulu.' },
-                            { key: 'B', text: 'Untuk menjamin keadilan urutan waktu pengiriman (first-come, first-served) dan memastikan setiap dokumen diproses utuh tanpa tertukar lembarannya.', isCorrect: true, feedback: 'Tepat sekali! Antrean spooling FIFO menjamin keadilan waktu cetak dan memproses dokumen satu per satu secara teratur tanpa menginterupsi dokumen yang sedang berjalan.' },
-                            { key: 'C', text: 'Karena printer fisik hanya mengerti perintah Last In First Out (LIFO).' },
-                            { key: 'D', text: 'Untuk membagi 1 printer fisik menjadi 36 printer virtual mandiri.' }
-                        ]
-                    },
-                    tf: [
-                        {
-                            id: 'tf1',
-                            statement: 'Jika kapasitas buffer printer penuh (Queue Overflow), berkas dokumen siswa berikutnya yang baru dikirim harus berstatus "Pending" dan menunggu antrean kosong.',
-                            correct: true,
-                            explanation: 'BENAR. Mekanisme antrean buffer penuh mencegah data berkas hilang atau korup dengan menahan antrean di sisi komputer pengirim.'
-                        },
-                        {
-                            id: 'tf2',
-                            statement: 'Jika kertas printer habis di tengah proses pencetakan, seluruh daftar dokumen di dalam Queue Spooler otomatis terhapus permanen.',
-                            correct: false,
-                            explanation: 'SALAH. Queue Print Spooler menahan status "Paused" di memori antrean; saat kertas diisi ulang, pencetakan berlanjut dari posisi yang tertunda.'
-                        }
-                    ],
-                    essay: {
-                        prompt: 'Jika Kepala Sekolah datang dan perlu mencetak 1 lembar surat dinas mendesak, bagaimana memodifikasi sistem antrean spooler agar dokumen kepala sekolah dapat dicetak langsung tanpa menghapus antrean siswa?',
-                        placeholder: 'Jelaskan konsep antrean jalur prioritas tinggi (Priority Queue / Express Queue) yang menyisipkan dokumen di depan antrean reguler...'
-                    }
+                    essayGuide: 'Jelaskan bagaimana algoritma pengecekan kapasitas (isFull dan isEmpty) mencegah kecelakaan piring pecah (Overflow) atau piring kosong (Underflow)!'
                 }
             }
         },
@@ -1267,57 +1219,73 @@ const App = {
         const countBadge = document.getElementById('gp-members-count');
         if (!container) return;
 
-        // Ensure there are default member rows if empty
-        if (!this.groupProjectState.members || this.groupProjectState.members.length === 0) {
+        const defaultRoles = [
+            '👑 Ketua / Koordinator Tim',
+            '📝 Notulis / Perumus Masalah',
+            '🧪 Operator Simulasi & Pengujian',
+            '🔍 Analis Struktur Data',
+            '⚙️ Perancang Solusi Algoritmik',
+            '📢 Presenter / Juru Bicara'
+        ];
+
+        // Ensure there are exactly 6 member rows according to RPM UKIN (6 anggota per kelompok)
+        if (!this.groupProjectState.members || this.groupProjectState.members.length < 6) {
             const playerName = (window.Player && Player.getName && Player.getName()) || '';
             const playerAbsen = (window.Player && Player.getAbsen && Player.getAbsen()) || '';
-            this.groupProjectState.members = [
-                { name: playerName, absen: playerAbsen, role: '👑 Ketua Kelompok' },
-                { name: '', absen: '', role: '🔍 Analis Struktur Data' },
-                { name: '', absen: '', role: '📝 Notulis / Penyusun' }
-            ];
+            const existing = this.groupProjectState.members || [];
+            
+            const newMembers = [];
+            for (let i = 0; i < 6; i++) {
+                if (existing[i] && existing[i].name) {
+                    newMembers.push(existing[i]);
+                } else if (i === 0 && playerName) {
+                    newMembers.push({ name: playerName, absen: playerAbsen, role: defaultRoles[0] });
+                } else {
+                    newMembers.push({ name: '', absen: '', role: defaultRoles[i] || '🤝 Anggota Tim' });
+                }
+            }
+            this.groupProjectState.members = newMembers;
         }
 
         const validCount = this.groupProjectState.members.filter(m => m.name && m.name.trim()).length;
         if (countBadge) {
-            countBadge.textContent = validCount > 0 
-                ? `${validCount} Anggota Terdaftar` 
-                : `${this.groupProjectState.members.length} Slot Anggota`;
+            countBadge.textContent = `${validCount} dari 6 Anggota Terisi`;
         }
 
         const rolesOptions = [
-            '👑 Ketua Kelompok',
+            '👑 Ketua / Koordinator Tim',
+            '📝 Notulis / Perumus Masalah',
+            '🧪 Operator Simulasi & Pengujian',
             '🔍 Analis Struktur Data',
-            '📝 Notulis / Penyusun',
-            '🎨 Presenter / Visualisator',
+            '⚙️ Perancang Solusi Algoritmik',
+            '📢 Presenter / Juru Bicara',
             '🤝 Anggota Tim'
         ];
 
         container.innerHTML = this.groupProjectState.members.map((m, idx) => {
-            const currentRole = m.role || '🤝 Anggota Tim';
+            const currentRole = m.role || defaultRoles[idx] || '🤝 Anggota Tim';
             const selectOptions = rolesOptions.map(r => 
                 `<option value="${r}" ${r === currentRole ? 'selected' : ''}>${r}</option>`
             ).join('');
 
             return `
-                <div class="gp-member-row" data-member-index="${idx}">
-                    <span class="gp-member-index">${idx + 1}.</span>
-                    <input type="text" class="gp-member-name-input" placeholder="Nama anggota ${idx + 1}..." 
+                <div class="gp-member-row" data-member-index="${idx}" style="background: #FFFFFF; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <span class="gp-member-index" style="font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10; width: 28px;">#${idx + 1}</span>
+                    <input type="text" class="gp-member-name-input" placeholder="Nama Anggota ${idx + 1}..." 
                            value="${m.name || ''}" 
+                           style="flex: 2; min-width: 150px; padding: 0.6rem 0.8rem; border: 1.5px solid #D8D4BC; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif;"
                            oninput="App.updateMemberName(${idx}, this.value)"
-                           onchange="App.updateMemberName(${idx}, this.value)"
-                           onkeydown="if(event.key==='Enter'){event.preventDefault();App.onMemberEnterKey(${idx});}">
-                    <input type="number" class="gp-member-absen-input" placeholder="Absen" min="1" max="60"
+                           onchange="App.updateMemberName(${idx}, this.value)">
+                    <input type="number" class="gp-member-absen-input" placeholder="Absen (1-36)" min="1" max="36"
                            value="${m.absen || ''}" 
+                           style="width: 80px; padding: 0.6rem 0.6rem; border: 1.5px solid #D8D4BC; border-radius: 8px; font-family: 'Space Mono', monospace; text-align: center;"
                            oninput="App.updateMemberAbsen(${idx}, this.value)"
-                           onchange="App.updateMemberAbsen(${idx}, this.value)"
-                           title="Nomor Absen Siswa">
-                    <select class="gp-member-role-select" onchange="App.updateMemberRole(${idx}, this.value)">
+                           onchange="App.updateMemberAbsen(${idx}, this.value)">
+                    <select class="gp-member-role-select" 
+                            style="flex: 2; min-width: 180px; padding: 0.6rem 0.8rem; border: 1.5px solid #D8D4BC; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; color: #714236;"
+                            onchange="App.updateMemberRole(${idx}, this.value)">
                         ${selectOptions}
                     </select>
-                    ${this.groupProjectState.members.length > 1 ? `
-                        <button type="button" class="gp-btn-remove" onclick="App.removeGroupMember(${idx})" title="Hapus Anggota">✕</button>
-                    ` : ''}
                 </div>
             `;
         }).join('');
@@ -1332,7 +1300,15 @@ const App = {
 
     updateMemberAbsen(idx, val) {
         if (this.groupProjectState.members && this.groupProjectState.members[idx]) {
-            this.groupProjectState.members[idx].absen = (val || '').trim();
+            let cleanVal = (val || '').trim();
+            if (cleanVal) {
+                const n = parseInt(cleanVal, 10);
+                if (!isNaN(n)) {
+                    if (n < 1) cleanVal = '1';
+                    if (n > 36) cleanVal = '36';
+                }
+            }
+            this.groupProjectState.members[idx].absen = cleanVal;
             this.persistProjectDraft();
         }
     },
@@ -1388,7 +1364,6 @@ const App = {
     },
 
     saveGroupIdentity() {
-        // Scrape the DOM elements directly to ensure 100% accurate, up-to-date values
         this.syncIdentityFromDOM();
 
         const nameInput = document.getElementById('gp-group-name');
@@ -1397,7 +1372,7 @@ const App = {
         let className = (this.groupProjectState.groupClass || (classInput ? classInput.value : 'SMA Kelas X (Fase E)')).trim();
 
         if (!name || name.length < 2) {
-            const playerName = (window.Player && Player.getName && Player.getName()) || 'Tim Hebat';
+            const playerName = (window.Player && Player.getName && Player.getName()) || 'Tim Siswa';
             name = 'Kelompok ' + playerName;
             this.groupProjectState.groupName = name;
             if (nameInput) nameInput.value = name;
@@ -1409,31 +1384,18 @@ const App = {
             if (classInput) classInput.value = className;
         }
 
-        // Collect all members with valid non-empty names
         let validMembers = (this.groupProjectState.members || []).map(m => ({
             name: (m.name || '').trim(),
             absen: (m.absen || '').trim(),
             role: m.role || '🤝 Anggota Tim'
-        })).filter(m => m.name.length > 0);
+        }));
 
-        // Fallback: If no member names are typed yet, auto-populate first member with player name or default
-        if (validMembers.length === 0) {
-            const defaultName = (window.Player && Player.getName && Player.getName()) || 'Siswa 1';
-            const defaultAbsen = (window.Player && Player.getAbsen && Player.getAbsen()) || '';
-            validMembers = [
-                { name: defaultName, absen: defaultAbsen, role: '👑 Ketua Kelompok' }
-            ];
-            this.groupProjectState.members = validMembers;
-            this.renderGroupMembersList();
-        }
-
-        // Update active state
         this.groupProjectState.groupName = name;
         this.groupProjectState.groupClass = className;
         this.groupProjectState.members = validMembers;
         this.groupProjectState.identitySaved = true;
 
-        // Persist directly to StorageManager and LocalStorage
+        // Persist identity without setting artificial 100 score
         if (window.StorageManager) {
             const existing = StorageManager.getGroupProject() || {};
             const projectData = {
@@ -1445,19 +1407,17 @@ const App = {
                 selectedCase: this.groupProjectState.selectedCase || 'case1',
                 hotsAnswers: this.groupProjectState.hotsAnswers || {},
                 worksheet: this.groupProjectState.worksheet || {},
-                score: existing.score || 100
+                score: existing.score !== undefined ? existing.score : null
             };
             StorageManager.saveGroupProject(projectData);
-            StorageManager.savePageScore('group-project', 100, { groupName: name, members: validMembers });
         }
 
-        // Button confirmation feedback
         const saveBtn = document.getElementById('gp-btn-save-identity');
         if (saveBtn) {
             const originalHTML = saveBtn.innerHTML;
-            saveBtn.innerHTML = '✓ Tersimpan!';
-            saveBtn.style.background = '#10b981';
-            saveBtn.style.borderColor = '#059669';
+            saveBtn.innerHTML = '✓ Identitas Disimpan!';
+            saveBtn.style.background = '#891A10';
+            saveBtn.style.borderColor = '#891A10';
             setTimeout(() => {
                 if (saveBtn) {
                     saveBtn.innerHTML = originalHTML;
@@ -1467,24 +1427,16 @@ const App = {
             }, 2500);
         }
 
-        // Update form status chip
         const chipEl = document.getElementById('gp-identity-status-chip');
         if (chipEl) {
+            const filledCount = validMembers.filter(m => m.name.length > 0).length;
             const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            chipEl.textContent = `✓ Tersimpan (${validMembers.length} Anggota, ${nowTime})`;
+            chipEl.textContent = `✓ Profil Disimpan (${filledCount}/6 Anggota, ${nowTime})`;
             chipEl.className = 'gp-status-chip saved';
         }
 
-        // Render profile card with all member chips
-        this.renderGroupProfileCard();
-
-        // Update workflow step 1 to completed
-        this.updateWorkflowSteps();
-
-        if (window.SoundManager) SoundManager.play('levelComplete');
         if (window.UI) {
-            UI.showToast(`🎉 Profil Kelompok "${name}" (${validMembers.length} anggota) berhasil disimpan!`);
-            UI.setKikoDialogue(`Luar biasa! Kelompok "${name}" dengan ${validMembers.length} anggota telah terdaftar dan tersimpan di sistem. Silakan pilih dan analisis studi kasus di bawah!`, 'cheering');
+            UI.showToast(`👥 Identitas Kelompok "${name}" berhasil disimpan.`);
         }
     },
 
@@ -1675,159 +1627,19 @@ const App = {
     getSimulationButtonsHTML(caseId) {
         if (caseId === 'case1') {
             return `
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('add_regular')">+ Pasien Biasa (Enqueue FIFO)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('add_critical')">+ Pasien Kritis (Priority Interupsi)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('process')">➔ Tangani Pasien Terdepan (Dequeue)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset</button>
-            `;
-        } else if (caseId === 'case2') {
-            return `
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('push_action')">+ Aksi Baru di Kanvas (Push Undo)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('undo')">↩️ Undo (Pop Undo ➔ Push Redo)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('redo')">↪️ Redo (Pop Redo ➔ Push Undo)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Bersihkan Kanvas</button>
-            `;
-        } else if (caseId === 'case3') {
-            return `
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('push_lane')">📥 Muat Peti ke Lorong (Push Stack)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('pop_lane')">📤 Ambil Peti Terdepan (Pop Stack)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('enqueue_belt')">🚚 Pindahkan ke Sabuk Konveyor (Enqueue)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('dequeue_truck')">🏁 Muat ke Truk (Dequeue)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('enqueue_student')">➕ Siswa Masuk Antrean (Enqueue Rear)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('dequeue_kasir')">➔ Kasir Layani Siswa Terdepan (Dequeue Front)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('peek_front')">👁️ Cek Siswa Terdepan (Peek Front)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Antrean</button>
             `;
         } else {
             return `
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('enqueue_doc')">📄 Kirim Dokumen Siswa (Enqueue FIFO)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('priority_doc')">⭐ Dokumen Darurat Guru (Priority)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('dequeue_doc')">🖨️ Cetak 1 Dokumen (Dequeue)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Buffer</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('push_plate')">➕ Petugas Tambah Piring (Push TOP)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('pop_plate')">➔ Siswa Ambil Piring Teratas (Pop TOP)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('peek_top')">👁️ Cek Piring Teratas (Peek TOP)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Tumpukan</button>
             `;
         }
-    },
-
-    // ----------------------------------------------------
-    // SIMULATION ENGINE
-    // ----------------------------------------------------
-    runCaseSimulation(action) {
-        const caseId = this.groupProjectState.selectedCase;
-        const sim = this.groupProjectState.simState;
-        let soundToPlay = 'click';
-
-        if (caseId === 'case1') {
-            if (action === 'add_regular') {
-                const names = ['Pasien Budi (Luka Kaki)', 'Pasien Siti (Demam)', 'Pasien Rizky (Flu)', 'Pasien Dian (Alergi)'];
-                const item = names[Math.floor(Math.random() * names.length)];
-                sim.items.push(`[Reguler] ${item}`);
-                sim.logs.unshift(`[ENQUEUE FIFO] ${item} masuk di antrean pendaftaran umum.`);
-                soundToPlay = 'enqueue';
-            } else if (action === 'add_critical') {
-                const item = `[KRITIS] Pasien Darurat #${Math.floor(Math.random() * 900 + 100)} (Serangan Jantung)`;
-                sim.items.unshift(item); // Priority insertion to front
-                sim.logs.unshift(`🚨 [PRIORITY PREEMPTION] ${item} disisipkan ke posisi TERDEPAN IGD!`);
-                soundToPlay = 'push';
-            } else if (action === 'process') {
-                if (sim.items.length === 0) {
-                    sim.logs.unshift(`⚠️ [UNDERFLOW] Tidak ada pasien di antrean IGD.`);
-                } else {
-                    const treated = sim.items.shift();
-                    sim.logs.unshift(`✅ [DEQUEUE / BEDAH] Dokter menangani: ${treated}`);
-                    soundToPlay = 'dequeue';
-                }
-            } else if (action === 'reset') {
-                this.resetCaseSimulationData();
-                return;
-            }
-        } else if (caseId === 'case2') {
-            if (action === 'push_action') {
-                const actions = ['Ketik Paragraf 3', 'Beri Tebal Huruf', 'Ganti Warna Merah', 'Sisipkan Ikon Bintang'];
-                const nextAct = `${sim.undoItems.length + 1}. ${actions[sim.undoItems.length % actions.length]}`;
-                sim.undoItems.push(nextAct);
-                sim.redoItems = []; // clear redo on new action
-                sim.logs.unshift(`✏️ [PUSH UNDO] Aksi "${nextAct}" dicatat ke Undo Stack. Redo Stack dibersihkan.`);
-                soundToPlay = 'push';
-            } else if (action === 'undo') {
-                if (sim.undoItems.length === 0) {
-                    sim.logs.unshift(`⚠️ [STACK UNDERFLOW] Tidak ada aksi yang bisa dibatalkan.`);
-                } else {
-                    const undone = sim.undoItems.pop();
-                    sim.redoItems.push(undone);
-                    sim.logs.unshift(`↩️ [UNDO (Ctrl+Z)] Membatalkan: "${undone}". Dipindahkan ke Redo Stack.`);
-                    soundToPlay = 'pop';
-                }
-            } else if (action === 'redo') {
-                if (sim.redoItems.length === 0) {
-                    sim.logs.unshift(`⚠️ [REDO KOSONG] Tidak ada aksi yang bisa dipulihkan.`);
-                } else {
-                    const redone = sim.redoItems.pop();
-                    sim.undoItems.push(redone);
-                    sim.logs.unshift(`↪️ [REDO (Ctrl+Y)] Memulihkan kembali: "${redone}".`);
-                    soundToPlay = 'push';
-                }
-            } else if (action === 'reset') {
-                this.resetCaseSimulationData();
-                return;
-            }
-        } else if (caseId === 'case3') {
-            if (action === 'push_lane') {
-                const crates = ['Peti Laptop', 'Peti TV LED', 'Peti Busana', 'Peti Buku'];
-                const item = crates[Math.floor(Math.random() * crates.length)] + ` #${Math.floor(Math.random() * 80 + 10)}`;
-                sim.items.push(`[Lorong] ${item}`);
-                sim.logs.unshift(`📥 [PUSH STACK] ${item} dimuat ke lorong buntu. Posisi TOP terluar.`);
-                soundToPlay = 'push';
-            } else if (action === 'pop_lane') {
-                if (sim.items.length === 0) {
-                    sim.logs.unshift(`⚠️ [LORONG KOSONG] Tidak ada peti di lorong.`);
-                } else {
-                    const popped = sim.items.pop();
-                    sim.logs.unshift(`📤 [POP STACK] Forklift mengangkat peti terdepan: ${popped}.`);
-                    soundToPlay = 'pop';
-                }
-            } else if (action === 'enqueue_belt') {
-                const item = `[Konveyor] Paket Ekspres #${Math.floor(Math.random() * 800 + 100)}`;
-                sim.items.push(item);
-                sim.logs.unshift(`🚚 [ENQUEUE KONVEYOR] ${item} ditaruh di sabuk berjalan menuju truk.`);
-                soundToPlay = 'enqueue';
-            } else if (action === 'dequeue_truck') {
-                if (sim.items.length === 0) {
-                    sim.logs.unshift(`⚠️ [KONVEYOR KOSONG] Tidak ada paket di sabuk konveyor.`);
-                } else {
-                    const sent = sim.items.shift();
-                    sim.logs.unshift(`🏁 [DEQUEUE TRUK] ${sent} dimuat ke truk dan berangkat.`);
-                    soundToPlay = 'dequeue';
-                }
-            } else if (action === 'reset') {
-                this.resetCaseSimulationData();
-                return;
-            }
-        } else if (caseId === 'case4') {
-            if (action === 'enqueue_doc') {
-                const docs = ['Makalah_Sejarah.docx', 'Laporan_Fisika.pdf', 'Proposal_OSIS.docx', 'Grafik_Matematika.png'];
-                const doc = docs[Math.floor(Math.random() * docs.length)];
-                sim.items.push(`[Antre] ${doc}`);
-                sim.logs.unshift(`📄 [ENQUEUE BUFFER] Dokumen "${doc}" masuk buffer printer di REAR.`);
-                soundToPlay = 'enqueue';
-            } else if (action === 'priority_doc') {
-                const pDoc = `[PRIORITAS] Soal_Ujian_Guru.pdf`;
-                sim.items.unshift(pDoc);
-                sim.logs.unshift(`⭐ [JALUR EKSPRES] Dokumen guru disisipkan ke FRONT antrean cetak!`);
-                soundToPlay = 'push';
-            } else if (action === 'dequeue_doc') {
-                if (sim.items.length === 0) {
-                    sim.logs.unshift(`⚠️ [PRINTER IDLE] Tidak ada dokumen yang menunggu cetak.`);
-                } else {
-                    const printed = sim.items.shift();
-                    sim.logs.unshift(`🖨️ [DEQUEUE CETAK] Mencetak lembaran: ${printed}. Selesai!`);
-                    soundToPlay = 'dequeue';
-                }
-            } else if (action === 'reset') {
-                this.resetCaseSimulationData();
-                return;
-            }
-        }
-
-        if (window.SoundManager) SoundManager.play(soundToPlay);
-        this.renderCaseSimulationViewport();
-        this.renderCaseSimulationLog();
     },
 
     renderCaseSimulationViewport() {
@@ -1837,45 +1649,131 @@ const App = {
         const caseId = this.groupProjectState.selectedCase;
         const sim = this.groupProjectState.simState;
 
-        if (caseId === 'case2') {
-            // Dual Stack visualizer
-            const undoBadges = sim.undoItems.map(item => 
-                `<div class="gp-sim-item-badge">📌 ${item}</div>`
-            ).join('') || '<span style="color: #64748b; font-size: 0.82rem;">(Undo Stack Kosong)</span>';
-
-            const redoBadges = sim.redoItems.map(item => 
-                `<div class="gp-sim-item-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🔁 ${item}</div>`
-            ).join('') || '<span style="color: #64748b; font-size: 0.82rem;">(Redo Stack Kosong)</span>';
-
-            vp.innerHTML = `
-                <div style="display: flex; gap: 1.5rem; width: 100%; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <strong style="color: #E76814; font-size: 0.8rem; display: block; margin-bottom: 0.35rem;">[UNDO STACK (LIFO)]:</strong>
-                        <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">${undoBadges}</div>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; border-left: 1.5px dashed #D8D4BC; padding-left: 1rem;">
-                        <strong style="color: #DC8236; font-size: 0.8rem; display: block; margin-bottom: 0.35rem;">[REDO STACK (LIFO)]:</strong>
-                        <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">${redoBadges}</div>
-                    </div>
-                </div>
-            `;
-            return;
-        }
-
         if (!sim.items || sim.items.length === 0) {
-            vp.innerHTML = `<span style="color: #64748b; font-size: 0.85rem; font-style: italic;">Antrean / tumpukan data saat ini kosong. Gunakan tombol di atas untuk menyimulasikan aliran data.</span>`;
+            vp.innerHTML = `<span style="color: #8F726A; font-size: 0.88rem; font-style: italic;">Antrean / tumpukan data saat ini kosong (Underflow). Gunakan tombol di atas untuk menyimulasikan operasi aliran data.</span>`;
             return;
         }
 
-        vp.innerHTML = sim.items.map((it, idx) => {
-            const isPriority = it.includes('[KRITIS]') || it.includes('[PRIORITAS]');
-            const positionTag = idx === 0 ? ' (FRONT)' : (idx === sim.items.length - 1 ? ' (REAR)' : '');
-            return `
-                <div class="gp-sim-item-badge ${isPriority ? 'priority' : ''}">
-                    ${isPriority ? '🚨' : '📦'} ${it}${positionTag}
+        if (caseId === 'case1') {
+            // Queue FIFO Horizontal Track
+            vp.innerHTML = `
+                <div style="width: 100%;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-family: 'Space Mono', monospace; font-weight: 700; color: #714236; margin-bottom: 0.5rem;">
+                        <span>🚪 FRONT (Meja Kasir - Dilayani Duluan) ➔</span>
+                        <span> REAR (Siswa Baru Masuk Antrean)</span>
+                    </div>
+                    <div style="display: flex; gap: 0.6rem; overflow-x: auto; padding: 0.5rem 0;">
+                        ${sim.items.map((it, idx) => {
+                            const isFront = idx === 0;
+                            const isRear = idx === sim.items.length - 1;
+                            return `
+                                <div class="gp-sim-item-badge" style="background: ${isFront ? '#891A10' : '#E76814'}; color: #FFFFFF; border-radius: 8px; padding: 0.6rem 0.9rem; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(113, 66, 54, 0.2);">
+                                    ${isFront ? '👑 FRONT: ' : (isRear ? '📍 REAR: ' : '👤 ')}${it}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
                 </div>
             `;
-        }).join('');
+        } else {
+            // Stack LIFO Vertical Chamber (Dispenser Piring)
+            const maxCap = 5;
+            vp.innerHTML = `
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <div style="font-size: 0.78rem; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10; margin-bottom: 0.5rem;">
+                        ⬇️ SATU PINTU AKSES: TOP OF STACK (Push & Pop dari Sini) ⬇️
+                    </div>
+                    <div style="width: 100%; max-width: 440px; display: flex; flex-direction: column-reverse; gap: 0.5rem; background: #FAF6ED; border: 2px solid #D8D4BC; border-radius: 12px; padding: 1rem;">
+                        ${sim.items.map((it, idx) => {
+                            const isTop = idx === sim.items.length - 1;
+                            return `
+                                <div style="background: ${isTop ? '#891A10' : '#DC8236'}; color: #FFFFFF; border-radius: 8px; padding: 0.6rem 1rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(113, 66, 54, 0.15);">
+                                    <span>🍽️ ${it}</span>
+                                    <span style="font-family: 'Space Mono', monospace; font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">
+                                        ${isTop ? '★ TOP (Paling Atas)' : `Posisi #${idx + 1}`}
+                                    </span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div style="font-size: 0.78rem; color: #714236; margin-top: 0.4rem;">
+                        Kapasitas Dispenser: <strong>${sim.items.length} / ${maxCap} Piring</strong> ${sim.items.length >= maxCap ? '<span style="color: #B8210F; font-weight: bold;">(PENUH / Overflow Warning)</span>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+    },
+
+    runCaseSimulation(action) {
+        const caseId = this.groupProjectState.selectedCase;
+        const sim = this.groupProjectState.simState;
+        let soundToPlay = 'click';
+
+        if (caseId === 'case1') {
+            // Queue Kasir Kantin
+            if (action === 'enqueue_student') {
+                const pool = ['Dian (Nasi Goreng)', 'Fajar (Soto Ayam)', 'Lestari (Mie Ayam)', 'Rafi (Batagor)', 'Nabila (Es Teh)', 'Bagus (Roti Bakar)'];
+                const student = pool[Math.floor(Math.random() * pool.length)];
+                sim.items.push(`Siswa ${student}`);
+                sim.logs.unshift(`[ENQUEUE FIFO] Siswa "${student}" datang dan masuk antrean di barisan paling belakang (REAR). Total antrean: ${sim.items.length}.`);
+                soundToPlay = 'enqueue';
+            } else if (action === 'dequeue_kasir') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`⚠️ [QUEUE UNDERFLOW] Antrean kasir sedang kosong! Kasir menunggu kedatangan siswa berikutnya.`);
+                } else {
+                    const served = sim.items.shift();
+                    sim.logs.unshift(`✅ [DEQUEUE FIFO] Kasir selesai memproses pembayaran dan menyerahkan pesanan kepada: ${served} (keluar dari FRONT).`);
+                    soundToPlay = 'dequeue';
+                }
+            } else if (action === 'peek_front') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`👁️ [PEEK FRONT] Antrean kosong, tidak ada siswa di posisi depan.`);
+                } else {
+                    sim.logs.unshift(`👁️ [PEEK FRONT] Siswa yang saat ini berada di depan meja kasir adalah: ${sim.items[0]} (sedang bersiap memesan).`);
+                }
+            } else if (action === 'reset') {
+                this.resetCaseSimulationData();
+                return;
+            }
+        } else {
+            // Stack Tumpukan Piring (maks 5 piring)
+            const maxCap = 5;
+            if (action === 'push_plate') {
+                if (sim.items.length >= maxCap) {
+                    sim.logs.unshift(`⚠️ [STACK OVERFLOW] Kapasitas dispenser penuh (${maxCap} piring)! Jangan tambah piring lagi agar tidak goyang dan jatuh pecah.`);
+                } else {
+                    const plateNum = sim.items.length + 1;
+                    const plateName = `Piring Keramik Putih #${plateNum}`;
+                    sim.items.push(plateName);
+                    sim.logs.unshift(`[PUSH STACK] Petugas dapur menaruh ${plateName} bersih ke posisi paling atas (TOP). Tumpukan saat ini: ${sim.items.length} piring.`);
+                    soundToPlay = 'push';
+                }
+            } else if (action === 'pop_plate') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`⚠️ [STACK UNDERFLOW] Dispenser piring bersih kosong! Siswa harus menunggu petugas dapur mencuci piring baru.`);
+                } else {
+                    const popped = sim.items.pop();
+                    sim.logs.unshift(`✅ [POP STACK] Siswa mengambil ${popped} dari posisi paling atas (TOP) untuk mengambil makanan. Sisa: ${sim.items.length} piring.`);
+                    soundToPlay = 'pop';
+                }
+            } else if (action === 'peek_top') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`👁️ [PEEK TOP] Dispenser piring kosong, tidak ada piring di posisi puncak.`);
+                } else {
+                    sim.logs.unshift(`👁️ [PEEK TOP] Piring yang berada di puncak tumpukan saat ini adalah: ${sim.items[sim.items.length - 1]}.`);
+                }
+            } else if (action === 'reset') {
+                this.resetCaseSimulationData();
+                return;
+            }
+        }
+
+        if (window.AudioController && soundToPlay) {
+            AudioController.play(soundToPlay);
+        }
+
+        this.renderCaseSimulationViewport();
+        this.renderCaseSimulationLog();
     },
 
     renderCaseSimulationLog() {
@@ -1931,10 +1829,12 @@ const App = {
 
         // True / False statements HTML
         const tfAnswers = savedAnswers.tf || {};
-        const tfHTML = c.hots.tf.map(tItem => {
+        const tfHTML = (c.hots.tf || []).map(tItem => {
             const userVal = tfAnswers[tItem.id];
             const hasAnswered = userVal !== undefined;
-            const isCorrect = hasAnswered && userVal === tItem.correct;
+            const expectedVal = (tItem.correct !== undefined) ? tItem.correct : tItem.isTrue;
+            const explanationText = tItem.explanation || tItem.feedback || '';
+            const isCorrect = hasAnswered && userVal === expectedVal;
 
             return `
                 <div class="gp-tf-item">
@@ -1951,7 +1851,7 @@ const App = {
                     </div>
                     ${hasAnswered ? `
                         <div class="gp-feedback-alert ${isCorrect ? 'correct' : 'info'}" style="padding: 0.5rem 0.8rem; font-size: 0.82rem;">
-                            <strong>${isCorrect ? '✅ Tepat!' : '💡 Catatan Guru:'}</strong> ${tItem.explanation}
+                            <strong>${isCorrect ? '✅ Tepat!' : '💡 Catatan Guru:'}</strong> ${explanationText}
                         </div>
                     ` : ''}
                 </div>
@@ -1960,6 +1860,8 @@ const App = {
 
         // Essay question
         const essayVal = savedAnswers.essay || '';
+        const essayPrompt = (c.hots.essay && c.hots.essay.prompt) || c.hots.essayGuide || 'Jelaskan rancangan solusi algoritmik kelompokmu untuk kasus ini:';
+        const essayPlaceholder = (c.hots.essay && c.hots.essay.placeholder) || 'Tuliskan rancangan solusi pemecahan masalah hasil diskusi kelompokmu...';
 
         container.innerHTML = `
             <div class="gp-section-header">
@@ -1995,8 +1897,8 @@ const App = {
             <!-- Question 3: Isian Singkat / Rancangan Solusi HOTS (C6 Kreasi) -->
             <div class="gp-hots-card">
                 <span class="gp-hots-badge" style="background: #FFF7EB; color: #DC8236; border: 1px solid #D8D4BC;">Soal 3 • Perancangan Solusi Algoritmik (C6 - Problem Solving)</span>
-                <p class="gp-hots-prompt">${c.hots.essay.prompt}</p>
-                <textarea class="gp-textarea-modern" placeholder="${c.hots.essay.placeholder}" 
+                <p class="gp-hots-prompt">${essayPrompt}</p>
+                <textarea class="gp-textarea-modern" placeholder="${essayPlaceholder}" 
                           oninput="App.answerHOTS_Essay('${caseKey}', this.value)">${essayVal}</textarea>
                 <div class="gp-textarea-hint">💡 Rancang aturan logis secara jelas bersama kelompokmu. Jawaban tersimpan otomatis.</div>
             </div>
@@ -2109,80 +2011,182 @@ const App = {
         StorageManager.saveGroupProject(draft);
     },
 
-    // ----------------------------------------------------
-    // SAVE, PRINT, EXPORT ACTIONS
-    // ----------------------------------------------------
-    saveGroupProject() {
-        // Ensure identity inputs and worksheet inputs are synced before saving whole worksheet
-        this.syncIdentityFromDOM();
 
-        const structSelect = document.getElementById('gp-structure-select');
-        const reasoningEl = document.getElementById('gp-reasoning');
-        const stepsEl = document.getElementById('gp-steps');
-        const conclusionEl = document.getElementById('gp-conclusion');
 
-        if (structSelect && structSelect.value) this.groupProjectState.worksheet.selectedStructure = structSelect.value;
-        if (reasoningEl && reasoningEl.value) this.groupProjectState.worksheet.reasoning = reasoningEl.value;
-        if (stepsEl && stepsEl.value) this.groupProjectState.worksheet.steps = stepsEl.value;
-        if (conclusionEl && conclusionEl.value) this.groupProjectState.worksheet.conclusion = conclusionEl.value;
-
-        let groupName = (this.groupProjectState.groupName || '').trim();
-        let groupClass = (this.groupProjectState.groupClass || '').trim();
-        const ws = this.groupProjectState.worksheet;
-        const caseKey = this.groupProjectState.selectedCase || 'case1';
-        const curCase = this.groupProjectState.cases[caseKey] || this.groupProjectState.cases['case1'];
-
-        if (!groupName || groupName.length < 2) {
-            const playerName = (window.Player && Player.getName && Player.getName()) || 'Tim Hebat';
-            groupName = 'Kelompok ' + playerName;
-            this.groupProjectState.groupName = groupName;
-            const nameInput = document.getElementById('gp-group-name');
-            if (nameInput) nameInput.value = groupName;
-        }
-
-        if (!groupClass) {
-            groupClass = 'SMA Kelas X (Fase E)';
-            this.groupProjectState.groupClass = groupClass;
-            const classInput = document.getElementById('gp-group-class');
-            if (classInput) classInput.value = groupClass;
-        }
-
-        if (!ws.selectedStructure) {
-            ws.selectedStructure = curCase.recommendedStructure || 'Stack (LIFO - Last In First Out)';
-            if (structSelect) structSelect.value = ws.selectedStructure;
-        }
-
-        const projectData = {
-            groupName: groupName,
-            groupClass: groupClass || 'SMA Kelas X (Fase E)',
-            className: groupClass || 'SMA Kelas X (Fase E)',
-            members: this.groupProjectState.members,
-            selectedCase: caseKey,
-            caseTitle: curCase.title,
-            hotsAnswers: this.groupProjectState.hotsAnswers,
-            worksheet: {
-                selectedStructure: ws.selectedStructure,
-                reasoning: ws.reasoning || '',
-                steps: ws.steps || '',
-                conclusion: ws.conclusion || ''
-            },
-            score: 100
+    calculateGroupRubricScore(projectData) {
+        const details = {
+            collaboration: { score: 0, max: 15, label: "Kolaborasi & Identitas 6 Anggota", note: "" },
+            conceptSelection: { score: 0, max: 20, label: "Ketepatan Konsep Struktur Data", note: "" },
+            reasoning: { score: 0, max: 20, label: "Kedalaman Argumentasi Konseptual", note: "" },
+            algorithmicSteps: { score: 0, max: 25, label: "Urutan Langkah Solusi / Dekomposisi", note: "" },
+            conclusion: { score: 0, max: 20, label: "Kesimpulan & Kejelasan Solusi", note: "" }
         };
 
-        if (window.StorageManager) {
-            StorageManager.saveGroupProject(projectData);
-            StorageManager.savePageScore('group-project', 100, { groupName, case: projectData.selectedCase });
+        // 1. Kolaborasi 6 Anggota
+        const members = (projectData.members || []).filter(m => m.name && m.name.trim().length > 0);
+        if (members.length >= 6) {
+            details.collaboration.score = 15;
+            details.collaboration.note = "Lengkap (6 anggota terdaftar dengan pembagian peran terstruktur).";
+        } else if (members.length >= 4) {
+            details.collaboration.score = 10;
+            details.collaboration.note = `Terisi ${members.length} anggota tim.`;
+        } else if (members.length > 0) {
+            details.collaboration.score = 6;
+            details.collaboration.note = `Baru terisi ${members.length} anggota.`;
+        } else {
+            details.collaboration.score = 0;
+            details.collaboration.note = "Belum mengisi anggota tim.";
         }
 
-        this.groupProjectState.identitySaved = true;
+        // 2. Ketepatan Konsep Struktur Data
+        const selStruct = (projectData.worksheet?.selectedStructure || '').toLowerCase();
+        const isCase1 = projectData.selectedCase === 'case1'; // Queue Kantin
+        const isCase2 = projectData.selectedCase === 'case2'; // Stack Kantin
 
-        if (window.SoundManager) SoundManager.play('levelComplete');
-        if (window.UI) {
-            UI.showToast(`🎉 Tugas Kelompok "${groupName}" berhasil disimpan! Skor: 100 Poin.`);
-            UI.setKikoDialogue(`Luar biasa kerja sama tim "${groupName}"! Laporan analisis dan jawaban HOTS kalian telah tersimpan rapi dengan nilai maksimal 100 Poin. Kalian bisa mencetak atau mengunduh hasilnya sekarang!`, 'cheering');
+        if (isCase1 && selStruct.includes('queue')) {
+            details.conceptSelection.score = 20;
+            details.conceptSelection.note = "Tepat! Kasus antrean kasir kantin wajib menggunakan Queue (FIFO).";
+        } else if (isCase2 && selStruct.includes('stack')) {
+            details.conceptSelection.score = 20;
+            details.conceptSelection.note = "Tepat! Kasus tumpukan piring saji kantin wajib menggunakan Stack (LIFO).";
+        } else if (selStruct.length > 0) {
+            details.conceptSelection.score = 8;
+            details.conceptSelection.note = "Struktur data yang dipilih kurang selaras dengan karakteristik masalah.";
+        } else {
+            details.conceptSelection.score = 0;
+            details.conceptSelection.note = "Belum memilih struktur data.";
         }
 
-        this.renderGroupProjectUI();
+        // 3. Kedalaman Argumentasi Konseptual
+        const reason = (projectData.worksheet?.reasoning || '').trim();
+        const hasConceptWords = /fifo|lifo|first in|last in|antre|tumpuk|front|rear|top|pop|push|enqueue|dequeue/i.test(reason);
+
+        if (reason.length >= 70 && hasConceptWords) {
+            details.reasoning.score = 20;
+            details.reasoning.note = "Sangat mendalam, analisis memuat prinsip komputasional LIFO/FIFO secara tepat.";
+        } else if (reason.length >= 35) {
+            details.reasoning.score = 14;
+            details.reasoning.note = "Cukup baik, argumentasi dapat diperkuat dengan prinsip kerja struktur data.";
+        } else if (reason.length > 0) {
+            details.reasoning.score = 7;
+            details.reasoning.note = "Uraian argumentasi masih terlalu singkat.";
+        } else {
+            details.reasoning.score = 0;
+            details.reasoning.note = "Belum diisi.";
+        }
+
+        // 4. Urutan Langkah Solusi Algoritmik / Dekomposisi
+        const steps = (projectData.worksheet?.steps || '').trim();
+        const hasStepsPattern = /langkah|tahap|\d+\.|\n|-|\*/i.test(steps);
+
+        if (steps.length >= 80 && hasStepsPattern) {
+            details.algorithmicSteps.score = 25;
+            details.algorithmicSteps.note = "Sangat runtut dan sistematis, mencerminkan alur algoritma operasional.";
+        } else if (steps.length >= 40) {
+            details.algorithmicSteps.score = 17;
+            details.algorithmicSteps.note = "Cukup baik, alur langkah dapat diperjelas dengan penomoran urutan.";
+        } else if (steps.length > 0) {
+            details.algorithmicSteps.score = 9;
+            details.algorithmicSteps.note = "Langkah pemecahan masalah masih terlalu ringkas.";
+        } else {
+            details.algorithmicSteps.score = 0;
+            details.algorithmicSteps.note = "Belum diisi.";
+        }
+
+        // 5. Kesimpulan & Kejelasan Solusi Komputasional
+        const conclusion = (projectData.worksheet?.conclusion || '').trim();
+        if (conclusion.length >= 60) {
+            details.conclusion.score = 20;
+            details.conclusion.note = "Kesimpulan komprehensif, mencakup efisiensi dan solusi ketertiban kantin.";
+        } else if (conclusion.length >= 30) {
+            details.conclusion.score = 14;
+            details.conclusion.note = "Cukup baik, rangkuman solusi dapat ditambahkan.";
+        } else if (conclusion.length > 0) {
+            details.conclusion.score = 6;
+            details.conclusion.note = "Kesimpulan masih sangat singkat.";
+        } else {
+            details.conclusion.score = 0;
+            details.conclusion.note = "Belum diisi.";
+        }
+
+        const totalScore = details.collaboration.score +
+                           details.conceptSelection.score +
+                           details.reasoning.score +
+                           details.algorithmicSteps.score +
+                           details.conclusion.score;
+
+        return { totalScore, details };
+    },
+
+    renderGroupRubricCard(evaluation) {
+        const worksheetSection = document.getElementById('gp-worksheet-section');
+        if (!worksheetSection) return;
+
+        let card = document.getElementById('gp-rubric-result-card');
+        if (!card) {
+            card = document.createElement('div');
+            card.id = 'gp-rubric-result-card';
+            card.style.marginTop = '1.75rem';
+            worksheetSection.appendChild(card);
+        }
+
+        const isPassed = evaluation.totalScore >= 75; // KKTP 75
+        const d = evaluation.details;
+
+        card.innerHTML = `
+            <div style="background: #FFFFFF; border: 2.5px solid #891A10; border-radius: 16px; padding: 1.75rem; box-shadow: 0 10px 30px rgba(113, 66, 54, 0.08);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1.5px solid #D8D4BC; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <h4 style="font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: #714236; margin: 0;">
+                            📊 Hasil Penilaian Rubrik LKPD Kelompok (Berdasarkan RPM UKIN)
+                        </h4>
+                        <span style="font-size: 0.82rem; color: #714236;">Kriteria Ketercapaian Tujuan Pembelajaran: KKTP ≥ 75</span>
+                    </div>
+                    <span class="academic-badge ${isPassed ? 'academic-badge-emerald' : 'academic-badge-amber'}" style="font-size: 0.82rem;">
+                        ${isPassed ? '✓ Tuntas (Memenuhi KKTP)' : '⚠️ Perlu Penguatan (Belum Tuntas)'}
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <div style="background: #FAF6ED; border: 2px solid #E76814; border-radius: 14px; padding: 1rem 2rem; text-align: center;">
+                        <span style="font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: 700; color: #714236; text-transform: uppercase;">Skor Akhir LKPD</span>
+                        <div style="font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; color: #891A10; line-height: 1;">
+                            ${evaluation.totalScore}
+                        </div>
+                        <span style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #714236;">Skala 100</span>
+                    </div>
+                    <div style="flex: 1; min-width: 260px;">
+                        <p style="font-size: 0.95rem; color: #2B1D19; line-height: 1.6; margin: 0;">
+                            ${isPassed 
+                                ? 'Luar biasa! Hasil kerja kelompokmu telah memenuhi standar kelayakan asesmen kurikulum. Seluruh rincian rubrik di bawah ini telah terisi secara komprehensif.' 
+                                : 'Nilai kelompok belum mencapai KKTP minimal 75. Silakan periksa rincian rubrik berikut, lengkapi bagian yang masih kurang, lalu simpan ulang!'}
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+                    ${Object.keys(d).map(k => {
+                        const item = d[k];
+                        const pct = Math.round((item.score / item.max) * 100);
+                        return `
+                            <div style="background: #FAF8F5; border: 1px solid #D8D4BC; border-radius: 10px; padding: 0.85rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                    <strong style="font-size: 0.92rem; color: #714236;">${item.label}</strong>
+                                    <span style="font-family: 'Space Mono', monospace; font-size: 0.82rem; font-weight: 700; color: #891A10;">
+                                        ${item.score} / ${item.max} Poin (${pct}%)
+                                    </span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: #64748b; margin: 0;">
+                                    💡 ${item.note}
+                                </p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+
+        card.scrollIntoView({ behavior: 'smooth' });
     },
 
     saveGroupProject(showFeedback = true) {
@@ -2203,7 +2207,7 @@ const App = {
         }
 
         if (!ws.selectedStructure) {
-            ws.selectedStructure = curCase.recommendedStructure || 'Stack (LIFO - Last In First Out)';
+            ws.selectedStructure = curCase.recommendedStructure || (caseKey === 'case1' ? 'Queue (FIFO)' : 'Stack (LIFO)');
             if (structSelect) structSelect.value = ws.selectedStructure;
         }
 
@@ -2220,31 +2224,38 @@ const App = {
                 reasoning: ws.reasoning || '',
                 steps: ws.steps || '',
                 conclusion: ws.conclusion || ''
-            },
-            score: 100
+            }
         };
+
+        // Calculate real objective score based on RPM rubrics
+        const evaluation = this.calculateGroupRubricScore(projectData);
+        projectData.score = evaluation.totalScore;
+        projectData.rubricDetails = evaluation.details;
 
         if (window.StorageManager) {
             StorageManager.saveGroupProject(projectData);
-            StorageManager.savePageScore('group-project', 100, { groupName, case: projectData.selectedCase });
+            StorageManager.savePageScore('group-project', evaluation.totalScore, {
+                groupName,
+                case: projectData.selectedCase,
+                score: evaluation.totalScore
+            });
         }
 
         this.groupProjectState.identitySaved = true;
+        this.groupProjectState.lastScore = evaluation.totalScore;
 
         if (showFeedback) {
             if (window.SoundManager) SoundManager.play('levelComplete');
             if (window.UI) {
-                UI.showToast(`🎉 Tugas Kelompok "${groupName}" berhasil disimpan! Skor: 100 Poin.`);
-                UI.setKikoDialogue(`Luar biasa kerja sama tim "${groupName}"! Laporan analisis dan jawaban HOTS kalian telah tersimpan rapi dengan nilai maksimal 100 Poin. Kalian bisa mengunduh Word atau mencetak PDF sekarang!`, 'cheering');
+                UI.showToast(`📊 Tugas Kelompok "${groupName}" berhasil dinilai! Skor: ${evaluation.totalScore}/100 Poin.`);
+                UI.setKikoDialogue(`Kerja sama tim "${groupName}" telah dihitung secara objektif berdasarkan rubrik RPM. Nilai: ${evaluation.totalScore}/100. Kalian dapat mengunduh Word (.doc) atau mencetak PDF sekarang!`, 'cheering');
             }
+            this.renderGroupRubricCard(evaluation);
         }
 
         this.renderGroupProjectUI();
     },
 
-    // ----------------------------------------------------
-    // LEMBAR JAWABAN LKPD EXPORT GENERATOR (WORD & PDF)
-    // ----------------------------------------------------
     buildGroupLKPDHTML(forWordDoc = false) {
         const data = window.StorageManager ? StorageManager.getGroupProject() : null;
         const groupName = this.groupProjectState.groupName || (data ? data.groupName : 'Kelompok Informatika');
@@ -2470,10 +2481,14 @@ const App = {
     },
 
     downloadGroupWord() {
-        this.saveGroupProject(false);
+        try {
+            this.saveGroupProject(false);
+        } catch (e) {
+            console.warn("Autosave before Word export warning:", e);
+        }
 
         const data = window.StorageManager ? StorageManager.getGroupProject() : null;
-        const groupName = this.groupProjectState.groupName || (data ? data.groupName : 'Kelompok_Siswa');
+        const groupName = this.groupProjectState.groupName || (data ? data.groupName : 'Kelompok_Informatika');
         const cleanName = groupName.replace(/[^\w\d-_]/g, '_');
 
         const docHTML = this.buildGroupLKPDHTML(true);
@@ -2487,8 +2502,10 @@ const App = {
         a.download = `Lembar_Jawaban_LKPD_${cleanName}.doc`;
         document.body.appendChild(a);
         a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setTimeout(() => {
+            a.remove();
+            URL.revokeObjectURL(url);
+        }, 1500);
 
         if (window.UI) {
             UI.showToast(`📄 Berkas Word (.doc) "${groupName}" berhasil diunduh! Siap untuk dipresentasikan.`);
@@ -2496,13 +2513,21 @@ const App = {
     },
 
     downloadGroupPDF() {
-        this.saveGroupProject(false);
+        try {
+            this.saveGroupProject(false);
+        } catch (e) {
+            console.warn("Autosave before PDF export warning:", e);
+        }
 
-        const printDoc = document.getElementById('gp-print-document');
-        if (!printDoc) return;
+        let printDoc = document.getElementById('gp-print-document');
+        if (!printDoc) {
+            printDoc = document.createElement('div');
+            printDoc.id = 'gp-print-document';
+            printDoc.className = 'gp-print-only';
+            document.body.appendChild(printDoc);
+        }
 
         printDoc.innerHTML = this.buildGroupLKPDHTML(false);
-
         document.body.classList.add('printing-group-worksheet');
 
         if (window.UI) {
