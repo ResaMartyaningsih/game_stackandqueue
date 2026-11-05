@@ -68,7 +68,7 @@ const PBLAcademic = {
                 "D. Kedua sistem menggunakan Queue (FIFO)"
             ],
             correct: 0,
-            explanation: "Sangat tepat! Sistem X menghasilkan urutan terbalik dari urutan masukan ([101, 102, 103] menjadi [103, 102, 101]), ini merupakan ciri khas Stack (LIFO - pembalikan urutan). Sistem Y mempertahankan urutan kedatangan asli ([101, 102, 103] tetap [101, 102, 103]), yang merupakan ciri mutlak Queue (FIFO)."
+            explanation: "Sangat tepat! Sistem X menghasilkan urutan terbalik dari urutan masukan ([101, 102, 103] menjadi [103, 102, 101]), ini merupakan ciri khas Stack (LIFO - pembalikan urutan). Sistem Y mempertahankan urutan kedatangan asli ([101, 102, 103] tetap [101, 102, 103]), yang merupakan ciri mutlak Queue (FIFO). Catatan Kondisi Batas: Jika Sistem X kosong lalu dipanggil pop(), terjadi Stack Underflow; jika Sistem Y penuh kuota lalu dipanggil enqueue(), terjadi Queue Overflow!"
         }
     ],
 
@@ -277,6 +277,27 @@ const PBLAcademic = {
             isSubmitted: true,
             savedAt: new Date().toISOString()
         };
+
+        // Recalculate 4 Level task score (each correct = 25 pts, max 100)
+        let correctCount = 0;
+        let submittedCount = 0;
+        for (let i = 1; i <= 4; i++) {
+            const t = StorageManager.data.individualTasks[i];
+            if (t && t.isSubmitted) {
+                submittedCount++;
+                if (t.isCorrect) correctCount++;
+            }
+        }
+        const taskScore = correctCount * 25;
+        if (!StorageManager.data.pageScores) StorageManager.data.pageScores = {};
+        StorageManager.data.pageScores['individual-tasks'] = {
+            score: taskScore,
+            completed: submittedCount === 4,
+            completedCount: submittedCount,
+            correctCount: correctCount,
+            savedAt: new Date().toISOString()
+        };
+
         StorageManager.save();
     },
 
@@ -998,7 +1019,7 @@ const PBLAcademic = {
             }
             this.selectTaskOption(0); // Option A is correct
             this.checkTaskAnswer();
-            if (window.UI) UI.showToast("🎉 SELAMAT! Seluruh 6 Level Tugas Individu Tuntas dengan Nilai Sempurna!");
+            if (window.UI) UI.showToast("🎉 SELAMAT! Seluruh 4 Level Tugas Individu Tuntas dengan Nilai Sempurna!");
         } else {
             if (statusEl) {
                 statusEl.innerHTML = '<span style="color: #B8210F; font-weight: 800;">⚠️ Integrasi gagal. Periksa kembali: Undo butuh LIFO (Stack) dan Dapur butuh FIFO (Queue)!</span>';

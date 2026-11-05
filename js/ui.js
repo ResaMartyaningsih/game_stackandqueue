@@ -49,7 +49,17 @@ const UI = {
             s.classList.remove('active');
         });
 
-        const targetEl = document.getElementById(`screen-${screenId}`);
+        let targetEl = document.getElementById(`screen-${screenId}`);
+        if (!targetEl) {
+            if (screenId === 'stack-sim' || screenId === 'games') {
+                return this.switchScreen('learn-stack', pushHistory);
+            }
+            if (screenId === 'queue-sim' || screenId === 'puzzle' || screenId === 'challenge') {
+                return this.switchScreen('learn-queue', pushHistory);
+            }
+            targetEl = document.getElementById('screen-home');
+            screenId = 'home';
+        }
         if (targetEl) {
             targetEl.classList.add('active');
             this.currentScreen = screenId;
@@ -525,13 +535,15 @@ const UI = {
     // ----------------------------------------------------
     renderFinalResult() {
         if (!window.ScoringSystem) return;
-        const avgScore = ScoringSystem.getFinalAverage();
+        const comp = ScoringSystem.getComponentScores();
+        const avgScore = comp.finalScore;
         const predicate = ScoringSystem.getPredicate(avgScore);
         const analytics = ScoringSystem.getDetailedAnalytics();
-        const scores = StorageManager.getAllLevelScores();
-        const playerName = Player.getName();
+        const playerName = (window.Player && Player.getName && Player.getName()) || 'Peserta Didik';
+        const playerClass = (window.Player && Player.getClass && Player.getClass()) || 'Kelas X.1';
+        const playerAbsen = (window.Player && Player.getAbsen && Player.getAbsen()) || '';
 
-        // Populate Result Card
+        // Populate Result Card Identity
         const nameEl = document.getElementById('result-player-name');
         const classEl = document.getElementById('result-player-class');
         const absenEl = document.getElementById('result-player-absen');
@@ -546,95 +558,144 @@ const UI = {
         const masteredList = document.getElementById('result-mastered-concepts');
         const practiceList = document.getElementById('result-practice-concepts');
 
-        if (nameEl) nameEl.textContent = playerName || 'Siswa';
-        if (classEl) classEl.textContent = Player.getClass() || 'Fase E (Kelas X)';
-        if (absenEl) absenEl.textContent = Player.getAbsen() ? `No. ${Player.getAbsen()}` : '-';
+        if (nameEl) nameEl.textContent = playerName;
+        if (classEl) classEl.textContent = playerClass;
+        if (absenEl) absenEl.textContent = playerAbsen ? ('No. ' + playerAbsen) : '—';
         if (dateEl) {
             dateEl.textContent = new Date().toLocaleDateString('id-ID', {
-                day: 'numeric', month: 'long', year: 'numeric'
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
             });
         }
         if (scoreEl) scoreEl.textContent = avgScore;
         if (predEl) {
             predEl.textContent = predicate.text;
-            predEl.className = `predicate-badge ${predicate.class}`;
+            predEl.className = 'predicate-badge ' + predicate.class;
+            predEl.style.backgroundColor = predicate.badgeColor;
+            predEl.style.color = '#FFFFFF';
+            predEl.title = predicate.desc;
         }
-        if (accEl) accEl.textContent = `${analytics.accuracy}%`;
+        if (accEl) accEl.textContent = analytics.accuracy + '%';
         if (corEl) corEl.textContent = analytics.correctAnswers;
         if (wroEl) wroEl.textContent = analytics.wrongAnswers;
         if (timeEl) timeEl.textContent = analytics.formattedTime;
 
         if (levelsGrid) {
-            const pageScores = window.StorageManager ? StorageManager.getAllPageScores() : {};
             const groupProject = window.StorageManager ? StorageManager.getGroupProject() : null;
+            const membersList = (groupProject && groupProject.members && groupProject.members.length > 0)
+                ? groupProject.members.map(m => typeof m === 'object' ? (m.name || '') : m).filter(Boolean).join(', ')
+                : '';
 
-            let html = [1, 2, 3, 4, 5, 6, 7, 8].map(num => {
-                const s = scores[num];
-                const hasScore = s !== undefined && s !== null;
+            const componentsList = [
+                {
+                    key: 'individual',
+                    icon: '🎯',
+                    title: '1. Tantangan Individu (4 Level Bertingkat)',
+                    weight: 25,
+                    score: comp.individual.score,
+                    contrib: comp.individual.weightedContribution,
+                    desc: 'Evaluasi ketepatan pemecahan masalah pada 4 level skenario kantin (C2-C4).'
+                },
+                {
+                    key: 'miniLab',
+                    icon: '🧪',
+                    title: '2. Praktik Simulasi Mini-Lab (Stack & Queue)',
+                    weight: 20,
+                    score: comp.miniLab.score,
+                    contrib: comp.miniLab.weightedContribution,
+                    desc: 'Keberhasilan eksekusi operasi push, pop, enqueue, dan dequeue di laboratorium mini.'
+                },
+                {
+                    key: 'groupProject',
+                    icon: '👥',
+                    title: '3. LKPD Kelompok (PBL: ' + ((groupProject && groupProject.groupName) ? groupProject.groupName : 'Tim Kolaborasi') + ')',
+                    weight: 30,
+                    score: comp.groupProject.score,
+                    contrib: comp.groupProject.weightedContribution,
+                    desc: membersList ? ('Anggota Tim: ' + membersList) : 'Analisis studi kasus kantin, perumusan algoritma, dan solusi presentasi kelompok.'
+                },
+                {
+                    key: 'evaluation',
+                    icon: '📝',
+                    title: '4. Evaluasi Akhir (Asesmen Sumatif 5 Soal HOTS)',
+                    weight: 25,
+                    score: comp.evaluation.score,
+                    contrib: comp.evaluation.weightedContribution,
+                    desc: 'Penguasaan konsep secara mandiri melalui 5 butir soal analisis dan penerapan (C3-C4).'
+                }
+            ];
+
+            let html = componentsList.map(c => {
+                const isCompleted = c.score > 0;
+                const barColor = c.score >= 75 ? '#10b981' : (c.score > 0 ? '#E76814' : '#D8D4BC');
                 return `
-                    <div class="result-level-row">
-                        <span class="lvl-label">Level ${num}</span>
-                        <div class="lvl-bar-wrapper">
-                            <div class="lvl-bar-fill" style="width: ${hasScore ? s : 0}%"></div>
+                    <div class="result-component-card" style="background: #FFFFFF; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 0.85rem; box-shadow: 0 2px 8px rgba(113, 66, 54, 0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 220px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                    <span style="font-size: 1.2rem;">${c.icon}</span>
+                                    <strong style="color: #891A10; font-size: 0.98rem; font-family: 'Syne', sans-serif;">${c.title}</strong>
+                                    <span style="font-size: 0.75rem; background: #FAF6ED; border: 1px solid #D8D4BC; padding: 0.15rem 0.5rem; border-radius: 999px; font-weight: 700; color: #714236;">
+                                        Bobot: ${c.weight}%
+                                    </span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: #714236; margin: 0 0 0.5rem 0; line-height: 1.4;">
+                                    ${c.desc}
+                                </p>
+                            </div>
+                            <div style="text-align: right; min-width: 140px;">
+                                <div style="font-family: 'Space Mono', monospace; font-size: 1.2rem; font-weight: 800; color: ${isCompleted ? '#891A10' : '#714236'};">
+                                    ${c.score} <span style="font-size: 0.8rem; font-weight: normal; color: #714236;">/ 100</span>
+                                </div>
+                                <span style="font-size: 0.78rem; font-weight: 700; color: #10b981;">
+                                    Kontribusi: +${c.contrib} poin
+                                </span>
+                            </div>
                         </div>
-                        <span class="lvl-score-val">${hasScore ? `${s} pts` : '-'}</span>
+                        <div class="lvl-bar-wrapper" style="height: 10px; background: #FAF6ED; border-radius: 999px; overflow: hidden; margin-top: 0.4rem; border: 1px solid #D8D4BC;">
+                            <div class="lvl-bar-fill" style="width: ${c.score}%; height: 100%; background: ${barColor}; border-radius: 999px; transition: width 0.6s ease;"></div>
+                        </div>
                     </div>
                 `;
             }).join('');
 
-            // Display Group Project row if present
-            if (groupProject && (groupProject.score || groupProject.savedAt)) {
-                const gpScore = groupProject.score || 100;
-                const membersStr = (groupProject.members && groupProject.members.length > 0)
-                    ? ` (${groupProject.members.map(m => typeof m === 'object' ? (m.name || '') : m).filter(Boolean).join(', ')})`
-                    : '';
-                html += `
-                    <div class="result-level-row" style="background: rgba(14, 165, 233, 0.08); border-left: 3px solid #0284c7; padding: 6px 10px; margin-top: 8px; border-radius: 6px;">
-                        <span class="lvl-label" style="font-weight: 700; color: #0284c7;">👥 Tugas Kelompok: ${groupProject.groupName || 'Tim'}${membersStr}</span>
-                        <div class="lvl-bar-wrapper">
-                            <div class="lvl-bar-fill" style="width: ${gpScore}%; background: #0284c7;"></div>
+            // Add Formative Quiz Feedback Section
+            html += `
+                <div class="result-formative-card" style="background: #FAF6ED; border: 1.5px dashed #714236; border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.2rem;">💬</span>
+                                <strong style="color: #714236; font-size: 0.95rem;">Kuis Pemahaman Materi (Asesmen Formatif)</strong>
+                                <span style="font-size: 0.72rem; background: #D8D4BC; padding: 0.15rem 0.45rem; border-radius: 999px; font-weight: 700; color: #2B1D19;">
+                                    Bobot: 0% (Umpan Balik)
+                                </span>
+                            </div>
+                            <p style="font-size: 0.82rem; color: #714236; margin: 0.3rem 0 0 0;">
+                                Nilai Kuis Stack: <strong>${comp.formative.stackScore} pts</strong> | Nilai Kuis Queue: <strong>${comp.formative.queueScore} pts</strong> (Rata-rata: <strong>${comp.formative.score} pts</strong>).
+                            </p>
                         </div>
-                        <span class="lvl-score-val" style="font-weight: 700; color: #0284c7;">${gpScore} pts</span>
-                    </div>
-                `;
-            }
-
-            // Display Interactive Module Scores breakdown
-            const stackLearn = pageScores['learn-stack']?.score;
-            const queueLearn = pageScores['learn-queue']?.score;
-            const stackSim = pageScores['stack-sim']?.score;
-            const queueSim = pageScores['queue-sim']?.score;
-
-            if (stackLearn !== undefined || queueLearn !== undefined || stackSim !== undefined || queueSim !== undefined) {
-                html += `
-                    <div style="margin-top: 10px; padding: 10px; background: var(--surface-soft); border-radius: 8px; font-size: 0.85rem; border: 1px dashed var(--border-color);">
-                        <strong style="color: var(--primary-sky); display: block; margin-bottom: 6px;">📌 Nilai Modul Pembelajaran & Lab Interaktif:</strong>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px;">
-                            ${stackLearn !== undefined ? `<div>Materi Belajar Stack: <strong style="color: var(--success-emerald);">${stackLearn} pts</strong></div>` : ''}
-                            ${queueLearn !== undefined ? `<div>Materi Belajar Queue: <strong style="color: var(--success-emerald);">${queueLearn} pts</strong></div>` : ''}
-                            ${stackSim !== undefined ? `<div>Lab Simulator Stack: <strong style="color: var(--success-emerald);">${stackSim} pts</strong></div>` : ''}
-                            ${queueSim !== undefined ? `<div>Lab Simulator Queue: <strong style="color: var(--success-emerald);">${queueSim} pts</strong></div>` : ''}
+                        <div style="font-size: 0.8rem; color: #714236; font-style: italic; background: #FFFFFF; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid #D8D4BC;">
+                            ℹ️ Digunakan untuk refleksi dan pemantauan belajar mandiri.
                         </div>
                     </div>
-                `;
-            }
+                </div>
+            `;
 
             levelsGrid.innerHTML = html;
         }
 
         if (masteredList) {
             masteredList.innerHTML = analytics.mastered.length > 0 
-                ? analytics.mastered.map(c => `<li><span class="check-icon">✓</span> <strong>${c}</strong></li>`).join('')
-                : `<li><em>Belum ada data konsep</em></li>`;
+                ? analytics.mastered.map(c => '<li><span class="check-icon" style="color: #10b981;">✓</span> <strong>' + c + '</strong></li>').join('')
+                : '<li><span class="check-icon" style="color: #10b981;">✓</span> <strong>Prinsip LIFO &amp; FIFO</strong></li>';
         }
 
         if (practiceList) {
             practiceList.innerHTML = analytics.needsPractice.length > 0
-                ? analytics.needsPractice.map(c => `<li><span class="warn-icon">⚠️</span> <strong>${c}</strong></li>`).join('')
-                : `<li class="all-good-note">${t('allMasteredNotice')}</li>`;
+                ? analytics.needsPractice.map(c => '<li><span class="warn-icon" style="color: #DC8236;">⚠️</span> <strong>' + c + '</strong></li>').join('')
+                : '<li class="all-good-note" style="color: #10b981;">🎉 Seluruh indikator pembelajaran Stack &amp; Queue telah dikuasai dengan baik!</li>';
         }
     },
-
     // ----------------------------------------------------
     // PUSAT BANK SOAL & RIWAYAT JAWABAN (SEARCH & FILTER)
     // ----------------------------------------------------
