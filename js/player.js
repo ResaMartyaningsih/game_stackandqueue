@@ -107,6 +107,11 @@ const Player = {
 
         // Update overall progress bar
         this.updateProgressSummary();
+
+        // Refresh profile page if active
+        if (window.UI && typeof UI.renderProfilePage === 'function' && UI.currentScreen === 'profile') {
+            UI.renderProfilePage();
+        }
     },
 
     updateProgressSummary() {
