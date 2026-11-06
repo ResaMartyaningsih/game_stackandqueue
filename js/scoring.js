@@ -1,16 +1,17 @@
 /**
  * scoring.js
  * Scoring System, Predicate Evaluator, and Learning Analytics Engine
- * Sesuai Pedoman RPM UKIN Fase E (Problem-Based Learning 2 JP / 90 Menit)
+ * Sesuai Spesifikasi Pembaharuan NalarQuest (Model PBL 2 JP / 90 Menit)
  * 
- * Bobot Penilaian Pembelajaran:
- * 1. Tantangan Individu 4 Level : 25% (Ketepatan jawaban & pemecahan masalah)
- * 2. Praktik Simulasi Mini-Lab  : 20% (Keberhasilan operasi Stack & Queue)
- * 3. LKPD Kelompok (PBL)        : 30% (Analisis kasus, konsep, algoritma, argumentasi)
- * 4. Evaluasi Akhir (Sumatif)   : 25% (Penguasaan mandiri 5 butir soal HOTS)
+ * Sistem Pembobotan Nilai Digital (ND):
+ * 1. Tugas Individu (4 Level) : 30% (Nilai terbaik dari maks 3 percobaan)
+ * 2. LKPD Kelompok            : 35% (Nilai terbaik dari maks 3 percobaan)
+ * 3. Evaluasi Akhir (Sumatif) : 35% (Penguasaan mandiri 5 butir soal HOTS)
+ * 4. Bonus Mini-Lab           : Maksimal +5 Poin (Tambahan di luar bobot utama)
  * ---------------------------------------------------------------------------------
- * Total Nilai Akhir            : 100%
- * * Kuis Materi Stack & Queue   : Asesmen formatif (0% - umpan balik pemahaman konsep)
+ * Rumus Nilai Digital: ND = min(100, round((I * 0.30) + (L * 0.35) + (E * 0.35) + B))
+ * * Penilaian presentasi (10%) dilakukan secara manual oleh guru melalui rubrik penilaian guru
+ *   di luar sistem website, dan TIDAK digabungkan ke dalam nilai digital otomatis ini.
  */
 
 const ScoringSystem = {
@@ -81,11 +82,33 @@ const ScoringSystem = {
     },
 
     // ----------------------------------------------------
-    // COMPONENT SCORES & WEIGHTED AVERAGE (RPM UKIN)
+    // COMPONENT SCORES & WEIGHTED AVERAGE (NALARQUEST FORMULA)
     // ----------------------------------------------------
 
     getIndividualScore() {
         if (!window.StorageManager || !StorageManager.data) return 0;
+        const att = StorageManager.getIndividualAttempts ? StorageManager.getIndividualAttempts() : StorageManager.data.individualAttempts;
+        if (att) {
+            // If bestScore is recorded, use it
+            if (typeof att.bestScore === 'number' && att.bestScore > 0) {
+                return att.bestScore;
+            }
+            // Check history
+            if (att.history && att.history.length > 0) {
+                const maxH = Math.max(...att.history.map(h => h.score || 0));
+                if (maxH > 0) return maxH;
+            }
+            // Check currently completed locked tasks
+            if (att.lockedTasks) {
+                let c = 0;
+                for (let i = 1; i <= 4; i++) {
+                    if (att.lockedTasks[i] && att.lockedTasks[i].isCorrect) c++;
+                }
+                if (c > 0) return c * 25;
+            }
+        }
+
+        // Check fallback in individualTasks
         const tasks = StorageManager.data.individualTasks || {};
         let correctCount = 0;
         for (let lvl = 1; lvl <= 4; lvl++) {
@@ -93,10 +116,8 @@ const ScoringSystem = {
                 correctCount++;
             }
         }
-        // If student submitted tasks, score = correctCount * 25
-        if (Object.keys(tasks).length > 0) {
-            return correctCount * 25;
-        }
+        if (correctCount > 0) return correctCount * 25;
+
         // Check pageScores fallback
         const pageScores = StorageManager.data.pageScores || {};
         if (pageScores['individual-tasks'] && typeof pageScores['individual-tasks'].score === 'number') {
@@ -105,28 +126,19 @@ const ScoringSystem = {
         return 0;
     },
 
-    getMiniLabScore() {
-        if (!window.StorageManager || !StorageManager.data) return 0;
-        const ops = StorageManager.data.miniLabOps || {};
-        let opsDone = 0;
-        if (ops.stackPush) opsDone++;
-        if (ops.stackPop) opsDone++;
-        if (ops.queueEnqueue) opsDone++;
-        if (ops.queueDequeue) opsDone++;
-
-        if (opsDone > 0) {
-            return opsDone * 25; // 4 operations x 25 = 100
-        }
-
-        const pageScores = StorageManager.data.pageScores || {};
-        if (pageScores['mini-lab'] && typeof pageScores['mini-lab'].score === 'number') {
-            return pageScores['mini-lab'].score;
-        }
-        return 0;
-    },
-
     getGroupProjectScore() {
         if (!window.StorageManager || !StorageManager.data) return 0;
+        const att = StorageManager.getGroupAttempts ? StorageManager.getGroupAttempts() : StorageManager.data.groupAttempts;
+        if (att) {
+            if (typeof att.bestScore === 'number' && att.bestScore > 0) {
+                return att.bestScore;
+            }
+            if (att.history && att.history.length > 0) {
+                const maxH = Math.max(...att.history.map(h => h.score || 0));
+                if (maxH > 0) return maxH;
+            }
+        }
+
         const gp = StorageManager.data.groupProject;
         if (gp && typeof gp.score === 'number' && gp.score > 0) {
             return gp.score;
@@ -147,6 +159,20 @@ const ScoringSystem = {
         return 0;
     },
 
+    getMiniLabBonus() {
+        if (!window.StorageManager || !StorageManager.data) return 0;
+        if (typeof StorageManager.getMiniLabBonus === 'function') {
+            return StorageManager.getMiniLabBonus();
+        }
+        const ops = StorageManager.data.miniLabOps || {};
+        let count = 0;
+        if (ops.stackPush) count++;
+        if (ops.stackPop) count++;
+        if (ops.queueEnqueue) count++;
+        if (ops.queueDequeue) count++;
+        return Math.min(5, parseFloat(((count / 4) * 5).toFixed(1)));
+    },
+
     getFormativeQuizScores() {
         if (!window.StorageManager || !StorageManager.data) return { stack: 0, queue: 0, avg: 0 };
         const pageScores = StorageManager.data.pageScores || {};
@@ -162,45 +188,61 @@ const ScoringSystem = {
 
     getComponentScores() {
         const individual = this.getIndividualScore();
-        const miniLab = this.getMiniLabScore();
         const groupProject = this.getGroupProjectScore();
         const evaluation = this.getEvaluationScore();
+        const miniLabBonus = this.getMiniLabBonus();
         const formative = this.getFormativeQuizScores();
 
-        // Formula: (Individu * 0.25) + (MiniLab * 0.20) + (LKPD * 0.30) + (Evaluasi * 0.25)
-        const weightedScore = (individual * 0.25) +
-                              (miniLab * 0.20) +
-                              (groupProject * 0.30) +
-                              (evaluation * 0.25);
+        // Formula: ND = (I * 0.30) + (L * 0.35) + (E * 0.35) + B, max 100
+        const rawScore = (individual * 0.30) +
+                         (groupProject * 0.35) +
+                         (evaluation * 0.35) +
+                         miniLabBonus;
+
+        const finalScore = Math.min(100, Math.round(rawScore));
+
+        const indAtt = (window.StorageManager && StorageManager.getIndividualAttempts) 
+            ? StorageManager.getIndividualAttempts() 
+            : { currentAttempt: 1, history: [], bestScore: individual };
+
+        const grpAtt = (window.StorageManager && StorageManager.getGroupAttempts) 
+            ? StorageManager.getGroupAttempts() 
+            : { currentAttempt: 1, history: [], bestScore: groupProject };
 
         return {
             individual: {
-                name: 'Tantangan Individu (4 Level)',
+                name: 'Tugas Individu (4 Level)',
                 score: individual,
-                weightPct: 25,
-                weightedContribution: parseFloat((individual * 0.25).toFixed(1)),
-                desc: 'Ketepatan jawaban & penyelesaian 4 level tugas mandiri bertingkat'
-            },
-            miniLab: {
-                name: 'Praktik Simulasi Mini-Lab',
-                score: miniLab,
-                weightPct: 20,
-                weightedContribution: parseFloat((miniLab * 0.20).toFixed(1)),
-                desc: 'Keberhasilan eksekusi operasi dasar Stack (push, pop) & Queue (enqueue, dequeue)'
+                bestScore: individual,
+                weightPct: 30,
+                weightedContribution: parseFloat((individual * 0.30).toFixed(1)),
+                currentAttempt: indAtt.currentAttempt,
+                history: indAtt.history || [],
+                desc: 'Nilai terbaik dari maksimal 3 percobaan (bobot 30%)'
             },
             groupProject: {
-                name: 'LKPD Kelompok (PBL)',
+                name: 'LKPD Kelompok',
                 score: groupProject,
-                weightPct: 30,
-                weightedContribution: parseFloat((groupProject * 0.30).toFixed(1)),
-                desc: 'Analisis masalah kantin, ketepatan konsep, algoritma, & argumentasi tim'
+                bestScore: groupProject,
+                weightPct: 35,
+                weightedContribution: parseFloat((groupProject * 0.35).toFixed(1)),
+                currentAttempt: grpAtt.currentAttempt,
+                history: grpAtt.history || [],
+                desc: 'Nilai terbaik kelompok dari maksimal 3 percobaan (bobot 35%)'
             },
             evaluation: {
                 name: 'Evaluasi Akhir (Sumatif)',
                 score: evaluation,
-                weightPct: 25,
-                weightedContribution: parseFloat((evaluation * 0.25).toFixed(1)),
-                desc: 'Penguasaan konsep secara mandiri melalui 5 butir soal HOTS (C3-C4)'
+                weightPct: 35,
+                weightedContribution: parseFloat((evaluation * 0.35).toFixed(1)),
+                desc: 'Penguasaan konsep secara mandiri melalui 5 butir soal HOTS (bobot 35%)'
+            },
+            miniLabBonus: {
+                name: 'Bonus Mini-Lab',
+                score: miniLabBonus,
+                maxBonus: 5,
+                contribution: miniLabBonus,
+                desc: 'Poin bonus penyelesaian eksplorasi operasional Stack & Queue (maks +5 poin)'
             },
             formative: {
                 name: 'Kuis Formatif Materi Stack & Queue',
@@ -210,7 +252,7 @@ const ScoringSystem = {
                 weightPct: 0,
                 desc: 'Asesmen formatif sebagai umpan balik mandiri (tidak dihitung dalam nilai sumatif)'
             },
-            finalScore: Math.round(weightedScore)
+            finalScore: finalScore
         };
     },
 
@@ -298,7 +340,6 @@ const ScoringSystem = {
             }
         });
 
-        // Add default mastered if students did well
         if (mastered.length === 0 && correctAnswers > 0) {
             mastered.push('Prinsip LIFO', 'Prinsip FIFO');
         }

@@ -1116,6 +1116,94 @@ const App = {
         }
     },
 
+
+    // ----------------------------------------------------
+    // LKPD GROUP ATTEMPT TRACKER & RETRY SYSTEM (NALARQUEST)
+    // ----------------------------------------------------
+    renderGroupAttemptTracker() {
+        if (!window.StorageManager || !StorageManager.getGroupAttempts) return;
+        const att = StorageManager.getGroupAttempts();
+        const textEl = document.getElementById('group-attempt-text');
+        const pillsEl = document.getElementById('group-attempt-pills');
+        const bestEl = document.getElementById('group-best-score-badge');
+        const retryBtn = document.getElementById('group-retry-btn');
+
+        if (textEl) {
+            textEl.textContent = `Kesempatan pengerjaan: ${att.currentAttempt} dari 3`;
+        }
+
+        if (pillsEl) {
+            let pillsHtml = '';
+            for (let i = 1; i <= 3; i++) {
+                const hist = (att.history || []).find(h => h.attempt === i);
+                const isCurrent = (att.currentAttempt === i);
+                if (hist) {
+                    pillsHtml += `<span class="attempt-pill completed" style="background: #10b981; color: #fff; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700;">✓ P${i}: ${hist.score} pts</span>`;
+                } else if (isCurrent) {
+                    pillsHtml += `<span class="attempt-pill active" style="background: #891A10; color: #fff; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700;">● P${i} (Aktif)</span>`;
+                } else {
+                    pillsHtml += `<span class="attempt-pill pending" style="background: #FAF6ED; border: 1px solid #D8D4BC; color: #714236; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.78rem;">○ P${i}</span>`;
+                }
+            }
+            pillsEl.innerHTML = pillsHtml;
+        }
+
+        if (bestEl) {
+            bestEl.textContent = `🏆 Nilai Terbaik: ${att.bestScore || 0} pts`;
+        }
+
+        if (retryBtn) {
+            if (att.currentAttempt >= 3 && att.isLocked) {
+                retryBtn.disabled = true;
+                retryBtn.style.opacity = '0.6';
+                retryBtn.style.cursor = 'not-allowed';
+                retryBtn.textContent = 'Kesempatan Habis (3 dari 3)';
+            } else {
+                retryBtn.disabled = false;
+                retryBtn.style.opacity = '1';
+                retryBtn.style.cursor = 'pointer';
+                retryBtn.textContent = '🔄 Ulangi Seluruh Tugas';
+            }
+        }
+    },
+
+    promptRetryGroup() {
+        if (!window.StorageManager || !StorageManager.getGroupAttempts) return;
+        const att = StorageManager.getGroupAttempts();
+        if (att.currentAttempt >= 3) {
+            if (window.UI) UI.showToast("Kesempatan pengerjaan LKPD kelompok telah habis (3 dari 3)!");
+            return;
+        }
+        if (window.UI) {
+            UI.openRetryModal('group');
+        }
+    },
+
+    executeRetryGroup() {
+        if (!window.StorageManager || !StorageManager.resetGroupAttempt) return;
+        const success = StorageManager.resetGroupAttempt();
+        if (success) {
+            this.groupProjectState.worksheet = {
+                selectedStructure: '',
+                reasoning: '',
+                steps: '',
+                conclusion: ''
+            };
+            this.groupProjectState.hotsAnswers = {};
+            this.groupProjectState.isLocked = false;
+            this.persistProjectDraft();
+            this.renderGroupProjectUI();
+            this.renderGroupAttemptTracker();
+            const step2 = document.getElementById('gp-step-2');
+            if (step2) step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (window.UI) {
+                UI.showToast("🔄 Percobaan baru LKPD dimulai. Silakan diskusikan dan lengkapi kembali lembar kerja dari awal!");
+            }
+        } else {
+            if (window.UI) UI.showToast("Kesempatan pengerjaan telah habis (3 dari 3)!");
+        }
+    },
+
     initGroupProject() {
         if (window.StorageManager) {
             const saved = StorageManager.getGroupProject();
@@ -1148,6 +1236,10 @@ const App = {
                     this.groupProjectState.worksheet.steps = saved.answers.ans2 || '';
                     this.groupProjectState.worksheet.conclusion = saved.answers.ans3 || '';
                 }
+            }
+            if (typeof StorageManager.getGroupAttempts === 'function') {
+                const att = StorageManager.getGroupAttempts();
+                this.groupProjectState.isLocked = !!(att && att.isLocked);
             }
         }
 
@@ -1184,6 +1276,7 @@ const App = {
         this.renderGroupHOTSQuestions();
         this.restoreWorksheetInputs();
         this.updateWorkflowSteps();
+        this.renderGroupAttemptTracker();
 
         // Update status badge
         const saved = window.StorageManager ? StorageManager.getGroupProject() : null;
@@ -1561,6 +1654,11 @@ const App = {
     // ----------------------------------------------------
     selectGroupCase(caseKey) {
         if (!this.groupProjectState.cases[caseKey]) return;
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        if (att && att.isLocked) {
+            if (window.UI) UI.showToast('🔒 Lembar LKPD telah terkunci untuk percobaan ini. Gunakan "Ulangi Seluruh Tugas" jika ingin mengganti studi kasus.');
+            return;
+        }
         this.groupProjectState.selectedCase = caseKey;
         this.resetCaseSimulationData();
         this.renderGroupCaseCards();
@@ -1850,17 +1948,22 @@ const App = {
         const c = this.groupProjectState.cases[caseKey];
         if (!c || !c.hots) return;
 
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        const isLocked = !!(att && att.isLocked);
         const savedAnswers = this.groupProjectState.hotsAnswers[caseKey] || {};
 
-        // Multiple choice options HTML
+        // Multiple choice options HTML (Single choice locks immediately upon selection)
         const mcUserChoice = savedAnswers.mc;
+        const mcIsLocked = isLocked || !!mcUserChoice;
         const mcOptionsHTML = c.hots.mc.options.map(opt => {
             const isSelected = mcUserChoice === opt.key;
             return `
                 <button type="button" class="gp-hots-option-btn ${isSelected ? 'selected' : ''}" 
+                        ${mcIsLocked ? 'disabled style="pointer-events: none; opacity: ' + (isSelected ? '1' : '0.6') + ';"' : ''}
                         onclick="App.answerHOTS_MC('${caseKey}', '${opt.key}')">
                     <span class="gp-option-key">${opt.key}</span>
-                    <span>${opt.text}</span>
+                    <span style="flex: 1;">${opt.text}</span>
+                    ${isSelected ? '<span class="task-locked-tag" style="margin-left: auto; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; background: #891A10; color: #FFF; font-weight: 700;">🔒 Terkunci</span>' : ''}
                 </button>
             `;
         }).join('');
@@ -1880,24 +1983,30 @@ const App = {
             }
         }
 
-        // True / False statements HTML
+        // True / False statements HTML (Locks immediately upon selection)
         const tfAnswers = savedAnswers.tf || {};
         const tfHTML = (c.hots.tf || []).map(tItem => {
             const userVal = tfAnswers[tItem.id];
             const hasAnswered = userVal !== undefined;
+            const itemLocked = isLocked || hasAnswered;
             const expectedVal = (tItem.correct !== undefined) ? tItem.correct : tItem.isTrue;
             const explanationText = tItem.explanation || tItem.feedback || '';
             const isCorrect = hasAnswered && userVal === expectedVal;
 
             return `
                 <div class="gp-tf-item">
-                    <div class="gp-tf-statement">📌 "${tItem.statement}"</div>
+                    <div class="gp-tf-statement" style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                        <span>📌 "${tItem.statement}"</span>
+                        ${hasAnswered ? '<span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; background: #891A10; color: #FFF; font-weight: 700; white-space: nowrap;">🔒 Terkunci</span>' : ''}
+                    </div>
                     <div class="gp-tf-actions">
                         <button type="button" class="gp-tf-btn ${userVal === true ? 'active-true' : ''}" 
+                                ${itemLocked ? 'disabled style="pointer-events: none; opacity: ' + (userVal === true ? '1' : '0.45') + ';"' : ''}
                                 onclick="App.answerHOTS_TF('${caseKey}', '${tItem.id}', true)">
                             ✓ BENAR
                         </button>
                         <button type="button" class="gp-tf-btn ${userVal === false ? 'active-false' : ''}" 
+                                ${itemLocked ? 'disabled style="pointer-events: none; opacity: ' + (userVal === false ? '1' : '0.45') + ';"' : ''}
                                 onclick="App.answerHOTS_TF('${caseKey}', '${tItem.id}', false)">
                             ✕ SALAH
                         </button>
@@ -1952,38 +2061,49 @@ const App = {
                 <span class="gp-hots-badge" style="background: #FFF7EB; color: #DC8236; border: 1px solid #D8D4BC;">Soal 3 • Perancangan Solusi Algoritmik (C6 - Problem Solving)</span>
                 <p class="gp-hots-prompt">${essayPrompt}</p>
                 <textarea class="gp-textarea-modern" placeholder="${essayPlaceholder}" 
+                          ${isLocked ? 'disabled style="background: #FAF8F5; cursor: not-allowed;"' : ''}
                           oninput="App.answerHOTS_Essay('${caseKey}', this.value)">${essayVal}</textarea>
-                <div class="gp-textarea-hint">💡 Rancang aturan logis secara jelas bersama kelompokmu. Jawaban tersimpan otomatis.</div>
+                <div class="gp-textarea-hint">${isLocked ? '🔒 Lembar kerja terkunci karena LKPD telah disimpan.' : '💡 Rancang aturan logis secara jelas bersama kelompokmu. Jawaban tersimpan otomatis.'}</div>
             </div>
         `;
     },
 
     answerHOTS_MC(caseKey, optionKey) {
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        if (att && att.isLocked) return;
         if (!this.groupProjectState.hotsAnswers[caseKey]) {
             this.groupProjectState.hotsAnswers[caseKey] = {};
         }
+        if (this.groupProjectState.hotsAnswers[caseKey].mc) return; // Answer locked immediately once selected!
         this.groupProjectState.hotsAnswers[caseKey].mc = optionKey;
         this.persistProjectDraft();
         this.renderGroupHOTSQuestions();
         this.updateWorkflowSteps();
         if (window.SoundManager) SoundManager.play('click');
+        if (window.UI) UI.showToast('🔒 Jawaban Pilihan Ganda Terkunci!');
     },
 
     answerHOTS_TF(caseKey, tfId, value) {
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        if (att && att.isLocked) return;
         if (!this.groupProjectState.hotsAnswers[caseKey]) {
             this.groupProjectState.hotsAnswers[caseKey] = {};
         }
         if (!this.groupProjectState.hotsAnswers[caseKey].tf) {
             this.groupProjectState.hotsAnswers[caseKey].tf = {};
         }
+        if (this.groupProjectState.hotsAnswers[caseKey].tf[tfId] !== undefined) return; // Locked once answered!
         this.groupProjectState.hotsAnswers[caseKey].tf[tfId] = value;
         this.persistProjectDraft();
         this.renderGroupHOTSQuestions();
         this.updateWorkflowSteps();
         if (window.SoundManager) SoundManager.play('click');
+        if (window.UI) UI.showToast('🔒 Jawaban Analisis Kritis Terkunci!');
     },
 
     answerHOTS_Essay(caseKey, text) {
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        if (att && att.isLocked) return;
         if (!this.groupProjectState.hotsAnswers[caseKey]) {
             this.groupProjectState.hotsAnswers[caseKey] = {};
         }
@@ -1996,6 +2116,8 @@ const App = {
     // WORKSHEET HANDLERS (STEP 6 OF USER REQUEST)
     // ----------------------------------------------------
     onWorksheetChange(field, val) {
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        if (att && att.isLocked) return;
         this.groupProjectState.worksheet[field] = val;
         this.persistProjectDraft();
         this.updateWorkflowSteps();
@@ -2012,6 +2134,28 @@ const App = {
         if (reasoning && ws.reasoning) reasoning.value = ws.reasoning;
         if (steps && ws.steps) steps.value = ws.steps;
         if (conclusion && ws.conclusion) conclusion.value = ws.conclusion;
+
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        const isLocked = !!(att && att.isLocked);
+
+        [reasoning, steps, conclusion, structSelect].forEach(el => {
+            if (el) {
+                el.disabled = isLocked;
+                el.style.cursor = isLocked ? 'not-allowed' : 'auto';
+                el.style.backgroundColor = isLocked ? '#FAF8F5' : '#FFFFFF';
+            }
+        });
+
+        const saveBtn = document.getElementById('gp-btn-save-project');
+        if (saveBtn) {
+            if (isLocked) {
+                saveBtn.textContent = `🔒 Lembar Kerja Terkunci (Percobaan ke-${att.currentAttempt})`;
+                saveBtn.style.opacity = '0.75';
+            } else {
+                saveBtn.textContent = '💾 Simpan & Hitung Nilai Kelompok';
+                saveBtn.style.opacity = '1';
+            }
+        }
     },
 
     updateWorkflowSteps() {
@@ -2243,6 +2387,14 @@ const App = {
     },
 
     saveGroupProject(showFeedback = true) {
+        const att = (window.StorageManager && StorageManager.getGroupAttempts) ? StorageManager.getGroupAttempts() : { isLocked: false };
+        if (att && att.isLocked && !showFeedback) {
+            return; // silent return for auto-saves
+        }
+        if (att && att.isLocked && showFeedback) {
+            if (window.UI) UI.showToast(`🔒 Lembar LKPD telah terkunci untuk percobaan ke-${att.currentAttempt}. Gunakan 'Ulangi Seluruh Tugas' jika ingin mencoba lagi.`);
+            return;
+        }
         this.syncIdentityFromDOM();
 
         const groupName = this.groupProjectState.groupName || 'Kelompok Informatika';
@@ -2287,12 +2439,17 @@ const App = {
 
         if (window.StorageManager) {
             StorageManager.saveGroupProject(projectData);
+            if (typeof StorageManager.saveGroupAttemptRecord === 'function') {
+                StorageManager.saveGroupAttemptRecord(evaluation.totalScore, projectData.selectedCase);
+            }
             StorageManager.savePageScore('group-project', evaluation.totalScore, {
                 groupName,
                 case: projectData.selectedCase,
                 score: evaluation.totalScore
             });
         }
+        this.groupProjectState.isLocked = true;
+        this.renderGroupAttemptTracker();
 
         this.groupProjectState.identitySaved = true;
         this.groupProjectState.lastScore = evaluation.totalScore;

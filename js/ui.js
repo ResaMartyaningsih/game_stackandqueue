@@ -533,10 +533,58 @@ const UI = {
     // ----------------------------------------------------
     // FINAL RESULT & REPORT CARD
     // ----------------------------------------------------
+    
+    // ----------------------------------------------------
+    // RETRY CONFIRMATION MODAL & RETRY FLOW (NALARQUEST)
+    // ----------------------------------------------------
+    currentRetryType: 'individual',
+
+    openRetryModal(type = 'individual') {
+        this.currentRetryType = type;
+        const modal = document.getElementById('retry-confirm-modal');
+        if (!modal) return;
+
+        const titleEl = document.getElementById('retry-modal-title');
+        const msgEl = document.getElementById('retry-modal-message');
+
+        if (type === 'individual') {
+            if (titleEl) titleEl.textContent = 'Ulangi Seluruh Tugas?';
+            if (msgEl) msgEl.textContent = 'Seluruh jawaban pada tugas ini akan dihapus dan kamu akan memulai kembali dari soal pertama. Kesempatan pengerjaan akan berkurang satu.';
+        } else if (type === 'group') {
+            if (titleEl) titleEl.textContent = 'Ulangi Seluruh Tugas?';
+            if (msgEl) msgEl.textContent = 'Seluruh jawaban pada tugas ini akan dihapus dan kamu akan memulai kembali dari soal pertama. Kesempatan pengerjaan akan berkurang satu.';
+        }
+
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+        if (window.SoundManager) SoundManager.play('click');
+    },
+
+    closeRetryModal() {
+        const modal = document.getElementById('retry-confirm-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        }
+    },
+
+    confirmRetryAction() {
+        this.closeRetryModal();
+        if (this.currentRetryType === 'individual') {
+            if (window.PBLAcademic && typeof PBLAcademic.executeRetryIndividual === 'function') {
+                PBLAcademic.executeRetryIndividual();
+            }
+        } else if (this.currentRetryType === 'group') {
+            if (window.App && typeof App.executeRetryGroup === 'function') {
+                App.executeRetryGroup();
+            }
+        }
+    },
+
     renderFinalResult() {
         if (!window.ScoringSystem) return;
         const comp = ScoringSystem.getComponentScores();
-        const avgScore = comp.finalScore;
+        const avgScore = comp.finalScore; // Nilai Digital (ND)
         const predicate = ScoringSystem.getPredicate(avgScore);
         const analytics = ScoringSystem.getDetailedAnalytics();
         const playerName = (window.Player && Player.getName && Player.getName()) || 'Peserta Didik';
@@ -585,48 +633,65 @@ const UI = {
                 ? groupProject.members.map(m => typeof m === 'object' ? (m.name || '') : m).filter(Boolean).join(', ')
                 : '';
 
+            // Format attempt history text
+            const formatHistoryBadges = (hist = [], best = 0) => {
+                if (!hist || hist.length === 0) return '<span style="color: #714236; font-size: 0.8rem; font-style: italic;">Belum ada percobaan selesai</span>';
+                return hist.map(h => {
+                    const isBest = h.score === best && best > 0;
+                    return '<span style="display: inline-block; background: ' + (isBest ? '#10b981' : '#FAF6ED') + '; color: ' + (isBest ? '#FFFFFF' : '#714236') + '; border: 1px solid ' + (isBest ? '#10b981' : '#D8D4BC') + '; padding: 0.15rem 0.5rem; border-radius: 6px; font-size: 0.78rem; font-weight: 700; margin-right: 0.35rem;">P' + h.attempt + ': ' + h.score + ' pts' + (isBest ? ' ★ Terbaik' : '') + '</span>';
+                }).join('');
+            };
+
             const componentsList = [
                 {
                     key: 'individual',
                     icon: '🎯',
-                    title: '1. Tantangan Individu (4 Level Bertingkat)',
-                    weight: 25,
+                    title: '1. Tugas Individu (4 Level)',
+                    weight: 30,
                     score: comp.individual.score,
                     contrib: comp.individual.weightedContribution,
-                    desc: 'Evaluasi ketepatan pemecahan masalah pada 4 level skenario kantin (C2-C4).'
-                },
-                {
-                    key: 'miniLab',
-                    icon: '🧪',
-                    title: '2. Praktik Simulasi Mini-Lab (Stack & Queue)',
-                    weight: 20,
-                    score: comp.miniLab.score,
-                    contrib: comp.miniLab.weightedContribution,
-                    desc: 'Keberhasilan eksekusi operasi push, pop, enqueue, dan dequeue di laboratorium mini.'
+                    desc: 'Nilai terbaik dari maksimal 3 percobaan pengerjaan tugas mandiri bertingkat (bobot 30%).',
+                    historyHTML: formatHistoryBadges(comp.individual.history, comp.individual.score)
                 },
                 {
                     key: 'groupProject',
                     icon: '👥',
-                    title: '3. LKPD Kelompok (PBL: ' + ((groupProject && groupProject.groupName) ? groupProject.groupName : 'Tim Kolaborasi') + ')',
-                    weight: 30,
+                    title: '2. LKPD Kelompok (PBL: ' + ((groupProject && groupProject.groupName) ? groupProject.groupName : 'Tim Kolaborasi') + ')',
+                    weight: 35,
                     score: comp.groupProject.score,
                     contrib: comp.groupProject.weightedContribution,
-                    desc: membersList ? ('Anggota Tim: ' + membersList) : 'Analisis studi kasus kantin, perumusan algoritma, dan solusi presentasi kelompok.'
+                    desc: (membersList ? ('Anggota Tim: ' + membersList + '. ') : '') + 'Nilai terbaik kelompok dari maksimal 3 percobaan analisis studi kasus kantin (bobot 35%).',
+                    historyHTML: formatHistoryBadges(comp.groupProject.history, comp.groupProject.score)
                 },
                 {
                     key: 'evaluation',
                     icon: '📝',
-                    title: '4. Evaluasi Akhir (Asesmen Sumatif 5 Soal HOTS)',
-                    weight: 25,
+                    title: '3. Evaluasi Akhir (Asesmen Sumatif 5 Soal HOTS)',
+                    weight: 35,
                     score: comp.evaluation.score,
                     contrib: comp.evaluation.weightedContribution,
-                    desc: 'Penguasaan konsep secara mandiri melalui 5 butir soal analisis dan penerapan (C3-C4).'
+                    desc: 'Penguasaan konsep secara mandiri melalui 5 butir soal HOTS (bobot 35%).',
+                    historyHTML: null
+                },
+                {
+                    key: 'miniLabBonus',
+                    icon: '✨',
+                    title: '4. Bonus Mini-Lab (Tambahan di Luar Bobot Utama)',
+                    weight: '+5 Pts',
+                    score: comp.miniLabBonus.score,
+                    contrib: comp.miniLabBonus.contribution,
+                    desc: 'Poin bonus atas keberhasilan mengeksekusi 4 operasi dasar di Mini-Lab (push, pop, enqueue, dequeue). Maksimal +5 poin.',
+                    historyHTML: null,
+                    isBonus: true
                 }
             ];
 
             let html = componentsList.map(c => {
                 const isCompleted = c.score > 0;
-                const barColor = c.score >= 75 ? '#10b981' : (c.score > 0 ? '#E76814' : '#D8D4BC');
+                const barColor = c.isBonus ? '#E76814' : (c.score >= 75 ? '#10b981' : (c.score > 0 ? '#DC8236' : '#D8D4BC'));
+                const maxVal = c.isBonus ? 5 : 100;
+                const barWidth = c.isBonus ? ((c.score / 5) * 100) : c.score;
+
                 return `
                     <div class="result-component-card" style="background: #FFFFFF; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 0.85rem; box-shadow: 0 2px 8px rgba(113, 66, 54, 0.05);">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
@@ -635,48 +700,41 @@ const UI = {
                                     <span style="font-size: 1.2rem;">${c.icon}</span>
                                     <strong style="color: #891A10; font-size: 0.98rem; font-family: 'Syne', sans-serif;">${c.title}</strong>
                                     <span style="font-size: 0.75rem; background: #FAF6ED; border: 1px solid #D8D4BC; padding: 0.15rem 0.5rem; border-radius: 999px; font-weight: 700; color: #714236;">
-                                        Bobot: ${c.weight}%
+                                        Bobot: ${c.weight}${typeof c.weight === 'number' ? '%' : ''}
                                     </span>
                                 </div>
-                                <p style="font-size: 0.85rem; color: #714236; margin: 0 0 0.5rem 0; line-height: 1.4;">
+                                <p style="font-size: 0.85rem; color: #714236; margin: 0 0 0.4rem 0; line-height: 1.4;">
                                     ${c.desc}
                                 </p>
+                                ${c.historyHTML ? `
+                                    <div style="margin-top: 0.35rem; display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                                        <span style="font-size: 0.78rem; color: #714236; font-weight: 600;">Riwayat Percobaan:</span>
+                                        ${c.historyHTML}
+                                    </div>
+                                ` : ''}
                             </div>
                             <div style="text-align: right; min-width: 140px;">
-                                <div style="font-family: 'Space Mono', monospace; font-size: 1.2rem; font-weight: 800; color: ${isCompleted ? '#891A10' : '#714236'};">
-                                    ${c.score} <span style="font-size: 0.8rem; font-weight: normal; color: #714236;">/ 100</span>
+                                <div style="font-family: 'Space Mono', monospace; font-size: 1.25rem; font-weight: 800; color: ${isCompleted ? '#891A10' : '#714236'};">
+                                    ${c.isBonus ? ('+' + c.score) : c.score} <span style="font-size: 0.8rem; font-weight: normal; color: #714236;">/ ${maxVal}</span>
                                 </div>
                                 <span style="font-size: 0.78rem; font-weight: 700; color: #10b981;">
                                     Kontribusi: +${c.contrib} poin
                                 </span>
                             </div>
                         </div>
-                        <div class="lvl-bar-wrapper" style="height: 10px; background: #FAF6ED; border-radius: 999px; overflow: hidden; margin-top: 0.4rem; border: 1px solid #D8D4BC;">
-                            <div class="lvl-bar-fill" style="width: ${c.score}%; height: 100%; background: ${barColor}; border-radius: 999px; transition: width 0.6s ease;"></div>
+                        <div class="lvl-bar-wrapper" style="height: 10px; background: #FAF6ED; border-radius: 999px; overflow: hidden; margin-top: 0.5rem; border: 1px solid #D8D4BC;">
+                            <div class="lvl-bar-fill" style="width: ${barWidth}%; height: 100%; background: ${barColor}; border-radius: 999px; transition: width 0.6s ease;"></div>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            // Add Formative Quiz Feedback Section
+            // Presentation Rubric Notice
             html += `
-                <div class="result-formative-card" style="background: #FAF6ED; border: 1.5px dashed #714236; border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="font-size: 1.2rem;">💬</span>
-                                <strong style="color: #714236; font-size: 0.95rem;">Kuis Pemahaman Materi (Asesmen Formatif)</strong>
-                                <span style="font-size: 0.72rem; background: #D8D4BC; padding: 0.15rem 0.45rem; border-radius: 999px; font-weight: 700; color: #2B1D19;">
-                                    Bobot: 0% (Umpan Balik)
-                                </span>
-                            </div>
-                            <p style="font-size: 0.82rem; color: #714236; margin: 0.3rem 0 0 0;">
-                                Nilai Kuis Stack: <strong>${comp.formative.stackScore} pts</strong> | Nilai Kuis Queue: <strong>${comp.formative.queueScore} pts</strong> (Rata-rata: <strong>${comp.formative.score} pts</strong>).
-                            </p>
-                        </div>
-                        <div style="font-size: 0.8rem; color: #714236; font-style: italic; background: #FFFFFF; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid #D8D4BC;">
-                            ℹ️ Digunakan untuk refleksi dan pemantauan belajar mandiri.
-                        </div>
+                <div class="result-presentation-notice" style="background: #FAF6ED; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 0.85rem 1.25rem; margin-top: 0.75rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.5rem;">📢</span>
+                    <div style="font-size: 0.85rem; color: #714236; line-height: 1.5;">
+                        <strong>Catatan Penilaian Pembelajaran Guru:</strong> Aspek <strong>Presentasi Kelompok (bobot 10%)</strong> dinilai secara manual oleh guru mata pelajaran melalui rubrik penilaian guru di luar sistem digital ini. Nilai akhir keseluruhan rapor siswa akan digabungkan secara manual oleh guru pengampu.
                     </div>
                 </div>
             `;
@@ -696,7 +754,7 @@ const UI = {
                 : '<li class="all-good-note" style="color: #10b981;">🎉 Seluruh indikator pembelajaran Stack &amp; Queue telah dikuasai dengan baik!</li>';
         }
     },
-    // ----------------------------------------------------
+// ----------------------------------------------------
     // PUSAT BANK SOAL & RIWAYAT JAWABAN (SEARCH & FILTER)
     // ----------------------------------------------------
     initReviewSearchListeners() {
