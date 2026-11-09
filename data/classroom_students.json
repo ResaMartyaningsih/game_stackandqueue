@@ -1,0 +1,37 @@
+{
+  "X-3": {
+    "absen_12_rizky_ramadhan": {
+      "identitas": {
+        "nama": "Rizky Ramadhan",
+        "kelas": "Kelas X.3",
+        "classKey": "X-3",
+        "absen": 12
+      },
+      "status": {
+        "isOnline": true,
+        "currentActivity": "Mengerjakan Tantangan Level 1",
+        "lastActive": "2026-11-09T14:06:10.891Z"
+      },
+      "nilai": {
+        "digitalScore": 75,
+        "tugasIndividu": {
+          "bestScore": 100,
+          "currentAttempt": 1,
+          "isLocked": true
+        },
+        "lkpdKelompok": {
+          "groupName": "Kelompok 3",
+          "bestScore": 85,
+          "isLocked": false
+        },
+        "evaluasiAkhir": {
+          "score": 80,
+          "isCompleted": true
+        },
+        "bonusMiniLab": 5
+      },
+      "teacherEvaluation": {},
+      "_serverUpdated": "2026-11-09T14:06:10.979Z"
+    }
+  }
+}

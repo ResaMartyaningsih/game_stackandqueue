@@ -28,6 +28,11 @@ const App = {
         this.initSimulators();
         this.bindGlobalHandlers();
         this.initGroupProject();
+
+        // Sinkronisasi otomatis aktivitas awal siswa ke Dashboard Guru
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState('Membuka Media Pembelajaran');
+        }
     },
 
     bindGlobalHandlers() {
@@ -121,6 +126,9 @@ const App = {
 
                 Player.setProfile(nameVal, classVal, String(numAbsen));
                 this.hideNamePromptModal();
+                if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+                    window.CloudSync.syncStudentState('Profil Siswa Disimpan');
+                }
                 if (window.SoundManager) SoundManager.play('correct');
                 UI.showToast(`Selamat datang, ${nameVal} (${classVal} - Absen ${numAbsen})! Petualangan dimulai!`);
                 UI.setKikoDialogue(t('greeting', { name: nameVal }), 'cheering');

@@ -938,51 +938,99 @@
             },
 
             connectCloudDatabase() {
-                if (!window.CloudSync) return;
+                // 1. BroadcastChannel (0ms Komunikasi Kilat Antar-Tab di Browser/Laptop yang Sama)
+                try {
+                    if (typeof BroadcastChannel !== 'undefined') {
+                        const channel = new BroadcastChannel('laraslogika_live_channel');
+                        channel.onmessage = (event) => {
+                            if (event.data && event.data.type === 'STUDENT_UPDATE' && event.data.payload) {
+                                const p = event.data.payload;
+                                const cls = p.identitas.classKey;
+                                const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
+                                    ? CloudSync.cleanStudentKey(p.identitas.absen, p.identitas.nama)
+                                    : `absen_${p.identitas.absen}_${p.identitas.nama}`;
+                                if (!this.studentsData[cls]) this.studentsData[cls] = {};
+                                this.studentsData[cls][studentKey] = p;
+                                this.updateClassCounts();
+                                this.applyFilters();
+                            }
+                        };
+                    }
+                } catch (e) {}
 
-                // 1. Listen to all student updates in realtime via Firebase
-                CloudSync.listenToAllStudents((data) => {
-                    if (data && Object.keys(data).length > 0) {
-                        this.studentsData = { ...this.studentsData, ...data };
-                        this.updateClassCounts();
-                        this.applyFilters();
+                // 2. Scan LocalStorage saat halaman pertama kali dibuka
+                try {
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        if (k && k.startsWith('laraslogika_student_')) {
+                            const p = JSON.parse(localStorage.getItem(k));
+                            if (p && p.identitas) {
+                                const cls = p.identitas.classKey;
+                                const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
+                                    ? CloudSync.cleanStudentKey(p.identitas.absen, p.identitas.nama)
+                                    : `absen_${p.identitas.absen}_${p.identitas.nama}`;
+                                if (!this.studentsData[cls]) this.studentsData[cls] = {};
+                                this.studentsData[cls][studentKey] = p;
+                            }
+                        }
+                    }
+                    this.updateClassCounts();
+                    this.applyFilters();
+                } catch (e) {}
+
+                // 3. Listen to window 'storage' events (Tab Murid menulis ke LocalStorage)
+                window.addEventListener('storage', (e) => {
+                    if (e.key && e.key.startsWith('laraslogika_student_') && e.newValue) {
+                        try {
+                            const p = JSON.parse(e.newValue);
+                            if (p && p.identitas) {
+                                const cls = p.identitas.classKey;
+                                const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
+                                    ? CloudSync.cleanStudentKey(p.identitas.absen, p.identitas.nama)
+                                    : `absen_${p.identitas.absen}_${p.identitas.nama}`;
+                                if (!this.studentsData[cls]) this.studentsData[cls] = {};
+                                this.studentsData[cls][studentKey] = p;
+                                this.updateClassCounts();
+                                this.applyFilters();
+                            }
+                        } catch (err) {}
                     }
                 });
 
-                // 2. Local Server Polling Fallback (Bekerja otomatis saat dijalankan di terminal / offline Wi-Fi)
-                const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname) ||
-                                window.location.hostname.startsWith('192.') ||
-                                window.location.hostname.startsWith('10.') ||
-                                window.location.hostname.startsWith('172.');
-
-                if (isLocal) {
-                    const statusText = document.getElementById('live-connection-text');
-                    if (statusText) statusText.textContent = 'Server Lokal & Cloud Aktif';
-
-                    const pollLocalServer = () => {
-                        fetch('/api/students')
-                            .then(res => res.json())
-                            .then(localData => {
-                                if (localData && typeof localData === 'object') {
-                                    let hasNew = false;
-                                    Object.keys(localData).forEach(cls => {
-                                        if (!this.studentsData[cls]) this.studentsData[cls] = {};
-                                        Object.keys(localData[cls]).forEach(k => {
-                                            this.studentsData[cls][k] = localData[cls][k];
-                                            hasNew = true;
-                                        });
+                // 4. Polling Local Node.js Server (/api/students)
+                const pollLocalServer = () => {
+                    fetch('/api/students')
+                        .then(res => res.json())
+                        .then(localData => {
+                            if (localData && typeof localData === 'object' && Object.keys(localData).length > 0) {
+                                let hasNew = false;
+                                Object.keys(localData).forEach(cls => {
+                                    if (!this.studentsData[cls]) this.studentsData[cls] = {};
+                                    Object.keys(localData[cls]).forEach(k => {
+                                        this.studentsData[cls][k] = localData[cls][k];
+                                        hasNew = true;
                                     });
-                                    if (hasNew) {
-                                        this.updateClassCounts();
-                                        this.applyFilters();
-                                    }
+                                });
+                                if (hasNew) {
+                                    this.updateClassCounts();
+                                    this.applyFilters();
                                 }
-                            })
-                            .catch(() => {});
-                    };
+                            }
+                        })
+                        .catch(() => {});
+                };
+                pollLocalServer();
+                setInterval(pollLocalServer, 2000);
 
-                    pollLocalServer();
-                    setInterval(pollLocalServer, 2000);
+                // 5. Listen to Firebase Cloud Realtime Database (jika online di Vercel)
+                if (window.CloudSync) {
+                    CloudSync.listenToAllStudents((data) => {
+                        if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+                            this.studentsData = { ...this.studentsData, ...data };
+                            this.updateClassCounts();
+                            this.applyFilters();
+                        }
+                    });
                 }
             },
 

@@ -2,6 +2,7 @@
  * cloud-sync.js
  * Engine Sinkronisasi Real-Time antara Web Siswa dan Dashboard Guru
  * Antigravity / LarasLogika - Pembelajaran Berpikir Komputasional (PBL)
+ * Mendukung: BroadcastChannel (0ms lokal), LocalStorage Event, Node.js API, & Firebase Realtime
  */
 
 const CloudSync = {
@@ -10,23 +11,32 @@ const CloudSync = {
     isConnected: false,
     lastSyncTime: null,
     currentStudentKey: null,
+    broadcastChannel: null,
+    lastActivity: 'Membuka Media Pembelajaran',
 
     init() {
         if (this.isInitialized) return;
         this.isInitialized = true;
 
+        // 1. Inisialisasi BroadcastChannel untuk komunikasi kilat 0ms antar-tab browser yang sama
+        try {
+            if (typeof BroadcastChannel !== 'undefined') {
+                this.broadcastChannel = new BroadcastChannel('laraslogika_live_channel');
+            }
+        } catch (e) {
+            console.warn('BroadcastChannel tidak didukung di browser ini:', e);
+        }
+
+        // 2. Inisialisasi Firebase Cloud Database
         try {
             if (window.FirebaseConfigManager) {
                 this.db = window.FirebaseConfigManager.getDatabase();
                 if (this.db) {
-                    // Monitor connection state
                     this.db.ref('.info/connected').on('value', (snap) => {
                         this.isConnected = snap.val() === true;
                         if (this.isConnected) {
                             console.log('🌐 [CloudSync] Terhubung ke Firebase Realtime Database.');
                             this.flushPendingSync();
-                        } else {
-                            console.log('⚠️ [CloudSync] Offline / Mencari koneksi ke Cloud Database.');
                         }
                     });
                 }
@@ -34,6 +44,16 @@ const CloudSync = {
         } catch (e) {
             console.warn('Inisialisasi CloudSync fallback:', e);
         }
+
+        // 3. Auto-sync pertama kali saat web siswa dibuka
+        setTimeout(() => {
+            this.syncStudentState('Membuka Media Pembelajaran');
+        }, 500);
+
+        // 4. Heartbeat berkala (setiap 12 detik) agar status online di layar guru terus menyala hijau
+        setInterval(() => {
+            this.syncStudentState();
+        }, 12000);
     },
 
     cleanClassKey(rawClass) {
@@ -78,26 +98,30 @@ const CloudSync = {
     },
 
     /**
-     * Mengambil seluruh data siswa saat ini dan menyelaraskan ke Cloud Database
+     * Mengambil seluruh data siswa saat ini dan menyelaraskan ke Cloud & Local Database
      */
     syncStudentState(activityHint = null) {
-        this.init();
+        if (!this.isInitialized) this.init();
 
         if (!window.StorageManager || !window.StorageManager.data) return;
         const data = window.StorageManager.data;
 
-        const nama = data.playerName || '';
-        const kelas = data.playerClass || 'Kelas X.1';
+        // Ambil nama, jika kosong gunakan default yang sopan
+        let nama = (data.playerName || '').trim();
+        const kelas = (data.playerClass || 'Kelas X.1').trim();
         const absen = data.playerAbsen || '1';
 
-        // Hanya sinkron jika siswa sudah mengisi nama/bukan kosong default
-        if (!nama || nama === 'Siswa Cerdas' || nama === 'Peserta Didik') {
-            return;
+        if (!nama) {
+            nama = `Peserta Didik (Absen ${absen})`;
         }
 
         const classKey = this.cleanClassKey(kelas);
         const studentKey = this.cleanStudentKey(absen, nama);
         this.currentStudentKey = studentKey;
+
+        if (activityHint) {
+            this.lastActivity = activityHint;
+        }
 
         // Hitung nilai digital terkini
         let digitalScore = 0;
@@ -134,7 +158,7 @@ const CloudSync = {
             },
             status: {
                 isOnline: true,
-                currentActivity: activityHint || this.lastActivity || 'Sedang Aktif',
+                currentActivity: this.lastActivity || 'Sedang Aktif',
                 lastActive: new Date().toISOString(),
                 lastActiveTimestamp: Date.now()
             },
@@ -169,12 +193,31 @@ const CloudSync = {
             }
         };
 
-        // Simpan salinan lokal ke localStorage agar bisa diakses offline
+        // ---------------------------------------------------------------------
+        // SALURAN 1: BroadcastChannel (Komunikasi Instan 0ms Antar-Tab)
+        // ---------------------------------------------------------------------
         try {
-            localStorage.setItem('laraslogika_cached_student_sync', JSON.stringify(payload));
+            if (this.broadcastChannel) {
+                this.broadcastChannel.postMessage({ type: 'STUDENT_UPDATE', payload });
+            }
         } catch (e) {}
 
-        // Kirim ke Local Server API (Dual sync: bekerja otomatis di localhost & Wi-Fi offline)
+        // ---------------------------------------------------------------------
+        // SALURAN 2: LocalStorage Event (Berbagi Langsung di Domain yang Sama)
+        // ---------------------------------------------------------------------
+        try {
+            localStorage.setItem(`laraslogika_student_${classKey}_${studentKey}`, JSON.stringify(payload));
+            localStorage.setItem('laraslogika_latest_packet', JSON.stringify({
+                classKey,
+                studentKey,
+                payload,
+                timestamp: Date.now()
+            }));
+        } catch (e) {}
+
+        // ---------------------------------------------------------------------
+        // SALURAN 3: Local Node.js Server API (/api/sync)
+        // ---------------------------------------------------------------------
         try {
             fetch('/api/sync', {
                 method: 'POST',
@@ -183,27 +226,25 @@ const CloudSync = {
             }).catch(() => {});
         } catch (e) {}
 
-        // Kirim ke Firebase Realtime Database
+        // ---------------------------------------------------------------------
+        // SALURAN 4: Firebase Realtime Cloud Database (Online Vercel)
+        // ---------------------------------------------------------------------
         if (this.db) {
             try {
                 this.db.ref(`laraslogika/students/${classKey}/${studentKey}`).update(payload)
                     .then(() => {
                         this.lastSyncTime = Date.now();
-                        // Pasang onDisconnect status
                         this.db.ref(`laraslogika/students/${classKey}/${studentKey}/status/isOnline`).onDisconnect().set(false);
                     })
                     .catch((err) => {
-                        console.warn('Gagal sinkron data siswa ke cloud:', err);
                         this.queuePendingSync(payload);
                     });
             } catch (err) {
                 this.queuePendingSync(payload);
             }
-        } else {
-            this.queuePendingSync(payload);
         }
 
-        // Panggil custom event untuk UI jika diperlukan
+        // Custom window event
         if (typeof window.dispatchEvent === 'function') {
             window.dispatchEvent(new CustomEvent('laraslogika:sync', { detail: payload }));
         }
@@ -252,18 +293,6 @@ const CloudSync = {
         return false;
     },
 
-    listenToClass(classKey, callback) {
-        this.init();
-        if (this.db) {
-            this.db.ref(`laraslogika/students/${classKey}`).on('value', (snapshot) => {
-                const val = snapshot.val() || {};
-                callback(val);
-            });
-            return true;
-        }
-        return false;
-    },
-
     saveTeacherPresentasiScore(classKey, studentKey, presentationScore, teacherNotes = '') {
         this.init();
         const score = Math.max(0, Math.min(100, parseInt(presentationScore, 10) || 0));
@@ -276,9 +305,6 @@ const CloudSync = {
         if (this.db) {
             return this.db.ref(`laraslogika/students/${classKey}/${studentKey}/teacherEvaluation`).update(payload);
         } else {
-            // Local fallback
-            const localKey = `teacher_eval_${classKey}_${studentKey}`;
-            localStorage.setItem(localKey, JSON.stringify(payload));
             return Promise.resolve();
         }
     },
@@ -393,3 +419,12 @@ const CloudSync = {
 };
 
 window.CloudSync = CloudSync;
+
+// Auto-init upon script load in browser
+if (typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => CloudSync.init());
+    } else {
+        CloudSync.init();
+    }
+}

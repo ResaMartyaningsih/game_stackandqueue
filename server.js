@@ -4,6 +4,8 @@ const path = require('path');
 const os = require('os');
 
 const PORT = process.env.PORT || 3000;
+const DATA_FILE = path.join(__dirname, 'data', 'classroom_students.json');
+
 const MIME_TYPES = {
     '.html': 'text/html',
     '.css': 'text/css',
@@ -21,8 +23,27 @@ const MIME_TYPES = {
     '.ttf': 'font/ttf'
 };
 
-// In-Memory Local Database for Offline / Local Classroom Sessions
+// Load persisted database on startup
 let localStudentsDatabase = {};
+try {
+    if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        if (raw) localStudentsDatabase = JSON.parse(raw);
+        console.log(`📁 [DATABASE] Memuat data tersimpan dari ${DATA_FILE}`);
+    }
+} catch (e) {
+    console.warn('Gagal membaca data/classroom_students.json, menginisialisasi kosong:', e);
+}
+
+function persistLocalDatabase() {
+    try {
+        const dataDir = path.dirname(DATA_FILE);
+        if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+        fs.writeFileSync(DATA_FILE, JSON.stringify(localStudentsDatabase, null, 2), 'utf8');
+    } catch (e) {
+        console.warn('Gagal menyimpan ke data/classroom_students.json:', e);
+    }
+}
 
 // Helper: Get Primary Local IPv4 Address
 function getLocalNetworkIp() {
@@ -110,6 +131,8 @@ const server = http.createServer((req, res) => {
                     _serverUpdated: new Date().toISOString()
                 };
 
+                persistLocalDatabase();
+
                 const nd = (payload.nilai && typeof payload.nilai.digitalScore === 'number') ? payload.nilai.digitalScore : 0;
                 console.log(`📡 [SYNC] ${payload.identitas.nama} (${cls} - Abs: ${payload.identitas.absen}) -> ND: ${nd} pts | Layar: ${payload.status ? payload.status.currentActivity : '-'}`);
 
@@ -129,6 +152,7 @@ const server = http.createServer((req, res) => {
                         catatanGuru: catatanGuru || '',
                         updatedAt: new Date().toISOString()
                     };
+                    persistLocalDatabase();
                 }
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
@@ -145,6 +169,7 @@ const server = http.createServer((req, res) => {
                 } else if (classKey && localStudentsDatabase[classKey]) {
                     delete localStudentsDatabase[classKey];
                 }
+                persistLocalDatabase();
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
             });
@@ -157,6 +182,7 @@ const server = http.createServer((req, res) => {
                 const { classKey, studentKey } = payload;
                 if (localStudentsDatabase[classKey] && localStudentsDatabase[classKey][studentKey]) {
                     delete localStudentsDatabase[classKey][studentKey];
+                    persistLocalDatabase();
                 }
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
@@ -210,7 +236,7 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`\n💡 [CARA UJI COBA BERSAMAAN PADA 1 LAPTOP]:`);
     console.log(`   1. Buka Tab Biasa      : http://localhost:${PORT}/guru.html (Guru)`);
     console.log(`   2. Buka Tab Incognito  : http://localhost:${PORT}/ (Murid)`);
-    console.log(`   3. Isi nama di Incognito, lihat data langsung muncul di Dashboard Guru!`);
+    console.log(`   3. Isi identitas di Incognito, lihat data langsung muncul di Dashboard Guru!`);
     console.log(`\n🌐 [VERSI ONLINE VERCEL]:`);
     console.log(`   👉 Murid: https://game-stackandqueue.vercel.app`);
     console.log(`   👉 Guru : https://game-stackandqueue.vercel.app/guru.html`);
