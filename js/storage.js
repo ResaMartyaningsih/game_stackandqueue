@@ -144,6 +144,14 @@ const StorageManager = {
         try {
             this.data.lastPlayedDate = new Date().toISOString();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+
+            // Trigger Real-Time Cloud Sync ke Dashboard Guru
+            if (this._syncTimer) clearTimeout(this._syncTimer);
+            this._syncTimer = setTimeout(() => {
+                if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+                    window.CloudSync.syncStudentState();
+                }
+            }, 300);
         } catch (e) {
             console.warn('Failed to save to localStorage:', e);
         }

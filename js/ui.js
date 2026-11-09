@@ -64,6 +64,11 @@ const UI = {
             targetEl.classList.add('active');
             this.currentScreen = screenId;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Laporkan aktivitas layar secara real-time ke Dashboard Guru
+            if (window.CloudSync && typeof window.CloudSync.updateActivity === 'function') {
+                window.CloudSync.updateActivity(`screen-${screenId}`);
+            }
         }
 
         // Auto-hide back button on Home screen

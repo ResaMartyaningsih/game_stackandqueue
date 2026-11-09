@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Guru &amp; Command Center — LarasLogika</title>
+    <meta name="description" content="Dashboard Khusus Guru LarasLogika: Pemantauan real-time aktivitas siswa, rekapitulasi nilai otomatis (Tugas Individu 4 Level, LKPD Kelompok, Evaluasi Akhir), rubrik presentasi, dan ekspor rapor UKIN PPG.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- Base & Responsive Stylesheets -->
+    <link rel="stylesheet" href="css/academic-theme.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <style>
+        :root {
+            --guru-crimson: #891A10;
+            --guru-terracotta: #E76814;
+            --guru-umber: #714236;
+            --guru-sand: #D8D4BC;
+            --guru-linen: #FAF8F5;
+            --guru-bg: #FAF6ED;
+            --guru-dark: #2B1D19;
+            --guru-emerald: #10B981;
+            --guru-amber: #F59E0B;
+            --guru-indigo: #4F46E5;
+        }
+
+        body {
+            background-color: var(--guru-linen) !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            color: var(--guru-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Top Executive Header */
+        .guru-header {
+            background: #FFFFFF;
+            border-bottom: 2px solid var(--guru-sand);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(113, 66, 54, 0.08);
+        }
+
+        .guru-header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .guru-brand-group {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .guru-brand-badge {
+            background: var(--guru-crimson);
+            color: #FFFFFF;
+            font-size: 1.4rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(137, 26, 16, 0.3);
+        }
+
+        .guru-brand-title h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--guru-crimson);
+            margin: 0;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .guru-brand-title p {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--guru-terracotta);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .guru-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .live-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1.5px solid #A7F3D0;
+        }
+
+        .live-status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--guru-emerald);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+            animation: pulse-live 2s infinite;
+        }
+
+        @keyframes pulse-live {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .btn-guru {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.55rem 0.95rem;
+            border-radius: 9px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border: 1.5px solid transparent;
+        }
+
+        .btn-guru-primary {
+            background: var(--guru-terracotta);
+            color: #FFFFFF;
+            border-color: var(--guru-terracotta);
+            box-shadow: 0 3px 10px rgba(231, 104, 20, 0.25);
+        }
+        .btn-guru-primary:hover {
+            background: var(--guru-crimson);
+            border-color: var(--guru-crimson);
+            transform: translateY(-1px);
+        }
+
+        .btn-guru-outline {
+            background: #FFFFFF;
+            color: var(--guru-umber);
+            border-color: var(--guru-sand);
+        }
+        .btn-guru-outline:hover {
+            border-color: var(--guru-terracotta);
+            color: var(--guru-terracotta);
+            background: #FAF3EA;
+        }
+
+        .btn-guru-emerald {
+            background: #10B981;
+            color: #FFFFFF;
+            border-color: #10B981;
+        }
+        .btn-guru-emerald:hover {
+            background: #059669;
+        }
+
+        /* Container */
+        .guru-main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 1.25rem 4rem 1.25rem;
+        }
+
+        /* Class Selector Bar */
+        .guru-class-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            overflow-x: auto;
+            padding-bottom: 0.65rem;
+            margin-bottom: 1.25rem;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .guru-class-bar::-webkit-scrollbar { display: none; }
+
+        .guru-class-pill {
+            flex: 0 0 auto;
+            background: #FFFFFF;
+            border: 1.5px solid var(--guru-sand);
+            color: var(--guru-umber);
+            padding: 0.55rem 1.15rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.86rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .guru-class-pill:hover {
+            border-color: var(--guru-terracotta);
+            color: var(--guru-terracotta);
+        }
+        .guru-class-pill.active {
+            background: var(--guru-crimson);
+            border-color: var(--guru-crimson);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(137, 26, 16, 0.25);
+        }
+
+        /* KPI Cards Grid */
+        .guru-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .guru-kpi-card {
+            background: #FFFFFF;
+            border: 1.5px solid var(--guru-sand);
+            border-radius: 16px;
+            padding: 1.25rem 1.15rem;
+            box-shadow: 0 4px 16px rgba(113, 66, 54, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .guru-kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .guru-kpi-card.kpi-1 .guru-kpi-icon { background: #FEF3C7; color: #B45309; }
+        .guru-kpi-card.kpi-2 .guru-kpi-icon { background: #ECFDF5; color: #047857; }
+        .guru-kpi-card.kpi-3 .guru-kpi-icon { background: #EEF2FF; color: #4338CA; }
+        .guru-kpi-card.kpi-4 .guru-kpi-icon { background: #FFF1F2; color: #BE123C; }
+
+        .guru-kpi-info h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.78rem;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #714236;
+        }
+
+        .guru-kpi-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--guru-dark);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .guru-kpi-sub {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin: 0.2rem 0 0 0;
+        }
+
+        /* Filter & Action Toolbar */
+        .guru-toolbar {
+            background: #FFFFFF;
+            border: 1.5px solid var(--guru-sand);
+            border-radius: 14px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .guru-search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--guru-linen);
+            border: 1px solid var(--guru-sand);
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            flex: 1 1 260px;
+            max-width: 420px;
+        }
+
+        .guru-search-input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.88rem;
+            font-family: inherit;
+            width: 100%;
+            color: var(--guru-dark);
+        }
+
+        .guru-filter-select {
+            border: 1px solid var(--guru-sand);
+            border-radius: 8px;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.84rem;
+            font-family: inherit;
+            background: #FFFFFF;
+            color: var(--guru-dark);
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Realtime Monitoring Table */
+        .guru-table-card {
+            background: #FFFFFF;
+            border: 2px solid var(--guru-sand);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(113, 66, 54, 0.06);
+        }
+
+        .guru-table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .guru-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+            min-width: 1080px;
+        }
+
+        .guru-data-table th {
+            background: #FAF6ED;
+            color: var(--guru-crimson);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.85rem 0.75rem;
+            border-bottom: 2px solid var(--guru-sand);
+            white-space: nowrap;
+        }
+
+        .guru-data-table td {
+            padding: 0.85rem 0.75rem;
+            border-bottom: 1px solid #EAE6D6;
+            vertical-align: middle;
+            color: #2B1D19;
+        }
+
+        .guru-data-table tr:hover {
+            background: #FCFAF6;
+        }
+
+        .student-name-cell {
+            font-weight: 700;
+            color: var(--guru-crimson);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .student-absen-badge {
+            background: var(--guru-linen);
+            border: 1px solid var(--guru-sand);
+            padding: 0.2rem 0.45rem;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--guru-terracotta);
+        }
+
+        .activity-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.76rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            background: #F1F5F9;
+            color: #475569;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .activity-live-badge.online {
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.55rem;
+            border-radius: 6px;
+            font-weight: 800;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82rem;
+            background: #FAF6ED;
+            border: 1px solid var(--guru-sand);
+            color: var(--guru-dark);
+        }
+
+        .score-pill.highlight {
+            background: #FEF3C7;
+            border-color: #FCD34D;
+            color: #92400E;
+        }
+
+        .score-pill.success {
+            background: #D1FAE5;
+            border-color: #6EE7B7;
+            color: #065F46;
+        }
+
+        /* Presentation Input Field in Table */
+        .pres-input {
+            width: 65px;
+            padding: 0.35rem 0.45rem;
+            border: 1.5px solid var(--guru-sand);
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--guru-crimson);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .pres-input:focus {
+            border-color: var(--guru-terracotta);
+            box-shadow: 0 0 0 3px rgba(231, 104, 20, 0.15);
+        }
+
+        .ketuntasan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.55rem;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+        }
+        .ketuntasan-badge.tuntas {
+            background: #DCFCE7;
+            color: #166534;
+            border: 1px solid #86EFAC;
+        }
+        .ketuntasan-badge.remedial {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FCA5A5;
+        }
+
+        /* PIN Modal & Config Modal */
+        .modal-guru-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(43, 29, 25, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-guru-card {
+            background: #FFFFFF;
+            border: 2px solid var(--guru-crimson);
+            border-radius: 18px;
+            max-width: 520px;
+            width: 100%;
+            padding: 1.75rem;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Detail Modal Tabs */
+        .modal-detail-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--guru-sand);
+            margin-bottom: 1rem;
+            gap: 0.4rem;
+        }
+        .modal-detail-tab {
+            padding: 0.5rem 0.85rem;
+            border: none;
+            background: transparent;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--guru-umber);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .modal-detail-tab.active {
+            color: var(--guru-crimson);
+            border-bottom-color: var(--guru-crimson);
+        }
+
+        /* Print styles */
+        @media print {
+            .guru-header, .guru-class-bar, .guru-toolbar, .btn-guru, .no-print {
+                display: none !important;
+            }
+            body {
+                background: #FFFFFF !important;
+            }
+            .guru-table-card {
+                border: 1px solid #000 !important;
+                box-shadow: none !important;
+            }
+            .guru-data-table th, .guru-data-table td {
+                border: 1px solid #666 !important;
+                padding: 0.4rem !important;
+                font-size: 0.75rem !important;
+            }
+            .print-only-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .print-only-header {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Print Only Header -->
+    <div class="print-only-header">
+        <h2 style="margin: 0; font-family: 'Syne', sans-serif;">REKAPITULASI PENILAIAN HASIL BELAJAR PESERTA DIDIK</h2>
+        <h3 style="margin: 0.25rem 0; font-size: 1.1rem; color: #891A10;">LARASLOGIKA — MEDIA PEMBELAJARAN INFORMATIKA FASE E (PBL)</h3>
+        <p style="margin: 0; font-size: 0.85rem; color: #555;" id="print-header-meta">Materi: Berpikir Komputasional (Stack &amp; Queue) &bull; Alokasi: 2 JP (90 Menit)</p>
+        <hr style="border: 1px solid #333; margin: 0.85rem 0 1.25rem 0;">
+    </div>
+
+    <!-- Executive Header -->
+    <header class="guru-header no-print">
+        <div class="guru-header-inner">
+            <div class="guru-brand-group">
+                <div class="guru-brand-badge">📊</div>
+                <div class="guru-brand-title">
+                    <h1>LarasLogika // Dashboard Guru</h1>
+                    <p>Live Classroom Command Center &bull; Fase E</p>
+                </div>
+            </div>
+
+            <div class="guru-header-actions">
+                <div class="live-status-pill" id="live-connection-pill">
+                    <span class="live-status-dot"></span>
+                    <span id="live-connection-text">Realtime Cloud Aktif</span>
+                </div>
+
+                <button type="button" class="btn-guru btn-guru-emerald" onclick="GuruPortal.exportToCSV()">
+                    📥 Download Excel (CSV)
+                </button>
+
+                <button type="button" class="btn-guru btn-guru-outline" onclick="window.print()">
+                    🖨️ Cetak Rapor UKIN
+                </button>
+
+                <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.openConfigModal()">
+                    ⚙️ Pengaturan Cloud
+                </button>
+
+                <button type="button" class="btn-guru btn-guru-primary" onclick="GuruPortal.lockPortal()">
+                    🔒 Kunci Portal
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Command Center -->
+    <main class="guru-main-container">
+        
+        <!-- Class Selector Bar -->
+        <nav class="guru-class-bar no-print" aria-label="Pemilih Kelas">
+            <button type="button" class="guru-class-pill active" data-class="ALL" onclick="GuruPortal.switchClass('ALL')">
+                🏫 Semua Kelas (<span id="count-pill-all">0</span>)
+            </button>
+            <button type="button" class="guru-class-pill" data-class="X-1" onclick="GuruPortal.switchClass('X-1')">
+                Kelas X.1 (<span id="count-pill-x1">0</span>)
+            </button>
+            <button type="button" class="guru-class-pill" data-class="X-2" onclick="GuruPortal.switchClass('X-2')">
+                Kelas X.2 (<span id="count-pill-x2">0</span>)
+            </button>
+            <button type="button" class="guru-class-pill" data-class="X-3" onclick="GuruPortal.switchClass('X-3')">
+                Kelas X.3 (<span id="count-pill-x3">0</span>)
+            </button>
+            <button type="button" class="guru-class-pill" data-class="X-4" onclick="GuruPortal.switchClass('X-4')">
+                Kelas X.4 (<span id="count-pill-x4">0</span>)
+            </button>
+            <button type="button" class="guru-class-pill" data-class="X-5" onclick="GuruPortal.switchClass('X-5')">
+                Kelas X.5 (<span id="count-pill-x5">0</span>)
+            </button>
+            <button type="button" class="guru-class-pill" data-class="X-6" onclick="GuruPortal.switchClass('X-6')">
+                Kelas X.6 (<span id="count-pill-x6">0</span>)
+            </button>
+            <button type="button" class="guru-class-pill" data-class="X-7" onclick="GuruPortal.switchClass('X-7')">
+                Kelas X.7 (<span id="count-pill-x7">0</span>)
+            </button>
+        </nav>
+
+        <!-- KPI Statistic Cards -->
+        <section class="guru-kpi-grid no-print">
+            <!-- KPI 1: Total Siswa -->
+            <div class="guru-kpi-card kpi-1">
+                <div class="guru-kpi-icon">👥</div>
+                <div class="guru-kpi-info">
+                    <h4>Total Siswa Terdata</h4>
+                    <p class="guru-kpi-value" id="kpi-total-students">0</p>
+                    <p class="guru-kpi-sub" id="kpi-online-students">0 online saat ini</p>
+                </div>
+            </div>
+
+            <!-- KPI 2: Rata-Rata Nilai Digital -->
+            <div class="guru-kpi-card kpi-2">
+                <div class="guru-kpi-icon">📈</div>
+                <div class="guru-kpi-info">
+                    <h4>Rata-Rata Nilai Digital (ND)</h4>
+                    <p class="guru-kpi-value" id="kpi-avg-score">0.0</p>
+                    <p class="guru-kpi-sub">Bobot: 30% I + 35% L + 35% E</p>
+                </div>
+            </div>
+
+            <!-- KPI 3: Ketuntasan KKTP -->
+            <div class="guru-kpi-card kpi-3">
+                <div class="guru-kpi-icon">🏆</div>
+                <div class="guru-kpi-info">
+                    <h4>Ketuntasan (KKTP &ge; 75)</h4>
+                    <p class="guru-kpi-value" id="kpi-pass-rate">0%</p>
+                    <p class="guru-kpi-sub" id="kpi-pass-count">0 dari 0 siswa tuntas</p>
+                </div>
+            </div>
+
+            <!-- KPI 4: LKPD Terkumpul -->
+            <div class="guru-kpi-card kpi-4">
+                <div class="guru-kpi-icon">📝</div>
+                <div class="guru-kpi-info">
+                    <h4>LKPD Kelompok Selesai</h4>
+                    <p class="guru-kpi-value" id="kpi-lkpd-completed">0</p>
+                    <p class="guru-kpi-sub">Studi kasus kantin terverifikasi</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toolbar: Search & Filter -->
+        <section class="guru-toolbar no-print">
+            <div class="guru-search-box">
+                <span>🔍</span>
+                <input type="text" id="guru-search-input" class="guru-search-input" placeholder="Cari berdasarkan nama siswa atau no. absen..." oninput="GuruPortal.applyFilters()">
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                <select id="guru-status-filter" class="guru-filter-select" onchange="GuruPortal.applyFilters()">
+                    <option value="ALL">Semua Status Pengerjaan</option>
+                    <option value="ONLINE">🟢 Sedang Online / Aktif</option>
+                    <option value="TUNTAS">✓ Tuntas (Nilai &ge; 75)</option>
+                    <option value="REMEDIAL">⚠️ Perlu Remedial (&lt; 75)</option>
+                </select>
+
+                <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.loadDemoData()">
+                    🧪 Muat Data Simulasi Demo
+                </button>
+
+                <button type="button" class="btn-guru btn-guru-outline" style="color: #991B1B;" onclick="GuruPortal.confirmResetClass()">
+                    🗑️ Reset Sesi Kelas Ini
+                </button>
+            </div>
+        </section>
+
+        <!-- Real-time Student Roster Table -->
+        <div class="guru-table-card">
+            <div class="guru-table-responsive">
+                <table class="guru-data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">Abs</th>
+                            <th>Identitas Peserta Didik</th>
+                            <th>Aktivitas Terkini (Live Feed)</th>
+                            <th style="text-align: center;">Individu (30%)</th>
+                            <th style="text-align: center;">LKPD (35%)</th>
+                            <th style="text-align: center;">Evaluasi (35%)</th>
+                            <th style="text-align: center;">Bonus</th>
+                            <th style="text-align: center; background: #FEF3C7; color: #92400E;">Nilai Digital (ND)</th>
+                            <th style="text-align: center; background: #EEF2FF; color: #3730A3;">Presentasi (10%)</th>
+                            <th style="text-align: center; background: #ECFDF5; color: #065F46;">Nilai Akhir (NA)</th>
+                            <th style="text-align: center;">Status</th>
+                            <th style="text-align: center;" class="no-print">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guru-students-tbody">
+                        <!-- Populated dynamically by GuruPortal.renderStudentsTable() -->
+                        <tr>
+                            <td colspan="12" style="text-align: center; padding: 3rem 1rem; color: #64748B;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏳</div>
+                                <h4 style="margin: 0; font-size: 1.1rem; color: var(--guru-dark);">Belum ada aktivitas siswa yang terhubung</h4>
+                                <p style="margin: 0.35rem 0 1rem 0; font-size: 0.85rem;">Buka web siswa di perangkat peserta didik atau klik tombol <strong>"Muat Data Simulasi Demo"</strong> di atas untuk menguji tampilan dashboard.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Formula Note Footer -->
+        <div style="margin-top: 1.5rem; font-size: 0.82rem; color: #714236; line-height: 1.6; background: #FFFFFF; border: 1.5px solid var(--guru-sand); border-radius: 12px; padding: 1rem 1.25rem;">
+            <strong>ℹ️ Catatan Pembobotan &amp; Rumus Penilaian Resmi UKIN:</strong>
+            <ul style="margin: 0.4rem 0 0 1.25rem; padding: 0;">
+                <li><strong>Nilai Digital (ND):</strong> <code>ND = min(100, round((Individu &times; 30%) + (LKPD &times; 35%) + (Evaluasi &times; 35%) + Bonus Mini-Lab))</code>. Nilai terbaik dari maksimal 3 kali percobaan otomatis dipakai.</li>
+                <li><strong>Nilai Presentasi (10%):</strong> Diinput secara manual oleh Guru pada kolom di atas berdasarkan rubrik presentasi kelompok (kejelasan argumen, pembagian tugas tim, tanya jawab).</li>
+                <li><strong>Nilai Akhir Pembelajaran (NA):</strong> <code>NA = round((ND &times; 90%) + (Presentasi &times; 10%))</code>. Kriteria Ketercapaian Tujuan Pembelajaran (KKTP) adalah <strong>75</strong>.</li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Modal: Teacher PIN Access Gate -->
+    <div id="modal-pin-gate" class="modal-guru-overlay" style="display: flex;">
+        <div class="modal-guru-card" style="text-align: center;">
+            <div style="font-size: 2.75rem; margin-bottom: 0.5rem;">🔒</div>
+            <h2 style="font-family: 'Syne', sans-serif; color: var(--guru-crimson); margin: 0 0 0.5rem 0;">Akses Portal Khusus Guru</h2>
+            <p style="font-size: 0.88rem; color: #475569; margin: 0 0 1.5rem 0;">
+                Halaman ini khusus untuk pemantauan dan pengelolaan nilai oleh Guru Pengampu / Penilai UKIN. Masukkan PIN keamanan untuk melanjutkan.
+            </p>
+
+            <form onsubmit="GuruPortal.verifyPin(event)" style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                <input type="password" id="guru-pin-input" maxlength="12" placeholder="Masukkan PIN (Default: 123456)" style="font-family: 'Space Mono', monospace; font-size: 1.25rem; letter-spacing: 0.25em; text-align: center; padding: 0.75rem 1rem; border: 2px solid var(--guru-sand); border-radius: 10px; width: 260px; outline: none;" required autofocus>
+                
+                <div id="pin-error-msg" style="color: #DC2626; font-size: 0.82rem; font-weight: 700; display: none;">
+                    ❌ PIN salah. Silakan coba kembali.
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; width: 100%; justify-content: center; margin-top: 0.5rem;">
+                    <a href="index.html" class="btn-guru btn-guru-outline">
+                        Kembali ke Web Siswa
+                    </a>
+                    <button type="submit" class="btn-guru btn-guru-primary" style="padding: 0.65rem 1.5rem; font-size: 0.95rem;">
+                        Buka Dashboard ➔
+                    </button>
+                </div>
+            </form>
+            <p style="font-size: 0.75rem; color: #94A3B8; margin-top: 1.25rem;">
+                PIN bawaan sistem: <code>123456</code> (Dapat diubah di menu Pengaturan)
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal: Detail Lembar Kerja Siswa -->
+    <div id="modal-student-detail" class="modal-guru-overlay" style="display: none;">
+        <div class="modal-guru-card" style="max-width: 720px; width: 95vw; max-height: 90vh; overflow-y: auto; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div>
+                    <h3 id="modal-detail-name" style="margin: 0; font-family: 'Syne', sans-serif; color: var(--guru-crimson); font-size: 1.25rem;">Nama Siswa</h3>
+                    <p id="modal-detail-meta" style="margin: 0.2rem 0 0 0; font-size: 0.82rem; color: #64748B;">Kelas X.1 &bull; Absen: 14</p>
+                </div>
+                <button type="button" onclick="GuruPortal.closeStudentDetail()" style="border: none; background: #F1F5F9; border-radius: 50%; width: 34px; height: 34px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="modal-detail-tabs">
+                <button type="button" class="modal-detail-tab active" onclick="GuruPortal.switchDetailTab('tab-indiv')">Tugas Individu</button>
+                <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-lkpd')">Lembar Kerja LKPD</button>
+                <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-eval')">Evaluasi Akhir</button>
+            </div>
+
+            <!-- Tab 1: Tugas Individu -->
+            <div id="tab-indiv" class="modal-detail-pane">
+                <div id="detail-indiv-content" style="font-size: 0.88rem; line-height: 1.6;">Memuat data...</div>
+            </div>
+
+            <!-- Tab 2: LKPD Kelompok -->
+            <div id="tab-lkpd" class="modal-detail-pane" style="display: none;">
+                <div id="detail-lkpd-content" style="font-size: 0.88rem; line-height: 1.6;">Memuat data...</div>
+            </div>
+
+            <!-- Tab 3: Evaluasi Akhir -->
+            <div id="tab-eval" class="modal-detail-pane" style="display: none;">
+                <div id="detail-eval-content" style="font-size: 0.88rem; line-height: 1.6;">Memuat data...</div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.closeStudentDetail()">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Pengaturan Cloud & PIN -->
+    <div id="modal-config" class="modal-guru-overlay" style="display: none;">
+        <div class="modal-guru-card" style="max-width: 600px; width: 95vw; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0; font-family: 'Syne', sans-serif; color: var(--guru-crimson);">⚙️ Pengaturan Cloud &amp; Keamanan PIN</h3>
+                <button type="button" onclick="GuruPortal.closeConfigModal()" style="border: none; background: #F1F5F9; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">&times;</button>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; font-weight: 700; font-size: 0.86rem; margin-bottom: 0.35rem; color: var(--guru-dark);">
+                    Ganti PIN Akses Guru:
+                </label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="password" id="cfg-new-pin" maxlength="12" placeholder="Masukkan PIN baru" style="padding: 0.5rem 0.75rem; border: 1.5px solid var(--guru-sand); border-radius: 8px; font-size: 0.88rem; flex: 1;">
+                    <button type="button" class="btn-guru btn-guru-primary" onclick="GuruPortal.saveNewPin()">Simpan PIN</button>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--guru-sand); margin: 1.25rem 0;">
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-weight: 700; font-size: 0.86rem; margin-bottom: 0.35rem; color: var(--guru-dark);">
+                    Firebase Realtime Database URL:
+                </label>
+                <input type="text" id="cfg-db-url" placeholder="https://<project-id>-default-rtdb.firebaseio.com" style="width: 100%; box-sizing: border-box; padding: 0.5rem 0.75rem; border: 1.5px solid var(--guru-sand); border-radius: 8px; font-size: 0.85rem; font-family: 'Space Mono', monospace; margin-bottom: 0.5rem;">
+                <p style="font-size: 0.78rem; color: #64748B; margin: 0;">
+                    💡 Database bawaan sudah aktif secara otomatis. Jika Bapak/Ibu memiliki proyek Firebase sendiri, masukkan URL di atas.
+                </p>
+            </div>
+
+            <div style="background: #FAF6ED; border: 1px solid var(--guru-sand); border-radius: 10px; padding: 0.85rem; font-size: 0.82rem; color: #714236; line-height: 1.5; margin-bottom: 1.25rem;">
+                <strong>Panduan Singkat Setup Firebase (Opsional / Mandiri):</strong>
+                <ol style="margin: 0.3rem 0 0 1.25rem; padding: 0;">
+                    <li>Buka <a href="https://console.firebase.google.com" target="_blank" style="color: var(--guru-terracotta); font-weight: 700;">console.firebase.google.com</a> (Gratis).</li>
+                    <li>Buat proyek baru &bull; Pilih <strong>Realtime Database</strong> &bull; Klik Buat Database.</li>
+                    <li>Pada tab <strong>Rules</strong>, ubah menjadi: <code>{ "rules": { ".read": true, ".write": true } }</code> lalu klik Publish.</li>
+                    <li>Salin Database URL dan tempelkan pada kolom di atas.</li>
+                </ol>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.resetConfigDefault()">
+                    Kembalikan Default
+                </button>
+                <button type="button" class="btn-guru btn-guru-primary" onclick="GuruPortal.saveCustomConfig()">
+                    Simpan Konfigurasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/cloud-sync.js"></script>
+
+    <script>
+        /**
+         * GuruPortal Controller Logic
+         */
+        const GuruPortal = {
+            currentClass: 'ALL',
+            studentsData: {},
+            filteredStudents: [],
+            isUnlocked: false,
+
+            init() {
+                // Check if already authenticated this session
+                if (sessionStorage.getItem('guru_authenticated') === 'true') {
+                    this.unlockPortal();
+                }
+
+                // Connect to Cloud Database
+                this.connectCloudDatabase();
+            },
+
+            verifyPin(e) {
+                if (e) e.preventDefault();
+                const inputPin = document.getElementById('guru-pin-input').value.trim();
+                const validPin = window.FirebaseConfigManager ? FirebaseConfigManager.getTeacherPin() : '123456';
+
+                if (inputPin === validPin) {
+                    sessionStorage.setItem('guru_authenticated', 'true');
+                    this.unlockPortal();
+                } else {
+                    const errEl = document.getElementById('pin-error-msg');
+                    if (errEl) errEl.style.display = 'block';
+                }
+            },
+
+            unlockPortal() {
+                this.isUnlocked = true;
+                const modal = document.getElementById('modal-pin-gate');
+                if (modal) modal.style.display = 'none';
+            },
+
+            lockPortal() {
+                sessionStorage.removeItem('guru_authenticated');
+                this.isUnlocked = false;
+                const modal = document.getElementById('modal-pin-gate');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.getElementById('guru-pin-input').value = '';
+                }
+            },
+
+            connectCloudDatabase() {
+                if (!window.CloudSync) return;
+
+                // Listen to all student updates in realtime
+                CloudSync.listenToAllStudents((data) => {
+                    this.studentsData = data || {};
+                    this.updateClassCounts();
+                    this.applyFilters();
+                });
+            },
+
+            updateClassCounts() {
+                let total = 0;
+                const classes = ['X-1', 'X-2', 'X-3', 'X-4', 'X-5', 'X-6', 'X-7'];
+                classes.forEach(cls => {
+                    const count = Object.keys(this.studentsData[cls] || {}).length;
+                    total += count;
+                    const pillEl = document.getElementById(`count-pill-${cls.toLowerCase().replace('-', '')}`);
+                    if (pillEl) pillEl.textContent = count;
+                });
+                const allPill = document.getElementById('count-pill-all');
+                if (allPill) allPill.textContent = total;
+            },
+
+            switchClass(classKey) {
+                this.currentClass = classKey;
+                document.querySelectorAll('.guru-class-pill').forEach(p => {
+                    p.classList.toggle('active', p.getAttribute('data-class') === classKey);
+                });
+                this.applyFilters();
+            },
+
+            applyFilters() {
+                const searchTxt = (document.getElementById('guru-search-input').value || '').toLowerCase().trim();
+                const statusFilter = document.getElementById('guru-status-filter').value;
+
+                let list = [];
+
+                if (this.currentClass === 'ALL') {
+                    Object.keys(this.studentsData).forEach(cls => {
+                        const classGroup = this.studentsData[cls] || {};
+                        Object.keys(classGroup).forEach(k => {
+                            list.push({ ...classGroup[k], _key: k, _class: cls });
+                        });
+                    });
+                } else {
+                    const classGroup = this.studentsData[this.currentClass] || {};
+                    Object.keys(classGroup).forEach(k => {
+                        list.push({ ...classGroup[k], _key: k, _class: this.currentClass });
+                    });
+                }
+
+                // Filter search
+                if (searchTxt) {
+                    list = list.filter(s => {
+                        const nama = (s.identitas && s.identitas.nama) ? s.identitas.nama.toLowerCase() : '';
+                        const absen = (s.identitas && s.identitas.absen) ? String(s.identitas.absen) : '';
+                        return nama.includes(searchTxt) || absen.includes(searchTxt);
+                    });
+                }
+
+                // Filter status
+                if (statusFilter === 'ONLINE') {
+                    list = list.filter(s => s.status && s.status.isOnline);
+                } else if (statusFilter === 'TUNTAS') {
+                    list = list.filter(s => {
+                        const score = this.calculateFinalScore(s);
+                        return score >= 75;
+                    });
+                } else if (statusFilter === 'REMEDIAL') {
+                    list = list.filter(s => {
+                        const score = this.calculateFinalScore(s);
+                        return score < 75;
+                    });
+                }
+
+                // Sort by class then absen
+                list.sort((a, b) => {
+                    const clsA = (a.identitas && a.identitas.classKey) || '';
+                    const clsB = (b.identitas && b.identitas.classKey) || '';
+                    if (clsA !== clsB) return clsA.localeCompare(clsB);
+                    const absA = (a.identitas && a.identitas.absen) || 0;
+                    const absB = (b.identitas && b.identitas.absen) || 0;
+                    return absA - absB;
+                });
+
+                this.filteredStudents = list;
+                this.renderStudentsTable();
+                this.updateKpis();
+            },
+
+            calculateFinalScore(student) {
+                const nd = (student.nilai && typeof student.nilai.digitalScore === 'number') ? student.nilai.digitalScore : 0;
+                const pres = (student.teacherEvaluation && typeof student.teacherEvaluation.scorePresentasi === 'number') ? student.teacherEvaluation.scorePresentasi : nd;
+                return Math.round((nd * 0.9) + (pres * 0.1));
+            },
+
+            updateKpis() {
+                const total = this.filteredStudents.length;
+                document.getElementById('kpi-total-students').textContent = total;
+
+                const onlineCount = this.filteredStudents.filter(s => s.status && s.status.isOnline).length;
+                document.getElementById('kpi-online-students').textContent = `${onlineCount} aktif online`;
+
+                if (total === 0) {
+                    document.getElementById('kpi-avg-score').textContent = '0.0';
+                    document.getElementById('kpi-pass-rate').textContent = '0%';
+                    document.getElementById('kpi-pass-count').textContent = '0 dari 0 tuntas';
+                    document.getElementById('kpi-lkpd-completed').textContent = '0';
+                    return;
+                }
+
+                const sumScore = this.filteredStudents.reduce((acc, s) => {
+                    const nd = (s.nilai && s.nilai.digitalScore) ? s.nilai.digitalScore : 0;
+                    return acc + nd;
+                }, 0);
+
+                const avgScore = (sumScore / total).toFixed(1);
+                document.getElementById('kpi-avg-score').textContent = avgScore;
+
+                const passCount = this.filteredStudents.filter(s => {
+                    const final = this.calculateFinalScore(s);
+                    return final >= 75;
+                }).length;
+
+                const passRate = Math.round((passCount / total) * 100);
+                document.getElementById('kpi-pass-rate').textContent = `${passRate}%`;
+                document.getElementById('kpi-pass-count').textContent = `${passCount} dari ${total} tuntas`;
+
+                const lkpdDone = this.filteredStudents.filter(s => s.nilai && s.nilai.lkpdKelompok && s.nilai.lkpdKelompok.isLocked).length;
+                document.getElementById('kpi-lkpd-completed').textContent = lkpdDone;
+            },
+
+            renderStudentsTable() {
+                const tbody = document.getElementById('guru-students-tbody');
+                if (!tbody) return;
+
+                if (this.filteredStudents.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="12" style="text-align: center; padding: 2.5rem 1rem; color: #64748B;">
+                                <div style="font-size: 2rem; margin-bottom: 0.35rem;">🔍</div>
+                                <h4 style="margin: 0; color: var(--guru-dark);">Tidak ada peserta didik yang sesuai dengan filter</h4>
+                                <p style="margin: 0.25rem 0 0 0; font-size: 0.82rem;">Coba pilih kelas lain atau klik "Semua Kelas".</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                this.filteredStudents.forEach(s => {
+                    const idn = s.identitas || {};
+                    const val = s.nilai || {};
+                    const st = s.status || {};
+                    const teach = s.teacherEvaluation || {};
+
+                    const nd = val.digitalScore || 0;
+                    const presVal = typeof teach.scorePresentasi === 'number' ? teach.scorePresentasi : '';
+                    const finalScore = this.calculateFinalScore(s);
+                    const isTuntas = finalScore >= 75;
+
+                    const isOnline = st.isOnline === true;
+                    const activityTxt = st.currentActivity || 'Sedang Aktif';
+
+                    const indivBest = (val.tugasIndividu && val.tugasIndividu.bestScore) || 0;
+                    const indivAtt = (val.tugasIndividu && val.tugasIndividu.currentAttempt) || 1;
+                    
+                    const lkpdBest = (val.lkpdKelompok && val.lkpdKelompok.bestScore) || 0;
+                    const lkpdGroup = (val.lkpdKelompok && val.lkpdKelompok.groupName) || '-';
+
+                    const evalScore = (val.evaluasiAkhir && val.evaluasiAkhir.score) || 0;
+                    const bonusVal = val.bonusMiniLab || 0;
+
+                    html += `
+                        <tr>
+                            <td style="text-align: center;">
+                                <span class="student-absen-badge">${String(idn.absen || 0).padStart(2, '0')}</span>
+                            </td>
+                            <td>
+                                <div class="student-name-cell">
+                                    <span>${idn.nama || 'Peserta Didik'}</span>
+                                </div>
+                                <div style="font-size: 0.76rem; color: #64748B;">
+                                    ${idn.kelas || s._class}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="activity-live-badge ${isOnline ? 'online' : ''}">
+                                    ${isOnline ? '🟢' : '⚪'} ${activityTxt}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="score-pill ${indivBest >= 75 ? 'success' : ''}">${indivBest}</span>
+                                <div style="font-size: 0.7rem; color: #94A3B8; margin-top: 2px;">Perc. ${indivAtt}/3</div>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="score-pill ${lkpdBest >= 75 ? 'success' : ''}">${lkpdBest}</span>
+                                <div style="font-size: 0.7rem; color: #64748B; margin-top: 2px;">${lkpdGroup}</div>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="score-pill ${evalScore >= 75 ? 'success' : ''}">${evalScore}</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="font-family: 'Space Mono', monospace; font-size: 0.8rem; font-weight: 700; color: #D97706;">+${bonusVal}</span>
+                            </td>
+                            <td style="text-align: center; background: #FFFBEB;">
+                                <strong style="font-family: 'Space Mono', monospace; font-size: 0.95rem; color: #B45309;">${nd}</strong>
+                            </td>
+                            <td style="text-align: center; background: #F5F7FF;">
+                                <input type="number" class="pres-input" min="0" max="100" placeholder="0-100" value="${presVal}" onchange="GuruPortal.updatePresentationScore('${s._class}', '${s._key}', this.value)">
+                            </td>
+                            <td style="text-align: center; background: #F0FDF4;">
+                                <strong style="font-family: 'Space Mono', monospace; font-size: 1rem; color: ${isTuntas ? '#15803D' : '#DC2626'};">${finalScore}</strong>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="ketuntasan-badge ${isTuntas ? 'tuntas' : 'remedial'}">
+                                    ${isTuntas ? '✓ TUNTAS' : '⚠️ REMEDIAL'}
+                                </span>
+                            </td>
+                            <td style="text-align: center;" class="no-print">
+                                <div style="display: flex; gap: 0.35rem; justify-content: center;">
+                                    <button type="button" class="btn-guru btn-guru-outline" style="padding: 0.35rem 0.6rem; font-size: 0.78rem;" onclick="GuruPortal.showStudentDetail('${s._class}', '${s._key}')" title="Lihat Rincian Lembar Jawaban">
+                                        🔍 Rincian
+                                    </button>
+                                    <button type="button" class="btn-guru btn-guru-outline" style="padding: 0.35rem 0.5rem; font-size: 0.78rem; color: #DC2626; border-color: #FCA5A5;" onclick="GuruPortal.deleteStudent('${s._class}', '${s._key}')" title="Hapus Data">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tbody.innerHTML = html;
+            },
+
+            updatePresentationScore(classKey, studentKey, score) {
+                if (window.CloudSync) {
+                    CloudSync.saveTeacherPresentasiScore(classKey, studentKey, score);
+                }
+                // Update local memory
+                if (this.studentsData[classKey] && this.studentsData[classKey][studentKey]) {
+                    if (!this.studentsData[classKey][studentKey].teacherEvaluation) {
+                        this.studentsData[classKey][studentKey].teacherEvaluation = {};
+                    }
+                    this.studentsData[classKey][studentKey].teacherEvaluation.scorePresentasi = parseInt(score, 10) || 0;
+                }
+                this.applyFilters();
+            },
+
+            showStudentDetail(classKey, studentKey) {
+                const s = this.studentsData[classKey] ? this.studentsData[classKey][studentKey] : null;
+                if (!s) return;
+
+                const idn = s.identitas || {};
+                const val = s.nilai || {};
+
+                document.getElementById('modal-detail-name').textContent = idn.nama || 'Peserta Didik';
+                document.getElementById('modal-detail-meta').textContent = `${idn.kelas || classKey} • Absen: ${idn.absen || '-'}`;
+
+                // Render Tab 1: Individu
+                const indiv = val.tugasIndividu || {};
+                let indivHtml = `
+                    <div style="background: #FAF6ED; border: 1.5px solid var(--guru-sand); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin: 0; color: var(--guru-crimson);">Tantangan Individu 4 Level (Bobot 30%)</h4>
+                                <p style="margin: 0.2rem 0 0 0; font-size: 0.8rem; color: #714236;">Nilai Terbaik: <strong>${indiv.bestScore || 0} pts</strong> &bull; Percobaan ke-${indiv.currentAttempt || 1} dari 3</p>
+                            </div>
+                            <span class="score-pill highlight" style="font-size: 1.1rem;">${indiv.bestScore || 0}</span>
+                        </div>
+                    </div>
+                `;
+
+                if (indiv.history && indiv.history.length > 0) {
+                    indivHtml += `<strong>Riwayat Percobaan:</strong><ul style="margin: 0.35rem 0 1rem 1.25rem;">`;
+                    indiv.history.forEach(h => {
+                        indivHtml += `<li>Percobaan ${h.attempt}: Skor <strong>${h.score} pts</strong> (${h.correctCount || Math.round(h.score / 25)}/4 soal benar) pada ${new Date(h.completedAt || Date.now()).toLocaleTimeString()}</li>`;
+                    });
+                    indivHtml += `</ul>`;
+                } else {
+                    indivHtml += `<p style="color: #64748B;">Siswa sedang dalam proses pengerjaan percobaan pertama.</p>`;
+                }
+                document.getElementById('detail-indiv-content').innerHTML = indivHtml;
+
+                // Render Tab 2: LKPD
+                const lkpd = val.lkpdKelompok || {};
+                const ws = lkpd.worksheet || {};
+                let lkpdHtml = `
+                    <div style="background: #FAF6ED; border: 1.5px solid var(--guru-sand); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; color: var(--guru-crimson);">LKPD Diskusi Kelompok (${lkpd.groupName || 'Kelompok'})</h4>
+                        <p style="margin: 0.2rem 0 0 0; font-size: 0.8rem; color: #714236;">Nilai LKPD: <strong>${lkpd.bestScore || 0} pts</strong> &bull; Status: ${lkpd.isLocked ? '🔒 Terkunci & Selesai' : '⏳ Draf'}</p>
+                    </div>
+                    <div style="margin-bottom: 0.85rem;">
+                        <strong>Struktur Data Solusi yang Dipilih:</strong>
+                        <div style="padding: 0.5rem 0.75rem; background: #FFFFFF; border: 1px solid var(--guru-sand); border-radius: 6px; margin-top: 0.25rem;">
+                            ${ws.selectedStructure || 'Belum dipilih'}
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 0.85rem;">
+                        <strong>Alasan &amp; Analisis Dekomposisi Komputasional:</strong>
+                        <div style="padding: 0.5rem 0.75rem; background: #FFFFFF; border: 1px solid var(--guru-sand); border-radius: 6px; margin-top: 0.25rem; white-space: pre-wrap;">
+                            ${ws.reasoning || 'Belum diisi'}
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 0.85rem;">
+                        <strong>Rancangan Langkah Algoritmik Solusi:</strong>
+                        <div style="padding: 0.5rem 0.75rem; background: #FFFFFF; border: 1px solid var(--guru-sand); border-radius: 6px; margin-top: 0.25rem; white-space: pre-wrap;">
+                            ${ws.steps || 'Belum diisi'}
+                        </div>
+                    </div>
+                    <div>
+                        <strong>Kesimpulan Kelompok:</strong>
+                        <div style="padding: 0.5rem 0.75rem; background: #FFFFFF; border: 1px solid var(--guru-sand); border-radius: 6px; margin-top: 0.25rem; white-space: pre-wrap;">
+                            ${ws.conclusion || 'Belum diisi'}
+                        </div>
+                    </div>
+                `;
+                document.getElementById('detail-lkpd-content').innerHTML = lkpdHtml;
+
+                // Render Tab 3: Evaluasi
+                const ev = val.evaluasiAkhir || {};
+                let evalHtml = `
+                    <div style="background: #FAF6ED; border: 1.5px solid var(--guru-sand); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; color: var(--guru-crimson);">Evaluasi Akhir Sumatif (Bobot 35%)</h4>
+                        <p style="margin: 0.2rem 0 0 0; font-size: 0.8rem; color: #714236;">Skor Sumatif: <strong>${ev.score || 0} pts</strong> &bull; Status: ${ev.isCompleted ? '✓ Telah Dikumpulkan' : 'Sedang Berlangsung'}</p>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748B;">
+                        Evaluasi menguji 5 butir soal HOTS (C4 Analisis, C3 Aplikasi, C6 Perancangan Solusi Antrean Kasir &amp; Piring Kantin).
+                    </p>
+                `;
+                document.getElementById('detail-eval-content').innerHTML = evalHtml;
+
+                // Open modal
+                document.getElementById('modal-student-detail').style.display = 'flex';
+                this.switchDetailTab('tab-indiv');
+            },
+
+            closeStudentDetail() {
+                document.getElementById('modal-student-detail').style.display = 'none';
+            },
+
+            switchDetailTab(tabId) {
+                document.querySelectorAll('.modal-detail-pane').forEach(p => p.style.display = 'none');
+                document.querySelectorAll('.modal-detail-tab').forEach(t => t.classList.remove('active'));
+                
+                const pane = document.getElementById(tabId);
+                if (pane) pane.style.display = 'block';
+
+                event.target.classList.add('active');
+            },
+
+            deleteStudent(classKey, studentKey) {
+                if (confirm('Apakah Bapak/Ibu yakin ingin menghapus data aktivitas siswa ini?')) {
+                    if (window.CloudSync) {
+                        CloudSync.deleteStudentRecord(classKey, studentKey);
+                    }
+                    if (this.studentsData[classKey]) {
+                        delete this.studentsData[classKey][studentKey];
+                    }
+                    this.updateClassCounts();
+                    this.applyFilters();
+                }
+            },
+
+            confirmResetClass() {
+                const target = this.currentClass === 'ALL' ? 'SELURUH KELAS' : `Kelas ${this.currentClass}`;
+                if (confirm(`⚠️ PERINGATAN: Apakah Bapak/Ibu yakin ingin membersihkan seluruh data untuk ${target}? Data nilai akan direset.`)) {
+                    if (window.CloudSync) {
+                        if (this.currentClass === 'ALL') {
+                            ['X-1','X-2','X-3','X-4','X-5','X-6','X-7'].forEach(cls => CloudSync.resetClassRecords(cls));
+                            this.studentsData = {};
+                        } else {
+                            CloudSync.resetClassRecords(this.currentClass);
+                            this.studentsData[this.currentClass] = {};
+                        }
+                    }
+                    this.updateClassCounts();
+                    this.applyFilters();
+                }
+            },
+
+            loadDemoData() {
+                if (!window.CloudSync) return;
+                const demo = CloudSync.generateDemoStudentsData();
+                this.studentsData = demo;
+                this.updateClassCounts();
+                this.applyFilters();
+                alert('🧪 Berhasil memuat data simulasi demo untuk Kelas X.1, X.2, dan X.3!');
+            },
+
+            exportToCSV() {
+                if (this.filteredStudents.length === 0) {
+                    alert('Tidak ada data siswa untuk diekspor.');
+                    return;
+                }
+
+                let csv = 'No,Nomor Absen,Nama Siswa,Kelas,Tugas Individu (30%),LKPD Kelompok (35%),Evaluasi Akhir (35%),Bonus Mini-Lab,Nilai Digital (ND),Nilai Presentasi (10%),Nilai Akhir (NA),Status Ketuntasan\n';
+
+                this.filteredStudents.forEach((s, idx) => {
+                    const idn = s.identitas || {};
+                    const val = s.nilai || {};
+                    const teach = s.teacherEvaluation || {};
+
+                    const indiv = (val.tugasIndividu && val.tugasIndividu.bestScore) || 0;
+                    const lkpd = (val.lkpdKelompok && val.lkpdKelompok.bestScore) || 0;
+                    const ev = (val.evaluasiAkhir && val.evaluasiAkhir.score) || 0;
+                    const bonus = val.bonusMiniLab || 0;
+                    const nd = val.digitalScore || 0;
+                    const pres = typeof teach.scorePresentasi === 'number' ? teach.scorePresentasi : nd;
+                    const na = this.calculateFinalScore(s);
+                    const status = na >= 75 ? 'Tuntas' : 'Perlu Remedial';
+
+                    const row = [
+                        idx + 1,
+                        `"${idn.absen || ''}"`,
+                        `"${(idn.nama || '').replace(/"/g, '""')}"`,
+                        `"${idn.kelas || s._class}"`,
+                        indiv,
+                        lkpd,
+                        ev,
+                        bonus,
+                        nd,
+                        pres,
+                        na,
+                        `"${status}"`
+                    ];
+                    csv += row.join(',') + '\n';
+                });
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Rekap_Nilai_LarasLogika_${this.currentClass}_${new Date().toISOString().slice(0,10)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            },
+
+            openConfigModal() {
+                const cfg = window.FirebaseConfigManager ? FirebaseConfigManager.getConfig() : {};
+                document.getElementById('cfg-db-url').value = cfg.databaseURL || '';
+                document.getElementById('modal-config').style.display = 'flex';
+            },
+
+            closeConfigModal() {
+                document.getElementById('modal-config').style.display = 'none';
+            },
+
+            saveNewPin() {
+                const pin = document.getElementById('cfg-new-pin').value.trim();
+                if (pin.length < 4) {
+                    alert('PIN baru minimal harus 4 karakter.');
+                    return;
+                }
+                if (window.FirebaseConfigManager) {
+                    FirebaseConfigManager.setTeacherPin(pin);
+                    alert(`✅ PIN berhasil diperbarui menjadi: ${pin}`);
+                    document.getElementById('cfg-new-pin').value = '';
+                }
+            },
+
+            saveCustomConfig() {
+                const url = document.getElementById('cfg-db-url').value.trim();
+                if (!url) {
+                    alert('Silakan masukkan Firebase Database URL yang valid.');
+                    return;
+                }
+                if (window.FirebaseConfigManager) {
+                    const cfg = FirebaseConfigManager.getConfig();
+                    cfg.databaseURL = url;
+                    FirebaseConfigManager.saveConfig(cfg);
+                    alert('✅ Konfigurasi database berhasil disimpan. Halaman akan dimuat ulang.');
+                    window.location.reload();
+                }
+            },
+
+            resetConfigDefault() {
+                if (confirm('Kembalikan ke konfigurasi database bawaan?')) {
+                    if (window.FirebaseConfigManager) {
+                        FirebaseConfigManager.resetConfig();
+                        alert('✅ Konfigurasi berhasil dikembalikan ke bawaan.');
+                        window.location.reload();
+                    }
+                }
+            }
+        };
+
+        // Initialize portal upon document load
+        document.addEventListener('DOMContentLoaded', () => {
+            GuruPortal.init();
+        });
+    </script>
+</body>
+</html>
