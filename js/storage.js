@@ -543,8 +543,8 @@ const StorageManager = {
                 totalScore: 0,
                 predicate: 'Perlu Bimbingan',
                 operations: {},
-                queueChallenges: {},
-                stackChallenges: {},
+                queueChallenge: null,
+                stackChallenge: null,
                 stats: {
                     opsCount: 0,
                     queueCorrect: 0,
@@ -557,8 +557,6 @@ const StorageManager = {
         }
         const sim = this.data.simulationEvaluation;
         if (!sim.operations) sim.operations = {};
-        if (!sim.queueChallenges) sim.queueChallenges = {};
-        if (!sim.stackChallenges) sim.stackChallenges = {};
         if (!sim.stats) {
             sim.stats = { opsCount: 0, queueCorrect: 0, stackCorrect: 0, totalCompleted: 0 };
         }
@@ -568,7 +566,7 @@ const StorageManager = {
     recalculateSimulationAccumulation() {
         const sim = this.initSimulationEvaluationState();
 
-        // 1. Komponen 1: Operasi Simulasi Instan (4 Operasi: Enqueue, Dequeue, Push, Pop) - Masing-masing 10 Pts (Maks 40 Pts)
+        // 1. Komponen 1: Operasi Simulasi Instan (4 Ops: Enqueue, Dequeue, Push, Pop) @ 10 Pts (Maks 40 Pts)
         const ops = ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'];
         let opsCount = 0;
         ops.forEach(op => {
@@ -576,28 +574,48 @@ const StorageManager = {
         });
         const opsScore = opsCount * 10; // Maks 40 Pts
 
-        // 2. Komponen 2: Tantangan Logika Antrean 3 Siswa (Queue - FIFO) - 3 Soal @ 10 Pts (Maks 30 Pts)
-        let queueCorrect = 0;
-        Object.keys(sim.queueChallenges).forEach(qId => {
-            if (sim.queueChallenges[qId] && sim.queueChallenges[qId].isCorrect) queueCorrect++;
-        });
-        const queueScore = queueCorrect * 10; // Maks 30 Pts
+        // 2. Komponen 2: Nomor 1 Soal Kasus Antrean (Queue - FIFO) (Maks 30 Pts)
+        let qCorrect = false;
+        let qAnswered = false;
+        if (sim.queueChallenge && typeof sim.queueChallenge === 'object') {
+            qAnswered = (sim.queueChallenge.chosen !== undefined && sim.queueChallenge.chosen !== null);
+            qCorrect = !!sim.queueChallenge.isCorrect;
+        } else if (sim.queueChallenges && typeof sim.queueChallenges === 'object') {
+            // Backward compatibility
+            const firstKey = Object.keys(sim.queueChallenges)[0];
+            if (firstKey) {
+                qAnswered = true;
+                qCorrect = !!sim.queueChallenges[firstKey].isCorrect;
+                sim.queueChallenge = sim.queueChallenges[firstKey];
+            }
+        }
+        const queueScore = qCorrect ? 30 : 0; // 30 Pts
 
-        // 3. Komponen 3: Tantangan Logika Tumpukan 3 Piring (Stack - LIFO) - 3 Soal @ 10 Pts (Maks 30 Pts)
-        let stackCorrect = 0;
-        Object.keys(sim.stackChallenges).forEach(qId => {
-            if (sim.stackChallenges[qId] && sim.stackChallenges[qId].isCorrect) stackCorrect++;
-        });
-        const stackScore = stackCorrect * 10; // Maks 30 Pts
+        // 3. Komponen 3: Nomor 2 Soal Kasus Tumpukan Piring (Stack - LIFO) (Maks 30 Pts)
+        let sCorrect = false;
+        let sAnswered = false;
+        if (sim.stackChallenge && typeof sim.stackChallenge === 'object') {
+            sAnswered = (sim.stackChallenge.chosen !== undefined && sim.stackChallenge.chosen !== null);
+            sCorrect = !!sim.stackChallenge.isCorrect;
+        } else if (sim.stackChallenges && typeof sim.stackChallenges === 'object') {
+            // Backward compatibility
+            const firstKey = Object.keys(sim.stackChallenges)[0];
+            if (firstKey) {
+                sAnswered = true;
+                sCorrect = !!sim.stackChallenges[firstKey].isCorrect;
+                sim.stackChallenge = sim.stackChallenges[firstKey];
+            }
+        }
+        const stackScore = sCorrect ? 30 : 0; // 30 Pts
 
         // Akumulasi Total Nilai Eksplorasi (0 - 100 Pts)
         const totalScore = opsScore + queueScore + stackScore;
-        const totalCompleted = opsCount + Object.keys(sim.queueChallenges).length + Object.keys(sim.stackChallenges).length;
+        const totalCompleted = opsCount + (qAnswered ? 1 : 0) + (sAnswered ? 1 : 0);
 
         sim.stats = {
             opsCount: opsCount,
-            queueCorrect: queueCorrect,
-            stackCorrect: stackCorrect,
+            queueCorrect: qCorrect ? 1 : 0,
+            stackCorrect: sCorrect ? 1 : 0,
             totalCompleted: totalCompleted
         };
         sim.count = opsCount;
@@ -634,12 +652,12 @@ const StorageManager = {
         return sim;
     },
 
-    recordHeroChallengeAnswer(topic, questionId, optionIdx, isCorrect) {
+    recordHeroChallengeAnswer(topic, num, optionIdx, isCorrect) {
         const sim = this.initSimulationEvaluationState();
-        if (topic === 'queue') {
-            sim.queueChallenges[questionId] = { chosen: optionIdx, isCorrect: !!isCorrect };
-        } else if (topic === 'stack') {
-            sim.stackChallenges[questionId] = { chosen: optionIdx, isCorrect: !!isCorrect };
+        if (topic === 'queue' || num === 1) {
+            sim.queueChallenge = { chosen: optionIdx, isCorrect: !!isCorrect };
+        } else if (topic === 'stack' || num === 2) {
+            sim.stackChallenge = { chosen: optionIdx, isCorrect: !!isCorrect };
         }
         this.recalculateSimulationAccumulation();
         this.save();

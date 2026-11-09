@@ -1585,24 +1585,20 @@ const PBLAcademic = {
     heroQueueSequence: ['Ani', 'Adi', 'Ida'],
     heroStackSequence: ['🔴 Piring Merah', '🟡 Piring Kuning', '🟢 Piring Hijau'],
     heroChallengeAnswers: {
-        stack: {},
-        queue: {}
+        queue: null,
+        stack: null
     },
     problemDilemmaMode: 'chaos',
 
     initHeroSim() {
-        // Muat jawaban tersimpan tantangan logika dari StorageManager jika ada
+        // Muat jawaban tersimpan tantangan logika 2 nomor dari StorageManager jika ada
         if (window.StorageManager && typeof StorageManager.getSimulationEvaluation === 'function') {
             const sim = StorageManager.getSimulationEvaluation();
-            if (sim.stackChallenges) {
-                Object.keys(sim.stackChallenges).forEach(qId => {
-                    this.heroChallengeAnswers.stack[qId] = sim.stackChallenges[qId].chosen;
-                });
+            if (sim.queueChallenge && sim.queueChallenge.chosen !== undefined) {
+                this.heroChallengeAnswers.queue = sim.queueChallenge.chosen;
             }
-            if (sim.queueChallenges) {
-                Object.keys(sim.queueChallenges).forEach(qId => {
-                    this.heroChallengeAnswers.queue[qId] = sim.queueChallenges[qId].chosen;
-                });
+            if (sim.stackChallenge && sim.stackChallenge.chosen !== undefined) {
+                this.heroChallengeAnswers.stack = sim.stackChallenge.chosen;
             }
         }
         this.renderHeroSim();
@@ -1706,116 +1702,86 @@ const PBLAcademic = {
     },
 
     // ----------------------------------------------------
-    // PERTANYAAN TANTANGAN INTERAKTIF SIMULASI (STUDI KASUS 3 PIRING & ANTREAN ANI, ADI, IDA)
+    // PERTANYAAN TANTANGAN LOGIKA BERANDA (2 NOMOR JADI 1 KARTU TERPADU)
+    // NOMOR 1: SOAL QUEUE (FIFO) | NOMOR 2: SOAL STACK (LIFO)
     // ----------------------------------------------------
-    heroChallenges: {
-        stack: {
-            title: "🍽️ Tantangan Logika: Kasus Tumpukan 3 Piring (Stack - LIFO)",
-            context: "Petugas kantin menumpuk 3 piring ke dalam rak saji berurutan dari bawah ke atas: 🔴 <strong>Piring Merah</strong> (dasar), 🟡 <strong>Piring Kuning</strong> (tengah), dan 🟢 <strong>Piring Hijau</strong> (puncak TOP). Rak memiliki kapasitas <strong>maksimal 3 piring</strong>.",
-            questions: [
-                {
-                    id: 1,
-                    q: "1. Jika seorang siswa datang mengambil piring menggunakan tombol <strong>− Ambil Piring (Pop)</strong>, piring warna apakah yang terambil pertama kali?",
-                    options: [
-                        { text: "A. 🔴 Piring Merah", isCorrect: false, note: "Piring Merah berada di dasar rak (paling bawah), terhimpit piring lain." },
-                        { text: "B. 🟡 Piring Kuning", isCorrect: false, note: "Piring Kuning berada di tengah, tidak bisa diambil langsung." },
-                        { text: "C. 🟢 Piring Hijau", isCorrect: true, note: "Tepat sekali! Sesuai prinsip LIFO (Last In First Out), piring yang terakhir ditaruh di posisi puncak (TOP) adalah yang pertama diambil!" }
-                    ]
-                },
-                {
-                    id: 2,
-                    q: "2. Rak piring sudah terisi penuh 3 piring (Merah, Kuning, Hijau). Apa dampaknya jika petugas memaksa menekan tombol <strong>+ Tambah Piring</strong>?",
-                    options: [
-                        { text: "A. Terjadi Stack Overflow (Tumpukan Meluap / Piring Pecah)", isCorrect: true, note: "Benar! Melebihi kapasitas batas maksimum penampung memicu kondisi kritis Stack Overflow." },
-                        { text: "B. Piring Merah di dasar keluar sendiri otomatis", isCorrect: false, note: "Salah, wadah stack tertutup di bawah (hanya memiliki 1 pintu akses di TOP)." },
-                        { text: "C. Piring ke-4 melayang tanpa ada masalah", isCorrect: false, note: "Salah, kapasitas fisik memori atau rak selalu memiliki batas." }
-                    ]
-                },
-                {
-                    id: 3,
-                    q: "3. Semua piring telah diambil hingga rak kosong (0 piring). Apa yang terjadi jika siswa tetap menekan tombol <strong>− Ambil Piring</strong>?",
-                    options: [
-                        { text: "A. Terjadi Stack Underflow (Tumpukan Kosong / Gagal Ambil)", isCorrect: true, note: "Sangat tepat! Mengambil data dari tumpukan yang kosong memicu kondisi galat Stack Underflow." },
-                        { text: "B. Rak otomatis mendatangkan piring baru dari udara", isCorrect: false, note: "Salah, komputer/rak tidak dapat memproses objek dari ketiadaan." },
-                        { text: "C. Tangan siswa tersangkut di mesin", isCorrect: false, note: "Salah secara komputasional." }
-                    ]
-                }
+    heroUnifiedChallenges: [
+        {
+            num: 1,
+            topic: 'queue',
+            badge: 'Queue (FIFO) - Antrean Kasir',
+            title: '👥 Nomor 1: Tantangan Logika Antrean Kasir (Queue - FIFO)',
+            context: 'Loket kasir kantin melayani antrean kuota maksimal 3 siswa. Datang 3 siswa berurutan memesan makanan: 👤 <strong>Ani</strong> (datang ke-1), 👤 <strong>Adi</strong> (datang ke-2), dan 👤 <strong>Ida</strong> (datang ke-3).',
+            q: '1. Berdasarkan aturan FIFO (First In First Out), saat kasir menekan tombol <strong>− Ambil Antrean (Layani / Dequeue)</strong>, siapakah siswa yang pertama kali dilayani?',
+            options: [
+                { text: 'A. 👤 Ida (Posisi Paling Belakang - REAR)', isCorrect: false, note: 'Ida datang terakhir di posisi REAR, harus menunggu giliran antrean.' },
+                { text: 'B. 👤 Adi (Posisi Tengah)', isCorrect: false, note: 'Adi berada di tengah antrean di belakang Ani.' },
+                { text: 'C. 👤 Ani (Posisi Paling Depan - FRONT)', isCorrect: true, note: 'Tepat sekali! Asas keadilan antrean Queue menerapkan FIFO (First In First Out): Ani yang datang pertama berada di FRONT dan dilayani pertama kali!' }
             ]
         },
-        queue: {
-            title: "👥 Tantangan Logika: Kasus Antrean 3 Siswa (Queue - FIFO)",
-            context: "Loket kasir kantin membuka antrean dengan kapasitas kuota <strong>maksimal 3 orang</strong>. Datang 3 siswa berurutan memesan makanan: 👤 <strong>Ani</strong> (datang pertama), 👤 <strong>Adi</strong> (datang kedua), dan 👤 <strong>Ida</strong> (datang ketiga).",
-            questions: [
-                {
-                    id: 1,
-                    q: "1. Saat kasir mulai memproses pesanan dengan tombol <strong>− Ambil Antrean (Layani / Dequeue)</strong>, siapakah siswa yang pertama kali dilayani?",
-                    options: [
-                        { text: "A. 👤 Ida (Posisi Paling Belakang)", isCorrect: false, note: "Ida datang terakhir di posisi REAR, harus menunggu gilirannya." },
-                        { text: "B. 👤 Adi (Posisi Tengah)", isCorrect: false, note: "Adi berada di tengah antrean di belakang Ani." },
-                        { text: "C. 👤 Ani (Posisi Paling Depan - FRONT)", isCorrect: true, note: "Tepat sekali! Asas keadilan pelayanan waktu tunggu Queue menerapkan FIFO (First In First Out): Ani yang datang pertama berada di FRONT dan dilayani pertama kali!" }
-                    ]
-                },
-                {
-                    id: 2,
-                    q: "2. Antrean kasir telah penuh 3 orang (Ani, Adi, Ida). Apa yang terjadi jika ada siswa baru bernama Budi memaksakan <strong>+ Tambah Antrean</strong>?",
-                    options: [
-                        { text: "A. Terjadi Queue Overflow (Kapasitas Antrean Penuh)", isCorrect: true, note: "Benar! Batas kuota antrean kasir telah tercapai sehingga siswa baru harus menunggu antrean longgar (Queue Overflow)." },
-                        { text: "B. Ani langsung dikeluarkan paksa dari kasir", isCorrect: false, note: "Salah, penyerobotan atau pengeluaran paksa melanggar hukum keteraturan antrean FIFO." },
-                        { text: "C. Kasir langsung tutup melarikan diri", isCorrect: false, note: "Salah, kasir tetap melayani antrean yang ada." }
-                    ]
-                },
-                {
-                    id: 3,
-                    q: "3. Seluruh siswa telah selesai berbelanja dan antrean kini kosong (0 orang). Apa yang terjadi jika kasir menekan <strong>− Ambil Antrean (Layani)</strong>?",
-                    options: [
-                        { text: "A. Terjadi Queue Underflow (Antrean Kosong / Kasir Siaga)", isCorrect: true, note: "Tepat sekali! Memanggil operasi pengeluaran (dequeue) pada antrean kosong menghasilkan status Queue Underflow." },
-                        { text: "B. Siswa lama dipanggil kembali belanja", isCorrect: false, note: "Salah, transaksi siswa lama sudah selesai." },
-                        { text: "C. Kasir mengalami kebingungan selamanya", isCorrect: false, note: "Salah secara komputasional." }
-                    ]
-                }
+        {
+            num: 2,
+            topic: 'stack',
+            badge: 'Stack (LIFO) - Tumpukan Piring',
+            title: '🍽️ Nomor 2: Tantangan Logika Tumpukan Piring (Stack - LIFO)',
+            context: 'Petugas kantin menumpuk 3 piring ke dalam rak saji dari bawah ke atas: 🔴 <strong>Piring Merah</strong> (dasar), 🟡 <strong>Piring Kuning</strong> (tengah), dan 🟢 <strong>Piring Hijau</strong> (puncak TOP). Kapasitas rak maksimal 3 piring.',
+            q: '2. Berdasarkan aturan LIFO (Last In First Out), jika seorang siswa datang mengambil piring menggunakan tombol <strong>− Ambil Piring (Pop)</strong>, piring warna apakah yang terambil pertama kali?',
+            options: [
+                { text: 'A. 🔴 Piring Merah (Dasar Rak)', isCorrect: false, note: 'Piring Merah berada di dasar rak (paling bawah), terhimpit piring lain.' },
+                { text: 'B. 🟡 Piring Kuning (Tengah Rak)', isCorrect: false, note: 'Piring Kuning berada di tengah rak, tidak bisa diambil langsung.' },
+                { text: 'C. 🟢 Piring Hijau (Puncak - TOP)', isCorrect: true, note: 'Tepat sekali! Sesuai prinsip LIFO (Last In First Out), piring yang terakhir ditaruh di puncak (TOP) adalah yang pertama diambil!' }
             ]
         }
-    },
+    ],
 
     renderHeroChallenge() {
         const container = document.getElementById('hero-interactive-challenge-container');
         if (!container) return;
 
-        const topic = this.heroMode;
-        const chal = this.heroChallenges[topic];
-        if (!chal) return;
-
-        const savedAnswers = this.heroChallengeAnswers[topic] || {};
-
         let html = `
             <div style="background: #FFFFFF; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1.15rem; box-shadow: 0 4px 14px rgba(113, 66, 54, 0.05); text-align: left;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem;">
-                    <h4 style="margin: 0; font-family: 'Syne', sans-serif; font-size: 0.98rem; font-weight: 800; color: #891A10;">
-                        ${chal.title}
-                    </h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                    <div>
+                        <h4 style="margin: 0; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; color: #891A10;">
+                            🎯 Tantangan Logika Komputasional: Queue (FIFO) &amp; Stack (LIFO)
+                        </h4>
+                        <p style="margin: 0.2rem 0 0 0; font-size: 0.8rem; color: #714236;">
+                            Uji penalaran Anda pada 2 nomor studi kasus pelayanan kantin sekolah berikut:
+                        </p>
+                    </div>
                     <span style="font-size: 0.74rem; background: #FAF3EA; border: 1px solid #E76814; color: #891A10; font-weight: 800; padding: 2px 8px; border-radius: 999px;">
-                        Kapasitas: Maksimal 3 Data
+                        2 Nomor Kasus Nyata
                     </span>
                 </div>
-                
-                <p style="font-size: 0.86rem; color: #4A3832; line-height: 1.5; margin: 0 0 0.85rem 0; background: #FAF8F5; border-left: 3px solid #E76814; padding: 0.5rem 0.75rem; border-radius: 0 8px 8px 0;">
-                    ${chal.context}
-                </p>
 
-                <div style="display: flex; flex-direction: column; gap: 0.85rem;">
-                    ${chal.questions.map((qObj, qIdx) => {
-                        const chosen = savedAnswers[qObj.id];
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    ${this.heroUnifiedChallenges.map(chal => {
+                        const chosen = this.heroChallengeAnswers[chal.topic];
                         const hasAnswered = (chosen !== undefined && chosen !== null);
-                        const isCorrectChosen = hasAnswered && qObj.options[chosen] && qObj.options[chosen].isCorrect;
-                        const noteText = hasAnswered ? (qObj.options[chosen]?.note || '') : '';
+                        const isCorrectChosen = hasAnswered && chal.options[chosen] && chal.options[chosen].isCorrect;
+                        const noteText = hasAnswered ? (chal.options[chosen]?.note || '') : '';
 
                         return `
-                            <div style="background: #FAF6ED; border: 1px solid #EAE7D7; border-radius: 10px; padding: 0.75rem 0.9rem;">
-                                <div style="font-size: 0.86rem; font-weight: 700; color: #2E1E1A; margin-bottom: 0.5rem; line-height: 1.45;">
-                                    ${qObj.q}
+                            <div style="background: #FAF6ED; border: 1.5px solid #EAE7D7; border-radius: 10px; padding: 0.85rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem;">
+                                    <h5 style="margin: 0; font-size: 0.88rem; font-weight: 800; color: #891A10;">
+                                        ${chal.title}
+                                    </h5>
+                                    <span style="font-size: 0.72rem; background: #FFFFFF; border: 1px solid #D8D4BC; color: #714236; font-weight: 700; padding: 1px 6px; border-radius: 6px;">
+                                        ${chal.badge}
+                                    </span>
                                 </div>
+
+                                <p style="font-size: 0.82rem; color: #4A3832; line-height: 1.45; margin: 0 0 0.6rem 0; background: #FAF8F5; border-left: 3px solid #E76814; padding: 0.45rem 0.65rem; border-radius: 0 6px 6px 0;">
+                                    ${chal.context}
+                                </p>
+
+                                <div style="font-size: 0.85rem; font-weight: 700; color: #2E1E1A; margin-bottom: 0.5rem; line-height: 1.4;">
+                                    ${chal.q}
+                                </div>
+
                                 <div style="display: flex; flex-direction: column; gap: 0.35rem;">
-                                    ${qObj.options.map((opt, optIdx) => {
+                                    ${chal.options.map((opt, optIdx) => {
                                         const isThisSelected = (chosen === optIdx);
                                         let btnStyle = 'background: #FFFFFF; border: 1.5px solid #D8D4BC; color: #714236;';
                                         if (isThisSelected) {
@@ -1826,16 +1792,17 @@ const PBLAcademic = {
 
                                         return `
                                             <button type="button" 
-                                                onclick="PBLAcademic.checkHeroChallenge('${topic}', ${qObj.id}, ${optIdx})"
+                                                onclick="PBLAcademic.checkHeroChallenge('${chal.topic}', ${chal.num}, ${optIdx})"
                                                 style="text-align: left; padding: 0.45rem 0.75rem; border-radius: 8px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease; ${btnStyle}">
                                                 ${opt.text}
                                             </button>
                                         `;
                                     }).join('')}
                                 </div>
+
                                 ${hasAnswered ? `
                                     <div style="margin-top: 0.5rem; font-size: 0.8rem; line-height: 1.45; padding: 0.4rem 0.65rem; border-radius: 6px; background: ${isCorrectChosen ? '#ECFDF5' : '#FEF2F2'}; color: ${isCorrectChosen ? '#065F46' : '#991B1B'}; border: 1px solid ${isCorrectChosen ? '#A7F3D0' : '#FECACA'};">
-                                        ${isCorrectChosen ? '✓ <strong>Tepat Sekali!</strong> ' : '✕ <strong>Kurang Tepat:</strong> '} ${noteText}
+                                        ${isCorrectChosen ? '✓ <strong>Tepat Sekali (+30 Pts)!</strong> ' : '✕ <strong>Kurang Tepat:</strong> '} ${noteText}
                                     </div>
                                 ` : ''}
                             </div>
@@ -1848,34 +1815,30 @@ const PBLAcademic = {
         container.innerHTML = html;
     },
 
-    checkHeroChallenge(topic, questionId, optionIdx) {
-        if (!this.heroChallengeAnswers[topic]) {
-            this.heroChallengeAnswers[topic] = {};
-        }
-        this.heroChallengeAnswers[topic][questionId] = optionIdx;
+    checkHeroChallenge(topic, num, optionIdx) {
+        this.heroChallengeAnswers[topic] = optionIdx;
 
-        const chal = this.heroChallenges[topic];
-        const qObj = chal && chal.questions.find(q => q.id === questionId);
-        const opt = qObj && qObj.options[optionIdx];
+        const chal = this.heroUnifiedChallenges.find(c => c.topic === topic);
+        const opt = chal && chal.options[optionIdx];
         const isCorrect = !!(opt && opt.isCorrect);
 
-        // Rekam jawaban tantangan logika ke storage & hitung akumulasi skor simulasi
+        // Rekam jawaban ke storage & hitung akumulasi skor simulasi
         let sim = null;
         if (window.StorageManager && typeof StorageManager.recordHeroChallengeAnswer === 'function') {
-            sim = StorageManager.recordHeroChallengeAnswer(topic, questionId, optionIdx, isCorrect);
+            sim = StorageManager.recordHeroChallengeAnswer(topic, num, optionIdx, isCorrect);
             this.updateHeroSimulationBadge(sim);
         }
 
-        // Sinkronkan pemahaman simulasi ke Dashboard Guru
+        // Sinkronkan ke Dashboard Guru
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
-            window.CloudSync.syncStudentState(`Tantangan ${topic.toUpperCase()} (Q${questionId}): ${isCorrect ? 'Tepat' : 'Mencoba'} [Akumulasi: ${sim?.totalScore || 0} pts]`);
+            window.CloudSync.syncStudentState(`Tantangan No.${num} ${topic.toUpperCase()}: ${isCorrect ? 'Benar (+30 Pts)' : 'Mencoba'} [Akumulasi: ${sim?.totalScore || 0} pts]`);
         }
 
         if (window.UI) {
             if (isCorrect) {
-                UI.showToast(`✓ Jawaban tepat! ${opt.note}`);
+                UI.showToast(`✓ Jawaban No.${num} tepat (+30 Pts)! ${opt.note}`);
             } else {
-                UI.showToast(`✕ Belum tepat. ${opt.note}`);
+                UI.showToast(`✕ Jawaban No.${num} belum tepat. ${opt.note}`);
             }
         }
 
@@ -1904,8 +1867,8 @@ const PBLAcademic = {
                     </div>
                     <div style="font-size: 0.78rem; color: #714236; margin-top: 0.45rem; line-height: 1.45; display: flex; flex-wrap: wrap; gap: 0.75rem;">
                         <span>🧪 <strong>Simulasi Instan:</strong> ${stats.opsCount}/4 operasi</span>
-                        <span>👥 <strong>Kasus Antrean:</strong> ${stats.queueCorrect}/3 benar</span>
-                        <span>🍽️ <strong>Kasus Piring:</strong> ${stats.stackCorrect}/3 benar</span>
+                        <span>👥 <strong>No. 1 (Queue):</strong> ${stats.queueCorrect ? '✅ Benar (+30 Pts)' : '❌ Belum (+0 Pts)'}</span>
+                        <span>🍽️ <strong>No. 2 (Stack):</strong> ${stats.stackCorrect ? '✅ Benar (+30 Pts)' : '❌ Belum (+0 Pts)'}</span>
                     </div>
                 </div>
             `;

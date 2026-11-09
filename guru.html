@@ -823,9 +823,13 @@
             </div>
 
             <div class="guru-header-actions">
-                <div class="live-status-pill" id="live-connection-pill">
-                    <span class="live-status-dot"></span> Realtime Cloud Aktif
+                <div class="live-status-pill" id="live-connection-pill" style="border-color: #FDE68A; color: #92400E; background: #FFFBEB;">
+                    <span class="live-status-dot" style="background: #F59E0B;"></span> Menghubungkan Cloud...
                 </div>
+
+                <button type="button" class="btn-guru btn-guru-primary no-print" onclick="GuruPortal.forcePullStudentData(event)" title="Tarik dan sinkronkan data siswa dari cloud realtime (MQTT & HTTPS Relay)">
+                    <span style="font-size: 0.95rem;">🔄</span> Tarik Data Siswa
+                </button>
 
                 <button type="button" class="btn-guru btn-guru-emerald" onclick="GuruPortal.exportToCSV()">
                     📥 Download Excel (CSV)
@@ -953,6 +957,10 @@
                         <option value="REMEDIAL">⚠️ Perlu Remedial (&lt; 75)</option>
                     </select>
 
+                    <button type="button" class="btn-guru btn-guru-primary" onclick="GuruPortal.forcePullStudentData(event)" title="Tarik dan perbarui data seluruh siswa dari cloud realtime (MQTT & HTTPS Relay)">
+                        🔄 Tarik Data Terkini Siswa
+                    </button>
+
                     <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.requestPingAll(event)" title="Kirim sinyal realtime agar seluruh murid mengirimkan data nilai terkininya">
                         📡 Minta Data Siswa (Ping All)
                     </button>
@@ -1035,21 +1043,21 @@
 
                     <div style="background: #FAF8F5; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.9rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="color: #891A10; font-size: 0.86rem;">👥 2. Kasus Antrean 3 Siswa (Queue)</strong>
-                            <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">Maks 30 Pts</span>
+                            <strong style="color: #891A10; font-size: 0.86rem;">👥 2. Nomor 1: Soal Queue (FIFO)</strong>
+                            <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">30 Pts</span>
                         </div>
                         <div style="font-size: 0.76rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
-                            3 Soal Bernalar @ 10 pts: Urutan Pelayanan (Ani di FRONT), Queue Overflow, dan Queue Underflow.
+                            Kasus Antrean Kasir 3 Siswa: Pembuktian urutan pelayanan terdepan (Ani di FRONT).
                         </div>
                     </div>
 
                     <div style="background: #FAF8F5; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.9rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="color: #891A10; font-size: 0.86rem;">🍽️ 3. Kasus Tumpukan 3 Piring (Stack)</strong>
-                            <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">Maks 30 Pts</span>
+                            <strong style="color: #891A10; font-size: 0.86rem;">🍽️ 3. Nomor 2: Soal Stack (LIFO)</strong>
+                            <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">30 Pts</span>
                         </div>
                         <div style="font-size: 0.76rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
-                            3 Soal Bernalar @ 10 pts: Urutan Pengambilan (Hijau di TOP), Stack Overflow, dan Stack Underflow.
+                            Kasus Tumpukan 3 Piring: Pembuktian urutan pengambilan teratas (Piring Hijau di TOP).
                         </div>
                     </div>
                 </div>
@@ -1087,8 +1095,8 @@
                                 <th style="text-align: center;">Akumulasi Nilai</th>
                                 <th>Predikat</th>
                                 <th>1. Simulasi Instan (4 Ops - 40 Pts)</th>
-                                <th>2. Kasus Antrean (3 Soal - 30 Pts)</th>
-                                <th>3. Kasus Piring (3 Soal - 30 Pts)</th>
+                                <th>2. Nomor 1: Kasus Queue (30 Pts)</th>
+                                <th>3. Nomor 2: Kasus Stack (30 Pts)</th>
                                 <th>Waktu Terakhir</th>
                                 <th>Rekomendasi Guru</th>
                             </tr>
@@ -1414,6 +1422,76 @@
                 this.applyFilters();
             },
 
+            forcePullStudentData(e) {
+                if (e) e.preventDefault();
+                const btn = e && (e.currentTarget || e.target);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '⏳ Menarik Data Cloud...';
+                }
+
+                // 1. Scan LocalStorage secara aman tanpa mutasi key index
+                this.scanLocalStorage();
+
+                // 2. Kirim sinyal Request Sync ke seluruh saluran (MQTT, HTTPS Cloud Relay, BroadcastChannel)
+                if (window.CloudSync && typeof window.CloudSync.requestAllStudentsSync === 'function') {
+                    window.CloudSync.requestAllStudentsSync();
+                }
+
+                // 3. Fallback polling local server
+                fetch('/api/students')
+                    .then(res => res.json())
+                    .then(localData => {
+                        if (localData && typeof localData === 'object' && Object.keys(localData).length > 0) {
+                            this.handleIncomingStudentData(localData);
+                        }
+                    })
+                    .catch(() => {});
+
+                setTimeout(() => {
+                    this.applyFilters();
+                    const count = this.filteredStudents.length;
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = '🔄 Tarik Data Terkini Siswa';
+                    }
+                    if (window.UI && typeof window.UI.showToast === 'function') {
+                        window.UI.showToast(`✅ Data cloud diperbarui! ${count} siswa aktif terdeteksi.`);
+                    }
+                }, 1200);
+            },
+
+            scanLocalStorage() {
+                try {
+                    const keys = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        keys.push(localStorage.key(i));
+                    }
+                    keys.forEach(k => {
+                        if (k && k.startsWith('laraslogika_student_')) {
+                            try {
+                                const p = JSON.parse(localStorage.getItem(k));
+                                if (p && p.identitas) {
+                                    this.handleIncomingStudentData(p);
+                                }
+                            } catch (e) {}
+                        }
+                    });
+
+                    // Direct fallback: periksa progress browser ini jika sedang testing berdampingan
+                    const directData = localStorage.getItem('daily_rush_adventure_v1');
+                    if (directData) {
+                        try {
+                            const d = JSON.parse(directData);
+                            const packet = this.buildPacketFromLocalData(d);
+                            if (packet) {
+                                this.handleIncomingStudentData(packet);
+                            }
+                        } catch (err) {}
+                    }
+                } catch (e) {}
+            },
+
             requestPingAll(e) {
                 if (window.CloudSync && typeof window.CloudSync.requestAllStudentsSync === 'function') {
                     window.CloudSync.requestAllStudentsSync();
@@ -1442,7 +1520,7 @@
                 const indivAtt = d.individualAttempts || { currentAttempt: 1, bestScore: 0, history: [] };
                 const groupAtt = d.groupAttempts || { currentAttempt: 1, bestScore: 0, history: [] };
                 const evalScore = (d.pageScores && d.pageScores['evaluation']) ? (d.pageScores['evaluation'].score || 0) : 0;
-                const isEvalDone = !!(d.pageScores && d.pageScores['evaluation'] && d.pageScores['evaluation'].completed);
+                const isEvalDone = !!(d.pageScores && d.pageScores['evaluation'] && data.pageScores?.['evaluation']?.completed || (d.pageScores && d.pageScores['evaluation'] && d.pageScores['evaluation'].completed));
                 const bonusMiniLab = d.miniLabBonus || 0;
 
                 const indivScore = indivAtt.bestScore || 0;
@@ -1456,8 +1534,8 @@
                     predicate: 'Perlu Bimbingan',
                     count: 0,
                     operations: {},
-                    queueChallenges: {},
-                    stackChallenges: {},
+                    queueChallenge: null,
+                    stackChallenge: null,
                     stats: { opsCount: 0, queueCorrect: 0, stackCorrect: 0, totalCompleted: 0 }
                 };
 
@@ -1585,29 +1663,7 @@
                 } catch (e) {}
 
                 // 3. Scan LocalStorage
-                try {
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const k = localStorage.key(i);
-                        if (k && k.startsWith('laraslogika_student_')) {
-                            const p = JSON.parse(localStorage.getItem(k));
-                            if (p && p.identitas) {
-                                this.handleIncomingStudentData(p);
-                            }
-                        }
-                    }
-
-                    // Direct fallback: periksa progress browser ini jika sedang testing berdampingan
-                    const directData = localStorage.getItem('daily_rush_adventure_v1');
-                    if (directData) {
-                        try {
-                            const d = JSON.parse(directData);
-                            const packet = this.buildPacketFromLocalData(d);
-                            if (packet) {
-                                this.handleIncomingStudentData(packet);
-                            }
-                        } catch (err) {}
-                    }
-                } catch (e) {}
+                this.scanLocalStorage();
 
                 // 4. Listen storage events
                 window.addEventListener('storage', (e) => {
@@ -1906,30 +1962,26 @@
                 let html = '';
                 this.filteredStudents.forEach(s => {
                     const idn = s.identitas || {};
-                    const sim = s.simulasi || { score: 1, totalScore: 0, predicate: 'Perlu Bimbingan', count: 0, operations: {}, queueChallenges: {}, stackChallenges: {} };
+                    const sim = s.simulasi || { score: 1, totalScore: 0, predicate: 'Perlu Bimbingan', count: 0, operations: {}, queueChallenge: null, stackChallenge: null };
                     const ops = sim.operations || {};
-                    const qChal = sim.queueChallenges || {};
-                    const sChal = sim.stackChallenges || {};
+                    const qChal = sim.queueChallenge || (sim.queueChallenges && sim.queueChallenges[1]) || null;
+                    const sChal = sim.stackChallenge || (sim.stackChallenges && sim.stackChallenges[1]) || null;
 
-                    // 1. Hitung poin operasi simulasi instan (4 Ops - Maks 40 Pts)
+                    // 1. Poin Operasi Instan (4 Ops - 40 Pts)
                     const opList = ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'];
                     let opsCount = 0;
                     opList.forEach(op => { if (ops[op]) opsCount++; });
                     const opsScore = opsCount * 10;
 
-                    // 2. Hitung poin tantangan antrean 3 siswa (Queue - Maks 30 Pts)
-                    let qCorrect = 0;
-                    [1, 2, 3].forEach(id => {
-                        if (qChal[id] && qChal[id].isCorrect) qCorrect++;
-                    });
-                    const qScore = qCorrect * 10;
+                    // 2. Poin Nomor 1: Soal Kasus Antrean Queue (30 Pts)
+                    const qAnswered = qChal && (qChal.chosen !== undefined && qChal.chosen !== null);
+                    const qCorrect = qChal && !!qChal.isCorrect;
+                    const qScore = qCorrect ? 30 : 0;
 
-                    // 3. Hitung poin tantangan tumpukan 3 piring (Stack - Maks 30 Pts)
-                    let sCorrect = 0;
-                    [1, 2, 3].forEach(id => {
-                        if (sChal[id] && sChal[id].isCorrect) sCorrect++;
-                    });
-                    const sScore = sCorrect * 10;
+                    // 3. Poin Nomor 2: Soal Kasus Tumpukan Piring Stack (30 Pts)
+                    const sAnswered = sChal && (sChal.chosen !== undefined && sChal.chosen !== null);
+                    const sCorrect = sChal && !!sChal.isCorrect;
+                    const sScore = sCorrect ? 30 : 0;
 
                     // Akumulasi total skor (0 - 100 Pts)
                     const calculatedTotal = opsScore + qScore + sScore;
@@ -1953,9 +2005,9 @@
                     const stars = '⭐'.repeat(score);
 
                     let reco = 'Perlu bimbingan guru dalam memahami konsep dasar alur keluar-masuk elemen.';
-                    if (totalScore >= 80) reco = 'Sangat baik! Mampu menguasai operasi linear dan bernalar kritis pada kasus antrean & tumpukan.';
-                    else if (totalScore >= 60) reco = 'Baik! Pemahaman konsep dasar solid, dorong untuk melengkapi seluruh tantangan kasus.';
-                    else if (totalScore >= 40) reco = 'Cukup. Mulai memahami salah satu konsep, perlu pendampingan pada kondisi overflow & underflow.';
+                    if (totalScore >= 80) reco = 'Sangat baik! Menguasai simulasi operasi instan dan menjawab tepat seluruh tantangan antrean & tumpukan.';
+                    else if (totalScore >= 60) reco = 'Baik! Pemahaman konsep dasar solid, dorong untuk menuntaskan kedua nomor tantangan logika.';
+                    else if (totalScore >= 40) reco = 'Cukup. Mulai memahami salah satu konsep, perlu pendampingan pada keteraturan antrean kasir dan tumpukan piring.';
 
                     html += `
                         <tr>
@@ -1988,19 +2040,19 @@
                             </td>
                             <td>
                                 <div style="font-size: 0.74rem; font-weight: 700; color: #891A10; margin-bottom: 2px;">
-                                    ${qScore}/30 Pts (${qCorrect}/3 Benar)
+                                    ${qScore}/30 Pts (${qCorrect ? '1/1 Benar' : (qAnswered ? '0/1 Belum Tepat' : 'Belum Dijawab')})
                                 </div>
-                                <span class="op-check-tag ${qChal[1] ? (qChal[1].isCorrect ? 'done' : 'wrong') : 'pending'}">Q1: ${qChal[1] ? (qChal[1].isCorrect ? '✓ FRONT' : '✕ Salah') : '○ FRONT'}</span>
-                                <span class="op-check-tag ${qChal[2] ? (qChal[2].isCorrect ? 'done' : 'wrong') : 'pending'}">Q2: ${qChal[2] ? (qChal[2].isCorrect ? '✓ Overflow' : '✕ Salah') : '○ Overflow'}</span>
-                                <span class="op-check-tag ${qChal[3] ? (qChal[3].isCorrect ? 'done' : 'wrong') : 'pending'}">Q3: ${qChal[3] ? (qChal[3].isCorrect ? '✓ Underflow' : '✕ Salah') : '○ Underflow'}</span>
+                                <span class="op-check-tag ${qAnswered ? (qCorrect ? 'done' : 'wrong') : 'pending'}">
+                                    ${qAnswered ? (qCorrect ? '✓ Ani di FRONT (+30)' : '✕ Salah (0)') : '○ Ani di FRONT (30 Pts)'}
+                                </span>
                             </td>
                             <td>
                                 <div style="font-size: 0.74rem; font-weight: 700; color: #891A10; margin-bottom: 2px;">
-                                    ${sScore}/30 Pts (${sCorrect}/3 Benar)
+                                    ${sScore}/30 Pts (${sCorrect ? '1/1 Benar' : (sAnswered ? '0/1 Belum Tepat' : 'Belum Dijawab')})
                                 </div>
-                                <span class="op-check-tag ${sChal[1] ? (sChal[1].isCorrect ? 'done' : 'wrong') : 'pending'}">Q1: ${sChal[1] ? (sChal[1].isCorrect ? '✓ TOP' : '✕ Salah') : '○ TOP'}</span>
-                                <span class="op-check-tag ${sChal[2] ? (sChal[2].isCorrect ? 'done' : 'wrong') : 'pending'}">Q2: ${sChal[2] ? (sChal[2].isCorrect ? '✓ Overflow' : '✕ Salah') : '○ Overflow'}</span>
-                                <span class="op-check-tag ${sChal[3] ? (sChal[3].isCorrect ? 'done' : 'wrong') : 'pending'}">Q3: ${sChal[3] ? (sChal[3].isCorrect ? '✓ Underflow' : '✕ Salah') : '○ Underflow'}</span>
+                                <span class="op-check-tag ${sAnswered ? (sCorrect ? 'done' : 'wrong') : 'pending'}">
+                                    ${sAnswered ? (sCorrect ? '✓ Piring Hijau TOP (+30)' : '✕ Salah (0)') : '○ Piring Hijau TOP (30 Pts)'}
+                                </span>
                             </td>
                             <td style="font-size: 0.78rem; color: #64748B;">
                                 ${sim.lastUpdated ? new Date(sim.lastUpdated).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'Baru Membuka'}
@@ -2263,10 +2315,10 @@
                 document.getElementById('detail-eval-content').innerHTML = evHtml;
 
                 // Tab 4: Simulasi Beranda (Akumulasi Nilai 0 - 100 & Skala 1 - 4)
-                const sim = s.simulasi || { score: 1, totalScore: 0, predicate: 'Perlu Bimbingan', count: 0, operations: {}, queueChallenges: {}, stackChallenges: {} };
+                const sim = s.simulasi || { score: 1, totalScore: 0, predicate: 'Perlu Bimbingan', count: 0, operations: {}, queueChallenge: null, stackChallenge: null };
                 const ops = sim.operations || {};
-                const qChal = sim.queueChallenges || {};
-                const sChal = sim.stackChallenges || {};
+                const qChal = sim.queueChallenge || (sim.queueChallenges && sim.queueChallenges[1]) || null;
+                const sChal = sim.stackChallenge || (sim.stackChallenges && sim.stackChallenges[1]) || null;
 
                 // Subtotal poin
                 const opList = ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'];
@@ -2274,13 +2326,13 @@
                 opList.forEach(op => { if (ops[op]) opsCount++; });
                 const opsScore = opsCount * 10;
 
-                let qCorrect = 0;
-                [1, 2, 3].forEach(id => { if (qChal[id] && qChal[id].isCorrect) qCorrect++; });
-                const qScore = qCorrect * 10;
+                const qAnswered = qChal && (qChal.chosen !== undefined && qChal.chosen !== null);
+                const qCorrect = qChal && !!qChal.isCorrect;
+                const qScore = qCorrect ? 30 : 0;
 
-                let sCorrect = 0;
-                [1, 2, 3].forEach(id => { if (sChal[id] && sChal[id].isCorrect) sCorrect++; });
-                const sScore = sCorrect * 10;
+                const sAnswered = sChal && (sChal.chosen !== undefined && sChal.chosen !== null);
+                const sCorrect = sChal && !!sChal.isCorrect;
+                const sScore = sCorrect ? 30 : 0;
 
                 const totalScore = (typeof sim.totalScore === 'number' && sim.totalScore > 0)
                     ? sim.totalScore
@@ -2322,18 +2374,18 @@
                         </div>
                     </div>
 
-                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">2. Tantangan Logika: Kasus Antrean 3 Siswa (Queue - ${qScore}/30 Pts):</h4>
-                    <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
-                        • Soal 1 (Urutan Layanan Pertama - Ani di FRONT): ${qChal[1] ? (qChal[1].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
-                        • Soal 2 (Kapasitas Penuh 3 Orang - Queue Overflow): ${qChal[2] ? (qChal[2].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
-                        • Soal 3 (Kondisi Antrean Kosong - Queue Underflow): ${qChal[3] ? (qChal[3].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}
+                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">2. Nomor 1: Tantangan Logika Queue (FIFO) - ${qScore}/30 Pts:</h4>
+                    <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.65rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
+                        <strong>Kasus Antrean 3 Siswa di Loket Kasir Kantin:</strong><br>
+                        • Pertanyaan: Siapakah siswa yang pertama kali dilayani saat kasir menekan tombol layani?<br>
+                        • Status Jawaban: ${qAnswered ? (qCorrect ? '✅ <strong>Benar (+30 Pts)</strong> - Siswa memilih Ani (FRONT - FIFO)' : '❌ <strong>Belum Tepat (0 Pts)</strong>') : '⚪ <strong>Belum Dikerjakan (0 Pts)</strong>'}
                     </div>
 
-                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">3. Tantangan Logika: Kasus Tumpukan 3 Piring (Stack - ${sScore}/30 Pts):</h4>
-                    <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
-                        • Soal 1 (Piring Terambil Pertama - Hijau di TOP): ${sChal[1] ? (sChal[1].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
-                        • Soal 2 (Rak Penuh 3 Piring - Stack Overflow): ${sChal[2] ? (sChal[2].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
-                        • Soal 3 (Kondisi Rak Kosong - Stack Underflow): ${sChal[3] ? (sChal[3].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}
+                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">3. Nomor 2: Tantangan Logika Stack (LIFO) - ${sScore}/30 Pts:</h4>
+                    <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.65rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
+                        <strong>Kasus Tumpukan 3 Piring di Rak Saji Kantin:</strong><br>
+                        • Pertanyaan: Piring warna apakah yang terambil pertama kali saat siswa menekan tombol ambil piring?<br>
+                        • Status Jawaban: ${sAnswered ? (sCorrect ? '✅ <strong>Benar (+30 Pts)</strong> - Siswa memilih Piring Hijau (TOP - LIFO)' : '❌ <strong>Belum Tepat (0 Pts)</strong>') : '⚪ <strong>Belum Dikerjakan (0 Pts)</strong>'}
                     </div>
 
                     <p style="font-size: 0.8rem; color: #64748B; margin: 0.5rem 0 0 0;">

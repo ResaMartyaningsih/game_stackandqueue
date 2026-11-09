@@ -1,11 +1,12 @@
 // api/sync.js - Vercel Serverless Function
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
 const TMP_FILE = path.join('/tmp', 'classroom_students.json');
 global.studentsDB = global.studentsDB || {};
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -46,6 +47,23 @@ module.exports = (req, res) => {
 
     try {
         fs.writeFileSync(TMP_FILE, JSON.stringify(global.studentsDB), 'utf8');
+    } catch (e) {}
+
+    // Forward ke HTTPS Cloud Relay ntfy.sh
+    try {
+        const bodyStr = JSON.stringify(global.studentsDB[cls][studentKey]);
+        const forwardReq = https.request('https://ntfy.sh/laraslogika_edu_pbl_v1', {
+            method: 'POST',
+            headers: {
+                'Title': `${cls}_${studentKey}`,
+                'Tags': 'student_sync',
+                'Content-Length': Buffer.byteLength(bodyStr)
+            }
+        });
+        forwardReq.on('error', () => {});
+        forwardReq.setTimeout(1500, () => forwardReq.destroy());
+        forwardReq.write(bodyStr);
+        forwardReq.end();
     } catch (e) {}
 
     return res.status(200).json({ success: true, key: studentKey });

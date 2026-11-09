@@ -3,12 +3,13 @@
  * Engine Sinkronisasi Multi-Saluran Real-Time antara Web Siswa dan Dashboard Guru
  * LarasLogika / NalarQuest — Pembelajaran Berpikir Komputasional (PBL)
  * 
- * Saluran Sinkronisasi:
- * 1. MQTT Cloud WebSocket Relay (wss://broker.emqx.io:8084/mqtt) -> Online Vercel & Lintas Perangkat (HP ke Laptop)
- * 2. Local Node.js Express API (/api/sync & /api/students) -> Offline Kelas Tanpa Internet (WiFi Hotspot Laptop Guru)
- * 3. BroadcastChannel ('laraslogika_live_channel') -> Tab Berdampingan di Browser yang Sama
+ * Saluran Sinkronisasi Terpadu:
+ * 1. Cloud MQTT over Secure WebSockets (EMQX, HiveMQ, Mosquitto) dengan QoS 1 & Retained Messages (Auto-Replay State)
+ * 2. HTTPS Cloud Relay (ntfy.sh) via Server-Sent Events (SSE) & Caching HTTP REST (Port 443, Bebas Blokir Firewall)
+ * 3. BroadcastChannel ('laraslogika_live_channel') -> Komunikasi Kilat 0ms Antar-Tab di Browser yang Sama
  * 4. LocalStorage Window Storage Events -> Berbagi di Domain yang Sama
- * 5. Firebase Realtime Database (Opsional jika Bapak/Ibu memasukkan URL custom)
+ * 5. Local Node.js Express API (/api/sync & /api/students) -> Mode Hotspot Offline Tanpa Internet
+ * 6. Firebase Realtime Database (Opsional jika Bapak/Ibu memasukkan URL custom)
  */
 
 const CloudSync = {
@@ -16,19 +17,31 @@ const CloudSync = {
     isInitialized: false,
     isConnected: false,
     isMqttConnected: false,
+    isRelayConnected: false,
     isLocalServerConnected: false,
     mqttClient: null,
+    relayEventSource: null,
+    cmdEventSource: null,
     broadcastChannel: null,
     lastSyncTime: null,
     currentStudentKey: null,
     lastActivity: 'Membuka Media Pembelajaran',
     role: 'student', // 'student' | 'guru'
     teacherListeners: [],
+    reconnectTimer: null,
 
-    MQTT_BROKER_URL: 'wss://broker.emqx.io:8084/mqtt',
-    MQTT_BACKUP_BROKER_URL: 'wss://broker.hivemq.com:8884/mqtt',
+    // Public MQTT Brokers (Fallback Bertingkat)
+    MQTT_BROKER_URLS: [
+        'wss://broker.emqx.io:8084/mqtt',
+        'wss://broker.hivemq.com:8884/mqtt',
+        'wss://test.mosquitto.org:8081/mqtt'
+    ],
     currentBrokerIndex: 0,
     MQTT_TOPIC_PREFIX: 'laraslogika/edu/v1',
+
+    // HTTPS Cloud Relay (Port 443 - Bebas Blokir Jaringan Sekolah / Operator Seluler)
+    RELAY_URL: 'https://ntfy.sh/laraslogika_edu_pbl_v1',
+    RELAY_CMD_URL: 'https://ntfy.sh/laraslogika_cmd_pbl_v1',
 
     init(role = 'student') {
         if (this.isInitialized && this.role === role) return;
@@ -39,15 +52,27 @@ const CloudSync = {
         try {
             if (typeof BroadcastChannel !== 'undefined') {
                 this.broadcastChannel = new BroadcastChannel('laraslogika_live_channel');
+                this.broadcastChannel.onmessage = (event) => {
+                    if (!event || !event.data) return;
+                    if (this.role === 'student' && event.data.type === 'REQUEST_SYNC') {
+                        this.syncStudentState('Sinkronisasi Tab Diminta Guru');
+                    }
+                    if (this.role === 'guru' && event.data.type === 'STUDENT_UPDATE' && event.data.payload) {
+                        this.notifyTeacherListeners(event.data.payload);
+                    }
+                };
             }
         } catch (e) {
             console.warn('[CloudSync] BroadcastChannel tidak didukung di browser ini:', e);
         }
 
-        // 2. Inisialisasi Cloud MQTT over Secure WebSockets (EMQX Live Relay)
+        // 2. Inisialisasi Cloud MQTT over Secure WebSockets (Dengan Retain & Auto-Failover)
         this.initMqtt(role);
 
-        // 3. Inisialisasi Firebase Cloud Database (jika tersedia atau custom)
+        // 3. Inisialisasi HTTPS Cloud Relay (SSE & REST Cache)
+        this.initHttpRelay(role);
+
+        // 4. Inisialisasi Firebase Cloud Database (jika custom URL aktif)
         try {
             if (window.FirebaseConfigManager) {
                 this.db = window.FirebaseConfigManager.getDatabase();
@@ -65,38 +90,42 @@ const CloudSync = {
             console.warn('[CloudSync] Firebase init fallback:', e);
         }
 
-        // 4. Khusus Siswa: Auto-sync awal & heartbeat berkala
+        // 5. Khusus Siswa: Auto-sync awal & heartbeat berkala
         if (role === 'student') {
             setTimeout(() => {
                 this.syncStudentState('Membuka Media Pembelajaran');
             }, 600);
 
-            // Heartbeat berkala (setiap 10 detik) agar status online di layar guru terus menyala hijau
+            // Heartbeat berkala (setiap 8 detik) agar status online di layar guru terus menyala hijau
             setInterval(() => {
                 this.syncStudentState();
-            }, 10000);
+            }, 8000);
         }
     },
 
     /**
-     * Inisialisasi koneksi Cloud MQTT WebSocket
+     * Inisialisasi koneksi Cloud MQTT WebSocket dengan Failover Otomatis
      */
     initMqtt(role) {
         if (typeof mqtt === 'undefined') {
-            console.warn('[CloudSync] Library MQTT.js belum dimuat. Mencoba memuat...');
+            console.warn('[CloudSync] Library MQTT.js belum dimuat. Menggunakan fallback HTTPS relay.');
             return;
         }
 
         try {
-            const brokers = [this.MQTT_BROKER_URL, this.MQTT_BACKUP_BROKER_URL];
-            const targetUrl = brokers[this.currentBrokerIndex % brokers.length];
+            const targetUrl = this.MQTT_BROKER_URLS[this.currentBrokerIndex % this.MQTT_BROKER_URLS.length];
             const clientId = (role === 'guru' ? 'laras_guru_' : 'laras_siswa_') + Math.random().toString(16).slice(2, 10);
             
+            if (this.mqttClient) {
+                try { this.mqttClient.end(true); } catch (e) {}
+            }
+
             this.mqttClient = mqtt.connect(targetUrl, {
                 clientId: clientId,
                 clean: true,
-                connectTimeout: 5000,
-                reconnectPeriod: 4000
+                connectTimeout: 9000,
+                reconnectPeriod: 4000,
+                keepalive: 30
             });
 
             this.mqttClient.on('connect', () => {
@@ -105,16 +134,16 @@ const CloudSync = {
                 this.updateStatusPill(true);
 
                 if (role === 'guru') {
-                    // Guru berlangganan seluruh feed murid
-                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/live/#`, { qos: 0 });
+                    // Guru berlangganan seluruh feed murid (QoS 1)
+                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/live/#`, { qos: 1 });
                     // Minta seluruh siswa yang sedang aktif untuk segera membalas state terkini (PING)
                     setTimeout(() => {
                         this.requestAllStudentsSync();
-                    }, 500);
+                    }, 400);
                 } else {
                     // Siswa mendengarkan perintah PING dari guru & evaluasi presentasi
-                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/cmd/request_sync`, { qos: 0 });
-                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/eval/#`, { qos: 0 });
+                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/cmd/request_sync`, { qos: 1 });
+                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/eval/#`, { qos: 1 });
                     // Kirim data langsung begitu terhubung ke broker
                     setTimeout(() => {
                         this.syncStudentState('Terhubung ke Cloud Guru');
@@ -128,19 +157,124 @@ const CloudSync = {
 
             this.mqttClient.on('error', (err) => {
                 console.warn('[CloudSync] MQTT Error:', err && err.message);
-                this.isMqttConnected = false;
-                this.updateStatusPill(false);
-                // Beralih ke broker cadangan jika gagal
-                this.currentBrokerIndex++;
+                this.handleMqttDisconnect();
             });
 
             this.mqttClient.on('close', () => {
                 this.isMqttConnected = false;
-                this.updateStatusPill(false);
+                this.updateStatusPill(this.isRelayConnected);
             });
         } catch (e) {
             console.warn('[CloudSync] Gagal inisialisasi MQTT:', e);
         }
+    },
+
+    handleMqttDisconnect() {
+        this.isMqttConnected = false;
+        this.updateStatusPill(this.isRelayConnected);
+        
+        // Coba broker cadangan berikutnya jika terjadi kegagalan koneksi
+        if (!this.reconnectTimer) {
+            this.reconnectTimer = setTimeout(() => {
+                this.reconnectTimer = null;
+                if (!this.isMqttConnected) {
+                    this.currentBrokerIndex++;
+                    console.log(`🔄 [CloudSync] Beralih ke MQTT broker cadangan #${this.currentBrokerIndex % this.MQTT_BROKER_URLS.length}...`);
+                    this.initMqtt(this.role);
+                }
+            }, 3000);
+        }
+    },
+
+    /**
+     * Inisialisasi HTTPS Cloud Relay (ntfy.sh) via Server-Sent Events (SSE) & REST
+     */
+    initHttpRelay(role) {
+        // Polling langsung untuk mengambil pesan cache sebelumnya (12 jam terakhir)
+        if (role === 'guru') {
+            this.pollHttpRelayCache();
+        }
+
+        // Dengarkan aliran real-time via Server-Sent Events (SSE)
+        try {
+            if (typeof EventSource !== 'undefined') {
+                if (role === 'guru') {
+                    if (this.relayEventSource) try { this.relayEventSource.close(); } catch(e) {}
+                    this.relayEventSource = new EventSource(`${this.RELAY_URL}/sse`);
+                    
+                    this.relayEventSource.onopen = () => {
+                        this.isRelayConnected = true;
+                        this.updateStatusPill(true);
+                        console.log('⚡ [CloudSync] HTTPS Cloud Relay SSE Terhubung.');
+                    };
+
+                    this.relayEventSource.onmessage = (event) => {
+                        try {
+                            const parsed = JSON.parse(event.data);
+                            if (parsed && parsed.event === 'message' && parsed.message) {
+                                const studentData = JSON.parse(parsed.message);
+                                this.notifyTeacherListeners(studentData);
+                            }
+                        } catch (e) {}
+                    };
+
+                    this.relayEventSource.onerror = () => {
+                        this.isRelayConnected = false;
+                        this.updateStatusPill(this.isMqttConnected);
+                    };
+
+                    // Interval polling cadangan setiap 6 detik jika browser menahan SSE
+                    setInterval(() => {
+                        this.pollHttpRelayCache('30s');
+                    }, 6000);
+
+                } else {
+                    // Siswa mendengarkan perintah ping guru via relay
+                    if (this.cmdEventSource) try { this.cmdEventSource.close(); } catch(e) {}
+                    this.cmdEventSource = new EventSource(`${this.RELAY_CMD_URL}/sse`);
+                    this.cmdEventSource.onmessage = (event) => {
+                        try {
+                            const parsed = JSON.parse(event.data);
+                            if (parsed && parsed.event === 'message') {
+                                this.syncStudentState('Sinkronisasi Diminta Guru via HTTPS Relay');
+                            }
+                        } catch (e) {}
+                    };
+                }
+            }
+        } catch (e) {
+            console.warn('[CloudSync] HTTPS Relay SSE tidak aktif:', e);
+        }
+    },
+
+    /**
+     * Mengambil seluruh data siswa yang dicache pada HTTPS relay server
+     */
+    pollHttpRelayCache(since = '12h') {
+        const url = `${this.RELAY_URL}/json?poll=1&since=${since}`;
+        fetch(url)
+            .then(res => res.text())
+            .then(text => {
+                if (!text) return;
+                const lines = text.trim().split('\n');
+                lines.forEach(line => {
+                    try {
+                        const parsed = JSON.parse(line);
+                        if (parsed && parsed.event === 'message' && parsed.message) {
+                            const studentData = JSON.parse(parsed.message);
+                            this.notifyTeacherListeners(studentData);
+                        }
+                    } catch (e) {}
+                });
+            })
+            .catch(() => {});
+    },
+
+    notifyTeacherListeners(data) {
+        if (!data || typeof data !== 'object') return;
+        this.teacherListeners.forEach(cb => {
+            try { cb(data); } catch (e) {}
+        });
     },
 
     handleIncomingMqttMessage(topic, message) {
@@ -151,9 +285,7 @@ const CloudSync = {
 
             // Jika GURU menerima data siswa
             if (this.role === 'guru' && topic.startsWith(`${this.MQTT_TOPIC_PREFIX}/live/`)) {
-                this.teacherListeners.forEach(cb => {
-                    try { cb(data); } catch (e) {}
-                });
+                this.notifyTeacherListeners(data);
             }
 
             // Jika SISWA menerima instruksi PING dari guru
@@ -173,15 +305,37 @@ const CloudSync = {
     },
 
     requestAllStudentsSync() {
+        const payload = JSON.stringify({ timestamp: Date.now() });
+
+        // 1. Kirim via MQTT
         if (this.mqttClient && this.isMqttConnected) {
             try {
                 this.mqttClient.publish(
                     `${this.MQTT_TOPIC_PREFIX}/cmd/request_sync`,
-                    JSON.stringify({ timestamp: Date.now() }),
-                    { qos: 0 }
+                    payload,
+                    { qos: 1 }
                 );
             } catch (e) {}
         }
+
+        // 2. Kirim via HTTPS Cloud Relay
+        try {
+            fetch(this.RELAY_CMD_URL, {
+                method: 'POST',
+                headers: { 'Title': 'REQUEST_SYNC' },
+                body: payload
+            }).catch(() => {});
+        } catch (e) {}
+
+        // 3. Kirim via BroadcastChannel
+        try {
+            if (this.broadcastChannel) {
+                this.broadcastChannel.postMessage({ type: 'REQUEST_SYNC' });
+            }
+        } catch (e) {}
+
+        // 4. Tarik cache HTTPS Relay
+        this.pollHttpRelayCache('12h');
     },
 
     handleTeacherEvaluationReceived(evalData) {
@@ -216,6 +370,7 @@ const CloudSync = {
                 guruPill.style.borderColor = '#A7F3D0';
                 guruPill.style.color = '#065F46';
                 guruPill.style.background = '#ECFDF5';
+                guruPill.title = 'Terhubung ke Multi-Channel Cloud Sync (MQTT WebSocket & HTTPS Relay).';
             } else {
                 guruPill.innerHTML = '<span class="live-status-dot" style="background:#F59E0B;"></span> Menghubungkan Cloud...';
                 guruPill.style.borderColor = '#FDE68A';
@@ -312,10 +467,10 @@ const CloudSync = {
         // Ambil bonus minilab
         const bonusMiniLab = data.miniLabBonus || 0;
 
-        // Ambil data evaluasi simulasi (Skala 1 - 4)
+        // Ambil data evaluasi simulasi (Skala 1 - 4 & 100 Pts Akumulasi)
         const simData = (window.StorageManager && typeof StorageManager.getSimulationEvaluation === 'function')
             ? StorageManager.getSimulationEvaluation()
-            : (data.simulationEvaluation || { score: 1, predicate: 'Perlu Bimbingan', count: 0, operations: {} });
+            : (data.simulationEvaluation || { score: 1, totalScore: 0, predicate: 'Perlu Bimbingan', count: 0, operations: {} });
 
         // Ambil data refleksi 3-2-1
         const refData = data.reflection || null;
@@ -345,8 +500,8 @@ const CloudSync = {
                 predicate: simData.predicate || 'Perlu Bimbingan',
                 count: simData.count || 0,
                 operations: simData.operations || {},
-                queueChallenges: simData.queueChallenges || {},
-                stackChallenges: simData.stackChallenges || {},
+                queueChallenge: simData.queueChallenge || null,
+                stackChallenge: simData.stackChallenge || null,
                 stats: simData.stats || { opsCount: 0, queueCorrect: 0, stackCorrect: 0, totalCompleted: 0 },
                 lastUpdated: simData.lastUpdated || null
             },
@@ -385,14 +540,14 @@ const CloudSync = {
         const jsonString = JSON.stringify(payload);
 
         // ---------------------------------------------------------------------
-        // SALURAN 1: Cloud MQTT over Secure WebSockets (Lintas Perangkat & Vercel)
+        // SALURAN 1: Cloud MQTT over Secure WebSockets (Dengan Retain & QoS 1)
         // ---------------------------------------------------------------------
         if (this.mqttClient && this.isMqttConnected) {
             try {
                 this.mqttClient.publish(
                     `${this.MQTT_TOPIC_PREFIX}/live/${classKey}/${studentKey}`,
                     jsonString,
-                    { qos: 0 }
+                    { qos: 1, retain: true }
                 );
             } catch (e) {
                 console.warn('[CloudSync] Gagal publish MQTT:', e);
@@ -400,7 +555,21 @@ const CloudSync = {
         }
 
         // ---------------------------------------------------------------------
-        // SALURAN 2: BroadcastChannel (Komunikasi Instan 0ms Antar-Tab)
+        // SALURAN 2: HTTPS Cloud Relay (ntfy.sh - Caching 12 Jam, Bebas Blokir)
+        // ---------------------------------------------------------------------
+        try {
+            fetch(this.RELAY_URL, {
+                method: 'POST',
+                headers: {
+                    'Title': `${classKey}_${studentKey}`,
+                    'Tags': 'student_sync'
+                },
+                body: jsonString
+            }).catch(() => {});
+        } catch (e) {}
+
+        // ---------------------------------------------------------------------
+        // SALURAN 3: BroadcastChannel (Komunikasi Instan 0ms Antar-Tab)
         // ---------------------------------------------------------------------
         try {
             if (this.broadcastChannel) {
@@ -409,7 +578,7 @@ const CloudSync = {
         } catch (e) {}
 
         // ---------------------------------------------------------------------
-        // SALURAN 3: LocalStorage Event (Berbagi Langsung di Domain yang Sama)
+        // SALURAN 4: LocalStorage Event (Berbagi Langsung di Domain yang Sama)
         // ---------------------------------------------------------------------
         try {
             localStorage.setItem(`laraslogika_student_${classKey}_${studentKey}`, jsonString);
@@ -422,7 +591,7 @@ const CloudSync = {
         } catch (e) {}
 
         // ---------------------------------------------------------------------
-        // SALURAN 4: Local Node.js Server API (/api/sync)
+        // SALURAN 5: Local Node.js Server API (/api/sync)
         // ---------------------------------------------------------------------
         try {
             fetch('/api/sync', {
@@ -435,7 +604,7 @@ const CloudSync = {
         } catch (e) {}
 
         // ---------------------------------------------------------------------
-        // SALURAN 5: Firebase Realtime Cloud Database (Jika Custom URL Ada)
+        // SALURAN 6: Firebase Realtime Cloud Database (Jika Custom URL Ada)
         // ---------------------------------------------------------------------
         if (this.db) {
             try {
@@ -495,6 +664,9 @@ const CloudSync = {
             this.teacherListeners.push(callback);
         }
 
+        // Segera ambil cache data yang tersimpan di cloud relay
+        this.pollHttpRelayCache('12h');
+
         // Callback juga dipanggil oleh Firebase jika aktif
         if (this.db) {
             this.db.ref('laraslogika/students').on('value', (snapshot) => {
@@ -521,7 +693,7 @@ const CloudSync = {
                 this.mqttClient.publish(
                     `${this.MQTT_TOPIC_PREFIX}/eval/${classKey}/${studentKey}`,
                     JSON.stringify(payload),
-                    { qos: 0 }
+                    { qos: 1, retain: true }
                 );
             } catch (e) {}
         }
