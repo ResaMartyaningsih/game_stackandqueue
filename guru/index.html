@@ -940,12 +940,50 @@
             connectCloudDatabase() {
                 if (!window.CloudSync) return;
 
-                // Listen to all student updates in realtime
+                // 1. Listen to all student updates in realtime via Firebase
                 CloudSync.listenToAllStudents((data) => {
-                    this.studentsData = data || {};
-                    this.updateClassCounts();
-                    this.applyFilters();
+                    if (data && Object.keys(data).length > 0) {
+                        this.studentsData = { ...this.studentsData, ...data };
+                        this.updateClassCounts();
+                        this.applyFilters();
+                    }
                 });
+
+                // 2. Local Server Polling Fallback (Bekerja otomatis saat dijalankan di terminal / offline Wi-Fi)
+                const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname) ||
+                                window.location.hostname.startsWith('192.') ||
+                                window.location.hostname.startsWith('10.') ||
+                                window.location.hostname.startsWith('172.');
+
+                if (isLocal) {
+                    const statusText = document.getElementById('live-connection-text');
+                    if (statusText) statusText.textContent = 'Server Lokal & Cloud Aktif';
+
+                    const pollLocalServer = () => {
+                        fetch('/api/students')
+                            .then(res => res.json())
+                            .then(localData => {
+                                if (localData && typeof localData === 'object') {
+                                    let hasNew = false;
+                                    Object.keys(localData).forEach(cls => {
+                                        if (!this.studentsData[cls]) this.studentsData[cls] = {};
+                                        Object.keys(localData[cls]).forEach(k => {
+                                            this.studentsData[cls][k] = localData[cls][k];
+                                            hasNew = true;
+                                        });
+                                    });
+                                    if (hasNew) {
+                                        this.updateClassCounts();
+                                        this.applyFilters();
+                                    }
+                                }
+                            })
+                            .catch(() => {});
+                    };
+
+                    pollLocalServer();
+                    setInterval(pollLocalServer, 2000);
+                }
             },
 
             updateClassCounts() {
@@ -1178,6 +1216,15 @@
                 if (window.CloudSync) {
                     CloudSync.saveTeacherPresentasiScore(classKey, studentKey, score);
                 }
+                // Kirim juga ke server lokal jika aktif
+                try {
+                    fetch('/api/teacher-eval', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ classKey, studentKey, scorePresentasi: score })
+                    }).catch(() => {});
+                } catch (e) {}
+
                 // Update local memory
                 if (this.studentsData[classKey] && this.studentsData[classKey][studentKey]) {
                     if (!this.studentsData[classKey][studentKey].teacherEvaluation) {
@@ -1295,6 +1342,14 @@
                     if (window.CloudSync) {
                         CloudSync.deleteStudentRecord(classKey, studentKey);
                     }
+                    try {
+                        fetch('/api/student', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ classKey, studentKey })
+                        }).catch(() => {});
+                    } catch (e) {}
+
                     if (this.studentsData[classKey]) {
                         delete this.studentsData[classKey][studentKey];
                     }
@@ -1315,6 +1370,14 @@
                             this.studentsData[this.currentClass] = {};
                         }
                     }
+                    try {
+                        fetch('/api/reset-class', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ classKey: this.currentClass })
+                        }).catch(() => {});
+                    } catch (e) {}
+
                     this.updateClassCounts();
                     this.applyFilters();
                 }

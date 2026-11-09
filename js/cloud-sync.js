@@ -174,6 +174,15 @@ const CloudSync = {
             localStorage.setItem('laraslogika_cached_student_sync', JSON.stringify(payload));
         } catch (e) {}
 
+        // Kirim ke Local Server API (Dual sync: bekerja otomatis di localhost & Wi-Fi offline)
+        try {
+            fetch('/api/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(() => {});
+        } catch (e) {}
+
         // Kirim ke Firebase Realtime Database
         if (this.db) {
             try {
