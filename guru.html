@@ -705,6 +705,10 @@
                     <option value="REMEDIAL">⚠️ Perlu Remedial (&lt; 75)</option>
                 </select>
 
+                <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.requestPingAll(event)" title="Kirim sinyal realtime agar semua murid mengirimkan data nilai terkininya">
+                    📡 Minta Data Siswa (Ping All)
+                </button>
+
                 <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.loadDemoData()">
                     🧪 Muat Data Simulasi Demo
                 </button>
@@ -884,6 +888,12 @@
     </div>
 
     <!-- Application Logic Scripts -->
+    <script src="js/mqtt.min.js"></script>
+    <script>
+        if (typeof mqtt === 'undefined') {
+            document.write('<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"><\/script>');
+        }
+    </script>
     <script src="js/firebase-config.js"></script>
     <script src="js/cloud-sync.js"></script>
 
@@ -937,101 +947,118 @@
                 }
             },
 
+            requestPingAll(e) {
+                if (window.CloudSync && typeof window.CloudSync.requestAllStudentsSync === 'function') {
+                    window.CloudSync.requestAllStudentsSync();
+                }
+                const btn = e && (e.currentTarget || e.target);
+                if (btn) {
+                    const oldTxt = btn.innerHTML;
+                    btn.innerHTML = '✅ Meminta Data Realtime...';
+                    btn.style.borderColor = '#10B981';
+                    btn.style.color = '#065F46';
+                    setTimeout(() => {
+                        btn.innerHTML = oldTxt;
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }, 1800);
+                }
+            },
+
+            handleIncomingStudentData(data) {
+                if (!data || typeof data !== 'object') return;
+
+                // Format 1: Single student packet (dari MQTT Cloud Relay atau BroadcastChannel)
+                if (data.identitas && data.identitas.classKey) {
+                    const cls = data.identitas.classKey;
+                    const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
+                        ? CloudSync.cleanStudentKey(data.identitas.absen, data.identitas.nama)
+                        : `absen_${data.identitas.absen}_${data.identitas.nama}`;
+                    if (!this.studentsData[cls]) this.studentsData[cls] = {};
+                    this.studentsData[cls][studentKey] = data;
+                    this.updateClassCounts();
+                    this.applyFilters();
+                    return;
+                }
+
+                // Format 2: Nested trees per-class (dari Firebase atau /api/students)
+                let hasNew = false;
+                Object.keys(data).forEach(k => {
+                    if (data[k] && typeof data[k] === 'object') {
+                        if (k.startsWith('X-') || k.startsWith('X.')) {
+                            const normCls = k.replace('.', '-');
+                            if (!this.studentsData[normCls]) this.studentsData[normCls] = {};
+                            Object.keys(data[k]).forEach(sk => {
+                                this.studentsData[normCls][sk] = data[k][sk];
+                                hasNew = true;
+                            });
+                        }
+                    }
+                });
+                if (hasNew) {
+                    this.updateClassCounts();
+                    this.applyFilters();
+                }
+            },
+
             connectCloudDatabase() {
-                // 1. BroadcastChannel (0ms Komunikasi Kilat Antar-Tab di Browser/Laptop yang Sama)
+                // 1. MQTT Cloud WebSocket Relay (Lintas Perangkat HP ke Laptop & Vercel)
+                if (window.CloudSync) {
+                    CloudSync.listenToAllStudents((studentPacket) => {
+                        this.handleIncomingStudentData(studentPacket);
+                    });
+                }
+
+                // 2. BroadcastChannel (0ms Komunikasi Kilat Antar-Tab di Browser/Laptop yang Sama)
                 try {
                     if (typeof BroadcastChannel !== 'undefined') {
                         const channel = new BroadcastChannel('laraslogika_live_channel');
                         channel.onmessage = (event) => {
                             if (event.data && event.data.type === 'STUDENT_UPDATE' && event.data.payload) {
-                                const p = event.data.payload;
-                                const cls = p.identitas.classKey;
-                                const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
-                                    ? CloudSync.cleanStudentKey(p.identitas.absen, p.identitas.nama)
-                                    : `absen_${p.identitas.absen}_${p.identitas.nama}`;
-                                if (!this.studentsData[cls]) this.studentsData[cls] = {};
-                                this.studentsData[cls][studentKey] = p;
-                                this.updateClassCounts();
-                                this.applyFilters();
+                                this.handleIncomingStudentData(event.data.payload);
                             }
                         };
                     }
                 } catch (e) {}
 
-                // 2. Scan LocalStorage saat halaman pertama kali dibuka
+                // 3. Scan LocalStorage saat halaman pertama kali dibuka
                 try {
                     for (let i = 0; i < localStorage.length; i++) {
                         const k = localStorage.key(i);
                         if (k && k.startsWith('laraslogika_student_')) {
                             const p = JSON.parse(localStorage.getItem(k));
                             if (p && p.identitas) {
-                                const cls = p.identitas.classKey;
-                                const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
-                                    ? CloudSync.cleanStudentKey(p.identitas.absen, p.identitas.nama)
-                                    : `absen_${p.identitas.absen}_${p.identitas.nama}`;
-                                if (!this.studentsData[cls]) this.studentsData[cls] = {};
-                                this.studentsData[cls][studentKey] = p;
+                                this.handleIncomingStudentData(p);
                             }
                         }
                     }
-                    this.updateClassCounts();
-                    this.applyFilters();
                 } catch (e) {}
 
-                // 3. Listen to window 'storage' events (Tab Murid menulis ke LocalStorage)
+                // 4. Listen to window 'storage' events (Tab Murid menulis ke LocalStorage)
                 window.addEventListener('storage', (e) => {
                     if (e.key && e.key.startsWith('laraslogika_student_') && e.newValue) {
                         try {
                             const p = JSON.parse(e.newValue);
                             if (p && p.identitas) {
-                                const cls = p.identitas.classKey;
-                                const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
-                                    ? CloudSync.cleanStudentKey(p.identitas.absen, p.identitas.nama)
-                                    : `absen_${p.identitas.absen}_${p.identitas.nama}`;
-                                if (!this.studentsData[cls]) this.studentsData[cls] = {};
-                                this.studentsData[cls][studentKey] = p;
-                                this.updateClassCounts();
-                                this.applyFilters();
+                                this.handleIncomingStudentData(p);
                             }
                         } catch (err) {}
                     }
                 });
 
-                // 4. Polling Local Node.js Server (/api/students)
+                // 5. Polling Local Node.js Server (/api/students) jika mode offline terminal aktif
                 const pollLocalServer = () => {
                     fetch('/api/students')
                         .then(res => res.json())
                         .then(localData => {
                             if (localData && typeof localData === 'object' && Object.keys(localData).length > 0) {
-                                let hasNew = false;
-                                Object.keys(localData).forEach(cls => {
-                                    if (!this.studentsData[cls]) this.studentsData[cls] = {};
-                                    Object.keys(localData[cls]).forEach(k => {
-                                        this.studentsData[cls][k] = localData[cls][k];
-                                        hasNew = true;
-                                    });
-                                });
-                                if (hasNew) {
-                                    this.updateClassCounts();
-                                    this.applyFilters();
-                                }
+                                this.handleIncomingStudentData(localData);
                             }
                         })
                         .catch(() => {});
                 };
                 pollLocalServer();
                 setInterval(pollLocalServer, 2000);
-
-                // 5. Listen to Firebase Cloud Realtime Database (jika online di Vercel)
-                if (window.CloudSync) {
-                    CloudSync.listenToAllStudents((data) => {
-                        if (data && typeof data === 'object' && Object.keys(data).length > 0) {
-                            this.studentsData = { ...this.studentsData, ...data };
-                            this.updateClassCounts();
-                            this.applyFilters();
-                        }
-                    });
-                }
             },
 
             updateClassCounts() {

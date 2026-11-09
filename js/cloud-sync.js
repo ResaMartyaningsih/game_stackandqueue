@@ -1,22 +1,37 @@
 /**
  * cloud-sync.js
- * Engine Sinkronisasi Real-Time antara Web Siswa dan Dashboard Guru
- * Antigravity / LarasLogika - Pembelajaran Berpikir Komputasional (PBL)
- * Mendukung: BroadcastChannel (0ms lokal), LocalStorage Event, Node.js API, & Firebase Realtime
+ * Engine Sinkronisasi Multi-Saluran Real-Time antara Web Siswa dan Dashboard Guru
+ * LarasLogika / NalarQuest — Pembelajaran Berpikir Komputasional (PBL)
+ * 
+ * Saluran Sinkronisasi:
+ * 1. MQTT Cloud WebSocket Relay (wss://broker.emqx.io:8084/mqtt) -> Online Vercel & Lintas Perangkat (HP ke Laptop)
+ * 2. Local Node.js Express API (/api/sync & /api/students) -> Offline Kelas Tanpa Internet (WiFi Hotspot Laptop Guru)
+ * 3. BroadcastChannel ('laraslogika_live_channel') -> Tab Berdampingan di Browser yang Sama
+ * 4. LocalStorage Window Storage Events -> Berbagi di Domain yang Sama
+ * 5. Firebase Realtime Database (Opsional jika Bapak/Ibu memasukkan URL custom)
  */
 
 const CloudSync = {
     db: null,
     isInitialized: false,
     isConnected: false,
+    isMqttConnected: false,
+    isLocalServerConnected: false,
+    mqttClient: null,
+    broadcastChannel: null,
     lastSyncTime: null,
     currentStudentKey: null,
-    broadcastChannel: null,
     lastActivity: 'Membuka Media Pembelajaran',
+    role: 'student', // 'student' | 'guru'
+    teacherListeners: [],
 
-    init() {
-        if (this.isInitialized) return;
+    MQTT_BROKER_URL: 'wss://broker.emqx.io:8084/mqtt',
+    MQTT_TOPIC_PREFIX: 'laraslogika/edu/v1',
+
+    init(role = 'student') {
+        if (this.isInitialized && this.role === role) return;
         this.isInitialized = true;
+        this.role = role;
 
         // 1. Inisialisasi BroadcastChannel untuk komunikasi kilat 0ms antar-tab browser yang sama
         try {
@@ -24,10 +39,13 @@ const CloudSync = {
                 this.broadcastChannel = new BroadcastChannel('laraslogika_live_channel');
             }
         } catch (e) {
-            console.warn('BroadcastChannel tidak didukung di browser ini:', e);
+            console.warn('[CloudSync] BroadcastChannel tidak didukung di browser ini:', e);
         }
 
-        // 2. Inisialisasi Firebase Cloud Database
+        // 2. Inisialisasi Cloud MQTT over Secure WebSockets (EMQX Live Relay)
+        this.initMqtt(role);
+
+        // 3. Inisialisasi Firebase Cloud Database (jika tersedia atau custom)
         try {
             if (window.FirebaseConfigManager) {
                 this.db = window.FirebaseConfigManager.getDatabase();
@@ -42,18 +60,158 @@ const CloudSync = {
                 }
             }
         } catch (e) {
-            console.warn('Inisialisasi CloudSync fallback:', e);
+            console.warn('[CloudSync] Firebase init fallback:', e);
         }
 
-        // 3. Auto-sync pertama kali saat web siswa dibuka
-        setTimeout(() => {
-            this.syncStudentState('Membuka Media Pembelajaran');
-        }, 500);
+        // 4. Khusus Siswa: Auto-sync awal & heartbeat berkala
+        if (role === 'student') {
+            setTimeout(() => {
+                this.syncStudentState('Membuka Media Pembelajaran');
+            }, 600);
 
-        // 4. Heartbeat berkala (setiap 12 detik) agar status online di layar guru terus menyala hijau
-        setInterval(() => {
-            this.syncStudentState();
-        }, 12000);
+            // Heartbeat berkala (setiap 10 detik) agar status online di layar guru terus menyala hijau
+            setInterval(() => {
+                this.syncStudentState();
+            }, 10000);
+        }
+    },
+
+    /**
+     * Inisialisasi koneksi Cloud MQTT WebSocket
+     */
+    initMqtt(role) {
+        if (typeof mqtt === 'undefined') {
+            console.warn('[CloudSync] Library MQTT.js belum dimuat. Mencoba memuat...');
+            return;
+        }
+
+        try {
+            const clientId = (role === 'guru' ? 'laras_guru_' : 'laras_siswa_') + Math.random().toString(16).slice(2, 10);
+            this.mqttClient = mqtt.connect(this.MQTT_BROKER_URL, {
+                clientId: clientId,
+                clean: true,
+                connectTimeout: 5000,
+                reconnectPeriod: 3000
+            });
+
+            this.mqttClient.on('connect', () => {
+                this.isMqttConnected = true;
+                console.log(`📡 [CloudSync] Terhubung ke Cloud MQTT Broker (${role}).`);
+                this.updateStatusPill(true);
+
+                if (role === 'guru') {
+                    // Guru berlangganan seluruh feed murid
+                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/live/#`, { qos: 0 });
+                    // Minta seluruh siswa yang sedang aktif untuk segera membalas state terkini (PING)
+                    setTimeout(() => {
+                        this.requestAllStudentsSync();
+                    }, 500);
+                } else {
+                    // Siswa mendengarkan perintah PING dari guru & evaluasi presentasi
+                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/cmd/request_sync`, { qos: 0 });
+                    this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/eval/#`, { qos: 0 });
+                }
+            });
+
+            this.mqttClient.on('message', (topic, message) => {
+                this.handleIncomingMqttMessage(topic, message);
+            });
+
+            this.mqttClient.on('error', (err) => {
+                console.warn('[CloudSync] MQTT Error:', err && err.message);
+                this.isMqttConnected = false;
+                this.updateStatusPill(false);
+            });
+
+            this.mqttClient.on('close', () => {
+                this.isMqttConnected = false;
+                this.updateStatusPill(false);
+            });
+        } catch (e) {
+            console.warn('[CloudSync] Gagal inisialisasi MQTT:', e);
+        }
+    },
+
+    handleIncomingMqttMessage(topic, message) {
+        try {
+            const str = message.toString();
+            if (!str) return;
+            const data = JSON.parse(str);
+
+            // Jika GURU menerima data siswa
+            if (this.role === 'guru' && topic.startsWith(`${this.MQTT_TOPIC_PREFIX}/live/`)) {
+                this.teacherListeners.forEach(cb => {
+                    try { cb(data); } catch (e) {}
+                });
+            }
+
+            // Jika SISWA menerima instruksi PING dari guru
+            if (this.role === 'student' && topic === `${this.MQTT_TOPIC_PREFIX}/cmd/request_sync`) {
+                this.syncStudentState('Sinkronisasi Otomatis Diminta Guru');
+            }
+
+            // Jika SISWA menerima penilaian presentasi dari guru
+            if (this.role === 'student' && topic.startsWith(`${this.MQTT_TOPIC_PREFIX}/eval/`)) {
+                if (data && typeof data.scorePresentasi === 'number') {
+                    this.handleTeacherEvaluationReceived(data);
+                }
+            }
+        } catch (err) {
+            console.warn('[CloudSync] Gagal mengurai pesan MQTT:', err);
+        }
+    },
+
+    requestAllStudentsSync() {
+        if (this.mqttClient && this.isMqttConnected) {
+            try {
+                this.mqttClient.publish(
+                    `${this.MQTT_TOPIC_PREFIX}/cmd/request_sync`,
+                    JSON.stringify({ timestamp: Date.now() }),
+                    { qos: 0 }
+                );
+            } catch (e) {}
+        }
+    },
+
+    handleTeacherEvaluationReceived(evalData) {
+        if (!window.StorageManager || !window.StorageManager.data) return;
+        window.StorageManager.data.teacherEvaluation = evalData;
+        window.StorageManager.save();
+        if (typeof window.UI !== 'undefined' && typeof window.UI.showToast === 'function') {
+            window.UI.showToast(`📢 Guru telah memberikan nilai presentasi: ${evalData.scorePresentasi} pts! Cek menu Profil & Nilai.`, 'info');
+        }
+    },
+
+    updateStatusPill(isConnected) {
+        // 1. Indikator di halaman siswa
+        const studentPill = document.getElementById('cloud-sync-status-pill');
+        if (studentPill) {
+            if (isConnected) {
+                studentPill.className = 'live-sync-indicator connected';
+                studentPill.innerHTML = '<span class="live-sync-dot"></span><span class="live-sync-text">Terhubung ke Guru</span>';
+                studentPill.title = 'Terkoneksi real-time ke Dashboard Guru. Aktivitas & nilai disinkronkan otomatis.';
+            } else {
+                studentPill.className = 'live-sync-indicator connecting';
+                studentPill.innerHTML = '<span class="live-sync-dot" style="background: #F59E0B;"></span><span class="live-sync-text">Menghubungkan...</span>';
+                studentPill.title = 'Mencoba menghubungkan kembali ke cloud server guru...';
+            }
+        }
+
+        // 2. Indikator di header guru
+        const guruPill = document.getElementById('live-connection-pill') || document.getElementById('guru-live-status-pill');
+        if (guruPill) {
+            if (isConnected) {
+                guruPill.innerHTML = '<span class="live-status-dot"></span> Realtime Cloud Aktif';
+                guruPill.style.borderColor = '#A7F3D0';
+                guruPill.style.color = '#065F46';
+                guruPill.style.background = '#ECFDF5';
+            } else {
+                guruPill.innerHTML = '<span class="live-status-dot" style="background:#F59E0B;"></span> Menghubungkan Cloud...';
+                guruPill.style.borderColor = '#FDE68A';
+                guruPill.style.color = '#92400E';
+                guruPill.style.background = '#FFFBEB';
+            }
+        }
     },
 
     cleanClassKey(rawClass) {
@@ -98,10 +256,10 @@ const CloudSync = {
     },
 
     /**
-     * Mengambil seluruh data siswa saat ini dan menyelaraskan ke Cloud & Local Database
+     * Mengambil seluruh data siswa saat ini dan menyelaraskan ke seluruh saluran
      */
     syncStudentState(activityHint = null) {
-        if (!this.isInitialized) this.init();
+        if (!this.isInitialized) this.init('student');
 
         if (!window.StorageManager || !window.StorageManager.data) return;
         const data = window.StorageManager.data;
@@ -193,8 +351,25 @@ const CloudSync = {
             }
         };
 
+        const jsonString = JSON.stringify(payload);
+
         // ---------------------------------------------------------------------
-        // SALURAN 1: BroadcastChannel (Komunikasi Instan 0ms Antar-Tab)
+        // SALURAN 1: Cloud MQTT over Secure WebSockets (Lintas Perangkat & Vercel)
+        // ---------------------------------------------------------------------
+        if (this.mqttClient && this.isMqttConnected) {
+            try {
+                this.mqttClient.publish(
+                    `${this.MQTT_TOPIC_PREFIX}/live/${classKey}/${studentKey}`,
+                    jsonString,
+                    { qos: 0 }
+                );
+            } catch (e) {
+                console.warn('[CloudSync] Gagal publish MQTT:', e);
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // SALURAN 2: BroadcastChannel (Komunikasi Instan 0ms Antar-Tab)
         // ---------------------------------------------------------------------
         try {
             if (this.broadcastChannel) {
@@ -203,10 +378,10 @@ const CloudSync = {
         } catch (e) {}
 
         // ---------------------------------------------------------------------
-        // SALURAN 2: LocalStorage Event (Berbagi Langsung di Domain yang Sama)
+        // SALURAN 3: LocalStorage Event (Berbagi Langsung di Domain yang Sama)
         // ---------------------------------------------------------------------
         try {
-            localStorage.setItem(`laraslogika_student_${classKey}_${studentKey}`, JSON.stringify(payload));
+            localStorage.setItem(`laraslogika_student_${classKey}_${studentKey}`, jsonString);
             localStorage.setItem('laraslogika_latest_packet', JSON.stringify({
                 classKey,
                 studentKey,
@@ -216,18 +391,20 @@ const CloudSync = {
         } catch (e) {}
 
         // ---------------------------------------------------------------------
-        // SALURAN 3: Local Node.js Server API (/api/sync)
+        // SALURAN 4: Local Node.js Server API (/api/sync)
         // ---------------------------------------------------------------------
         try {
             fetch('/api/sync', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: jsonString
+            }).then(r => {
+                if (r.ok) this.isLocalServerConnected = true;
             }).catch(() => {});
         } catch (e) {}
 
         // ---------------------------------------------------------------------
-        // SALURAN 4: Firebase Realtime Cloud Database (Online Vercel)
+        // SALURAN 5: Firebase Realtime Cloud Database (Jika Custom URL Ada)
         // ---------------------------------------------------------------------
         if (this.db) {
             try {
@@ -236,7 +413,7 @@ const CloudSync = {
                         this.lastSyncTime = Date.now();
                         this.db.ref(`laraslogika/students/${classKey}/${studentKey}/status/isOnline`).onDisconnect().set(false);
                     })
-                    .catch((err) => {
+                    .catch(() => {
                         this.queuePendingSync(payload);
                     });
             } catch (err) {
@@ -282,7 +459,12 @@ const CloudSync = {
     // =========================================================================
 
     listenToAllStudents(callback) {
-        this.init();
+        this.init('guru');
+        if (typeof callback === 'function') {
+            this.teacherListeners.push(callback);
+        }
+
+        // Callback juga dipanggil oleh Firebase jika aktif
         if (this.db) {
             this.db.ref('laraslogika/students').on('value', (snapshot) => {
                 const val = snapshot.val() || {};
@@ -294,7 +476,7 @@ const CloudSync = {
     },
 
     saveTeacherPresentasiScore(classKey, studentKey, presentationScore, teacherNotes = '') {
-        this.init();
+        this.init('guru');
         const score = Math.max(0, Math.min(100, parseInt(presentationScore, 10) || 0));
         const payload = {
             scorePresentasi: score,
@@ -302,6 +484,18 @@ const CloudSync = {
             updatedAt: new Date().toISOString()
         };
 
+        // Kirim via MQTT ke siswa
+        if (this.mqttClient && this.isMqttConnected) {
+            try {
+                this.mqttClient.publish(
+                    `${this.MQTT_TOPIC_PREFIX}/eval/${classKey}/${studentKey}`,
+                    JSON.stringify(payload),
+                    { qos: 0 }
+                );
+            } catch (e) {}
+        }
+
+        // Kirim via Firebase jika aktif
         if (this.db) {
             return this.db.ref(`laraslogika/students/${classKey}/${studentKey}/teacherEvaluation`).update(payload);
         } else {
@@ -310,7 +504,7 @@ const CloudSync = {
     },
 
     deleteStudentRecord(classKey, studentKey) {
-        this.init();
+        this.init('guru');
         if (this.db) {
             return this.db.ref(`laraslogika/students/${classKey}/${studentKey}`).remove();
         }
@@ -318,7 +512,7 @@ const CloudSync = {
     },
 
     resetClassRecords(classKey) {
-        this.init();
+        this.init('guru');
         if (this.db) {
             return this.db.ref(`laraslogika/students/${classKey}`).remove();
         }
@@ -420,11 +614,14 @@ const CloudSync = {
 
 window.CloudSync = CloudSync;
 
-// Auto-init upon script load in browser
+// Auto-init jika dibuka di halaman siswa (bukan dashboard guru)
 if (typeof window !== 'undefined') {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => CloudSync.init());
-    } else {
-        CloudSync.init();
+    const isGuruPage = window.location.pathname.includes('guru');
+    if (!isGuruPage) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => CloudSync.init('student'));
+        } else {
+            CloudSync.init('student');
+        }
     }
 }

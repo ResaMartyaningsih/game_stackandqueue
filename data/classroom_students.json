@@ -33,5 +33,27 @@
       "teacherEvaluation": {},
       "_serverUpdated": "2026-11-09T14:06:10.979Z"
     }
+  },
+  "X-1": {
+    "absen_01_aku_local": {
+      "identitas": {
+        "nama": "Aku Local",
+        "kelas": "Kelas X.1",
+        "classKey": "X-1",
+        "absen": 1
+      },
+      "status": {
+        "isOnline": true,
+        "currentActivity": "Mengerjakan Level 2 Antrean Kasir"
+      },
+      "nilai": {
+        "digitalScore": 88,
+        "tugasIndividu": {
+          "bestScore": 85
+        }
+      },
+      "teacherEvaluation": {},
+      "_serverUpdated": "2026-11-09T14:35:15.780Z"
+    }
   }
 }

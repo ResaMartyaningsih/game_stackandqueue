@@ -126,8 +126,12 @@
                 <button class="nav-link" data-screen-target="profile">Profil & Nilai</button>
             </nav>
 
-            <!-- Student Profile Badge -->
-            <div class="header-actions">
+            <!-- Student Profile Badge & Live Sync Pill -->
+            <div class="header-actions" style="display: flex; align-items: center; gap: 0.65rem;">
+                <div id="cloud-sync-status-pill" class="live-sync-indicator connecting" onclick="CloudSync.syncStudentState('Koneksi Diperiksa Manual'); if (window.UI) UI.showToast('📡 Mengirimkan sinkronisasi ke Dashboard Guru...', 'info');" title="Status koneksi real-time ke Portal Dashboard Guru (Klik untuk sinkronisasi manual)">
+                    <span class="live-sync-dot"></span>
+                    <span class="live-sync-text">Terhubung ke Guru</span>
+                </div>
                 <button type="button" class="header-user-badge" onclick="UI.switchScreen('profile')" title="Buka Profil, Cek Progres & Nilai Siswa">
                     👤 <span class="player-display-name">Siswa</span> (<span class="player-display-class">Fase E</span>)
                 </button>
@@ -2936,6 +2940,9 @@
 
                         <!-- Action Buttons -->
                         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                            <button type="button" class="btn" onclick="CloudSync.syncStudentState('Sinkronisasi Rapor Manual'); UI.showToast('✅ Seluruh nilai dan progres berhasil disinkronkan ke Dashboard Guru!', 'success');" style="background: #10B981; color: #FFFFFF; font-size: 0.88rem; font-weight: 700; padding: 0.65rem 1.15rem; border-radius: 10px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 3px 8px rgba(16,185,129,0.25); transition: transform 0.15s ease;" title="Kirimkan seluruh progres dan rekapitulasi nilai langsung ke layar Guru">
+                                🔄 Kirim ke Guru
+                            </button>
                             <button type="button" class="btn" onclick="UI.downloadProfileWordReport()" style="background: #2563eb; color: #FFFFFF; font-size: 0.88rem; font-weight: 700; padding: 0.65rem 1.15rem; border-radius: 10px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 3px 8px rgba(37,99,235,0.25); transition: transform 0.15s ease;">
                                 📄 Unduh Rapor (.doc)
                             </button>
@@ -3301,6 +3308,13 @@
     <div id="achievement-toast-container" aria-live="polite"></div>
 
     <!-- JavaScript Application Scripts -->
+    <!-- Real-time Cloud MQTT & Multi-Channel Sync -->
+    <script src="js/mqtt.min.js"></script>
+    <script>
+        if (typeof mqtt === 'undefined') {
+            document.write('<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"><\/script>');
+        }
+    </script>
     <!-- Firebase Compat Real-time Cloud Sync SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
