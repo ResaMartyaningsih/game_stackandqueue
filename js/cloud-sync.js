@@ -25,8 +25,9 @@ const CloudSync = {
     role: 'student', // 'student' | 'guru'
     teacherListeners: [],
 
-    MQTT_BROKER_URL: 'wss://broker.hivemq.com:8884/mqtt',
-    MQTT_BACKUP_BROKER_URL: 'wss://test.mosquitto.org:8081/mqtt',
+    MQTT_BROKER_URL: 'wss://broker.emqx.io:8084/mqtt',
+    MQTT_BACKUP_BROKER_URL: 'wss://broker.hivemq.com:8884/mqtt',
+    currentBrokerIndex: 0,
     MQTT_TOPIC_PREFIX: 'laraslogika/edu/v1',
 
     init(role = 'student') {
@@ -87,17 +88,20 @@ const CloudSync = {
         }
 
         try {
+            const brokers = [this.MQTT_BROKER_URL, this.MQTT_BACKUP_BROKER_URL];
+            const targetUrl = brokers[this.currentBrokerIndex % brokers.length];
             const clientId = (role === 'guru' ? 'laras_guru_' : 'laras_siswa_') + Math.random().toString(16).slice(2, 10);
-            this.mqttClient = mqtt.connect(this.MQTT_BROKER_URL, {
+            
+            this.mqttClient = mqtt.connect(targetUrl, {
                 clientId: clientId,
                 clean: true,
                 connectTimeout: 5000,
-                reconnectPeriod: 3000
+                reconnectPeriod: 4000
             });
 
             this.mqttClient.on('connect', () => {
                 this.isMqttConnected = true;
-                console.log(`📡 [CloudSync] Terhubung ke Cloud MQTT Broker (${role}).`);
+                console.log(`📡 [CloudSync] Terhubung ke Cloud MQTT Broker (${role}) via ${targetUrl}`);
                 this.updateStatusPill(true);
 
                 if (role === 'guru') {
@@ -126,6 +130,8 @@ const CloudSync = {
                 console.warn('[CloudSync] MQTT Error:', err && err.message);
                 this.isMqttConnected = false;
                 this.updateStatusPill(false);
+                // Beralih ke broker cadangan jika gagal
+                this.currentBrokerIndex++;
             });
 
             this.mqttClient.on('close', () => {

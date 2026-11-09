@@ -212,10 +212,11 @@ button,
 
 .studio-hero-grid,
 .hero-split-grid {
-    display: grid !important;
-    grid-template-columns: 1.15fr 0.85fr !important;
-    gap: clamp(1.5rem, 3vw, 3rem) !important;
-    align-items: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: clamp(1.5rem, 3vw, 2.75rem) !important;
+    max-width: 980px !important;
+    margin: 0 auto !important;
     width: 100% !important;
 }
 

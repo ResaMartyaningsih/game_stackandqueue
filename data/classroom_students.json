@@ -54,6 +54,34 @@
       },
       "teacherEvaluation": {},
       "_serverUpdated": "2026-11-09T14:35:15.780Z"
+    },
+    "absen_05_budi_test": {
+      "identitas": {
+        "nama": "Budi Test",
+        "kelas": "Kelas X.1",
+        "classKey": "X-1",
+        "absen": 5
+      },
+      "status": {
+        "isOnline": true,
+        "currentActivity": "Mengerjakan Level 2",
+        "lastActive": "2026-11-09T18:16:35.737Z"
+      },
+      "nilai": {
+        "digitalScore": 85,
+        "tugasIndividu": {
+          "bestScore": 25
+        },
+        "lkpdKelompok": {
+          "bestScore": 0
+        },
+        "evaluasiAkhir": {
+          "score": 0
+        },
+        "bonusMiniLab": 0
+      },
+      "teacherEvaluation": {},
+      "_serverUpdated": "2026-11-09T18:16:36.003Z"
     }
   }
 }

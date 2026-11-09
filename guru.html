@@ -1024,10 +1024,11 @@
                             <tr>
                                 <th style="width: 50px; text-align: center;">Abs</th>
                                 <th>Identitas Peserta Didik</th>
+                                <th>Kelas</th>
                                 <th style="text-align: center;">Skor Pemahaman (1-4)</th>
                                 <th>Predikat</th>
-                                <th>Operasi Queue (FIFO)</th>
-                                <th>Operasi Stack (LIFO)</th>
+                                <th>Operasi Antrean Kasir (FIFO)</th>
+                                <th>Operasi Tumpukan Piring (LIFO)</th>
                                 <th>Waktu Terakhir Eksplorasi</th>
                                 <th>Rekomendasi Guru</th>
                             </tr>
@@ -1174,6 +1175,7 @@
                 <button type="button" class="modal-detail-tab active" onclick="GuruPortal.switchDetailTab('tab-indiv')">Tugas Individu</button>
                 <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-lkpd')">Lembar Kerja LKPD</button>
                 <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-eval')">Evaluasi Akhir</button>
+                <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-simulasi')">Simulasi Beranda (1-4)</button>
             </div>
 
             <!-- Tab 1: Tugas Individu -->
@@ -1189,6 +1191,11 @@
             <!-- Tab 3: Evaluasi Akhir -->
             <div id="tab-eval" class="modal-detail-pane" style="display: none;">
                 <div id="detail-eval-content" style="font-size: 0.88rem; line-height: 1.6;">Memuat data...</div>
+            </div>
+
+            <!-- Tab 4: Simulasi Beranda -->
+            <div id="tab-simulasi" class="modal-detail-pane" style="display: none;">
+                <div id="detail-simulasi-content" style="font-size: 0.88rem; line-height: 1.6;">Memuat data...</div>
             </div>
 
             <div style="margin-top: 1.5rem; text-align: right;">
@@ -1859,12 +1866,12 @@
                                 <strong>${sim.predicate || 'Perlu Bimbingan'}</strong>
                             </td>
                             <td>
-                                <span class="op-check-tag ${ops.queueEnqueue ? 'done' : 'pending'}">${ops.queueEnqueue ? '✓ Enqueue' : '○ Enqueue'}</span>
-                                <span class="op-check-tag ${ops.queueDequeue ? 'done' : 'pending'}">${ops.queueDequeue ? '✓ Dequeue' : '○ Dequeue'}</span>
+                                <span class="op-check-tag ${ops.queueEnqueue ? 'done' : 'pending'}">${ops.queueEnqueue ? '✓ Tambah Antrean' : '○ Tambah Antrean'}</span>
+                                <span class="op-check-tag ${ops.queueDequeue ? 'done' : 'pending'}">${ops.queueDequeue ? '✓ Ambil Antrean' : '○ Ambil Antrean'}</span>
                             </td>
                             <td>
-                                <span class="op-check-tag ${ops.stackPush ? 'done' : 'pending'}">${ops.stackPush ? '✓ Push' : '○ Push'}</span>
-                                <span class="op-check-tag ${ops.stackPop ? 'done' : 'pending'}">${ops.stackPop ? '✓ Pop' : '○ Pop'}</span>
+                                <span class="op-check-tag ${ops.stackPush ? 'done' : 'pending'}">${ops.stackPush ? '✓ Tambah Piring' : '○ Tambah Piring'}</span>
+                                <span class="op-check-tag ${ops.stackPop ? 'done' : 'pending'}">${ops.stackPop ? '✓ Ambil Piring' : '○ Ambil Piring'}</span>
                             </td>
                             <td style="font-size: 0.78rem; color: #64748B;">
                                 ${sim.lastUpdated ? new Date(sim.lastUpdated).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'Baru Membuka'}
@@ -2125,6 +2132,36 @@
                     </div>
                 `;
                 document.getElementById('detail-eval-content').innerHTML = evHtml;
+
+                // Tab 4: Simulasi Beranda (Skala 1 - 4)
+                const sim = s.simulasi || { score: 1, predicate: 'Perlu Bimbingan', count: 0, operations: {} };
+                const ops = sim.operations || {};
+                const stars = '⭐'.repeat(sim.score || 1);
+
+                let simHtml = `
+                    <div style="background: #FAF6ED; border: 1.5px solid var(--guru-sand); border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem;">
+                        <strong>Skor Pemahaman Awal Simulasi:</strong> <span style="color: #D97706; font-weight: 800; font-size: 1.15rem;">${stars} ${sim.score || 1}/4 Poin</span><br>
+                        <strong>Predikat Pemahaman:</strong> <span style="font-weight: 700; color: #891A10;">${sim.predicate || 'Perlu Bimbingan'}</span><br>
+                        <strong>Total Operasi Dicoba:</strong> ${sim.count || 0} dari 4 operasi inti.
+                    </div>
+                    <h4 style="margin: 0.5rem 0 0.35rem 0; font-size: 0.86rem; color: #714236;">Status Eksplorasi Operasi Instan di Beranda:</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px;">
+                            <strong style="color: #E76814;">Queue (Antrean Kasir FIFO):</strong><br>
+                            • Tambah Antrean (Enqueue): ${ops.queueEnqueue ? '✅ Selesai' : '❌ Belum'}<br>
+                            • Ambil Antrean (Layani): ${ops.queueDequeue ? '✅ Selesai' : '❌ Belum'}
+                        </div>
+                        <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px;">
+                            <strong style="color: #891A10;">Stack (Tumpukan Piring LIFO):</strong><br>
+                            • Tambah Piring (Push): ${ops.stackPush ? '✅ Selesai' : '❌ Belum'}<br>
+                            • Ambil Piring (Pop): ${ops.stackPop ? '✅ Selesai' : '❌ Belum'}
+                        </div>
+                    </div>
+                    <p style="font-size: 0.82rem; color: #64748B; margin: 0;">
+                        Waktu Terakhir: ${sim.lastUpdated ? new Date(sim.lastUpdated).toLocaleString('id-ID') : 'Siswa baru membuka media'}
+                    </p>
+                `;
+                document.getElementById('detail-simulasi-content').innerHTML = simHtml;
 
                 document.getElementById('modal-student-detail').style.display = 'flex';
             },
