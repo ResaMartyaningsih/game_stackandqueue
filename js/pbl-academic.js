@@ -81,6 +81,14 @@ const PBLAcademic = {
         this.bindEvents();
         this.initHeroSim();
         this.renderRemedialQuiz();
+        this.updateEnrichmentUI();
+
+        // Tangani navigasi khusus ke halaman Pengayaan & Remedial agar langsung adaptif
+        document.querySelectorAll('[data-screen-target="enrichment"]').forEach(el => {
+            el.addEventListener('click', () => {
+                setTimeout(() => this.openAdaptiveEnrichmentScreen(), 50);
+            });
+        });
     },
 
     bindEvents() {
@@ -1368,13 +1376,153 @@ const PBLAcademic = {
             StorageManager.data.pageScores['evaluation'] = {
                 score,
                 isPassed,
+                completed: true,
                 savedAt: new Date().toISOString()
             };
             StorageManager.save();
         }
 
+        // Update tombol navigasi hasil adaptif
+        const btnGotoEnrich = document.getElementById('btn-eval-goto-enrichment');
+        if (btnGotoEnrich) {
+            if (isPassed) {
+                btnGotoEnrich.innerHTML = `🚀 Lanjut Mengerjakan Pengayaan (Tuntas KKTP: ${score}) ➔`;
+                btnGotoEnrich.className = 'academic-btn academic-btn-primary';
+                btnGotoEnrich.style.background = '#10B981';
+                btnGotoEnrich.style.borderColor = '#059669';
+                btnGotoEnrich.style.color = '#FFFFFF';
+            } else {
+                btnGotoEnrich.innerHTML = `🔄 Lanjut Mengerjakan Remedial (KKTP &lt; 75: ${score}) ➔`;
+                btnGotoEnrich.className = 'academic-btn academic-btn-primary';
+                btnGotoEnrich.style.background = '#E76814';
+                btnGotoEnrich.style.borderColor = '#C2540C';
+                btnGotoEnrich.style.color = '#FFFFFF';
+            }
+        }
+
+        // Sinkronkan ke cloud portal guru seketika
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState(`Evaluasi Akhir Selesai: Nilai ${score} (${isPassed ? 'TUNTAS KKTP' : 'REMEDIAL'})`);
+        }
+
         if (window.UI) {
-            UI.showToast(`📝 Evaluasi selesai! Nilai akhir: ${score}/100.`);
+            UI.showToast(`📝 Evaluasi selesai! Nilai: ${score}/100 — ${isPassed ? 'TUNTAS KKTP (Lanjut Pengayaan)' : 'PERLU PENGUATAN (Lanjut Remedial)'}.`);
+        }
+    },
+
+    openAdaptiveEnrichmentScreen(forcedMode = null) {
+        // 1. Tampilkan layar screen-enrichment
+        if (window.UI && typeof window.UI.showScreen === 'function') {
+            window.UI.showScreen('screen-enrichment');
+        } else if (window.App && typeof window.App.showScreen === 'function') {
+            window.App.showScreen('screen-enrichment');
+        }
+
+        // 2. Ambil nilai evaluasi terkini
+        let evalScore = 0;
+        let hasDoneEval = false;
+        if (window.StorageManager && window.StorageManager.data) {
+            const ev = window.StorageManager.data.pageScores && window.StorageManager.data.pageScores['evaluation'];
+            if (ev) {
+                evalScore = typeof ev.score === 'number' ? ev.score : 0;
+                hasDoneEval = (ev.completed === true || ev.score !== undefined);
+            }
+        }
+
+        // 3. Kriteria adaptif: >= 75 Pengayaan, < 75 Remedial
+        const isEnrichment = forcedMode ? (forcedMode === 'enrichment') : (evalScore >= 75);
+        const targetTab = isEnrichment ? 'tab-pengayaan' : 'tab-remedial';
+
+        // 4. Update banner hasil adaptif
+        this.updateEnrichmentUI(evalScore, hasDoneEval, isEnrichment);
+
+        // 5. Aktifkan tab yang sesuai
+        const screen = document.getElementById('screen-enrichment');
+        if (screen) {
+            screen.querySelectorAll('.academic-tab-btn').forEach(btn => {
+                const isActive = (btn.getAttribute('data-tab') === targetTab);
+                btn.classList.toggle('active', isActive);
+            });
+            screen.querySelectorAll('.academic-tab-pane').forEach(pane => {
+                const isActive = (pane.getAttribute('data-pane') === targetTab);
+                pane.classList.toggle('active', isActive);
+            });
+            if (targetTab === 'tab-remedial') {
+                this.renderRemedialQuiz();
+            }
+            screen.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState(isEnrichment ? 'Membuka Modul Pengayaan' : 'Membuka Modul Remedial');
+        }
+    },
+
+    updateEnrichmentUI(evalScore = 0, hasDoneEval = false, isEnrichment = true) {
+        const banner = document.getElementById('enrichment-adaptive-banner');
+        if (!banner) return;
+
+        if (!hasDoneEval) {
+            banner.innerHTML = `
+                <div style="background: #FFFBEB; border: 1.5px solid #FCD34D; border-radius: 14px; padding: 1.15rem 1.35rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="font-size: 2.2rem; line-height: 1;">ℹ️</div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="margin: 0 0 0.25rem 0; color: #92400E; font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800;">
+                            Alur Diferensiasi Pembelajaran Terbimbing
+                        </h4>
+                        <p style="margin: 0; font-size: 0.88rem; color: #78350F; line-height: 1.5;">
+                            Kriteria penentuan: Siswa dengan Nilai Evaluasi Akhir <strong>≥ 75</strong> diarahkan ke modul <strong>Pengayaan</strong>, sedangkan siswa dengan nilai <strong>&lt; 75</strong> diarahkan mengikuti latihan <strong>Remedial</strong>. Kamu dapat mengeksplorasi kedua modul ini secara mandiri kapan pun.
+                        </p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        if (evalScore >= 75) {
+            banner.innerHTML = `
+                <div style="background: #ECFDF5; border: 2px solid #10B981; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);">
+                    <div style="font-size: 2.5rem; line-height: 1;">🎉</div>
+                    <div style="flex: 1; min-width: 260px;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                            <span class="academic-badge academic-badge-emerald" style="font-size: 0.8rem; font-weight: 800; background: #10B981; color: #FFFFFF;">
+                                ✓ TUNTAS KKTP (NILAI EVALUASI: ${evalScore}/100)
+                            </span>
+                            <span style="font-size: 0.8rem; color: #065F46; font-weight: 700;">
+                                Kriteria: Nilai ≥ 75
+                            </span>
+                        </div>
+                        <h4 style="margin: 0 0 0.3rem 0; color: #065F46; font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 800;">
+                            Selamat! Kamu Berhak Mempelajari Modul Pengayaan (Enrichment)
+                        </h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: #047857; line-height: 1.55;">
+                            Pemahaman analisismu terhadap konsep <strong>Stack (LIFO)</strong> dan <strong>Queue (FIFO)</strong> telah melampaui kriteria ketuntasan minimal. Silakan perdalam pengetahuanmu mengenai arsitektur tingkat lanjut: <em>Priority Queue</em>, <em>Circular Queue</em>, dan <em>Call Stack</em> pada sistem operasi di bawah ini.
+                        </p>
+                    </div>
+                </div>
+            `;
+        } else {
+            banner.innerHTML = `
+                <div style="background: #FEF3C7; border: 2px solid #F59E0B; border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.12);">
+                    <div style="font-size: 2.5rem; line-height: 1;">🔄</div>
+                    <div style="flex: 1; min-width: 260px;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                            <span class="academic-badge academic-badge-amber" style="font-size: 0.8rem; font-weight: 800; background: #D97706; color: #FFFFFF;">
+                                ⚠️ PERLU PEMANTAPAN (NILAI EVALUASI: ${evalScore}/100)
+                            </span>
+                            <span style="font-size: 0.8rem; color: #92400E; font-weight: 700;">
+                                Kriteria: Nilai &lt; 75
+                            </span>
+                        </div>
+                        <h4 style="margin: 0 0 0.3rem 0; color: #92400E; font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 800;">
+                            Program Remedial Terbimbing: Pemantapan Konsep Kunci
+                        </h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: #78350F; line-height: 1.55;">
+                            Nilai evaluasimu belum mencapai Kriteria Ketercapaian Tujuan Pembelajaran (KKTP ≥ 75). Jangan berkecil hati! Pelajari kembali rangkuman prinsip dasar <strong>FIFO (Queue)</strong> dan <strong>LIFO (Stack)</strong> di bawah ini, lalu selesaikan 4 latihan soal terarah untuk menguji kembali pemahamanmu.
+                        </p>
+                    </div>
+                </div>
+            `;
         }
     },
 

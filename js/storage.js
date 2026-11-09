@@ -37,6 +37,12 @@ const defaultData = {
         queueEnqueue: false,
         queueDequeue: false
     },
+    materialQuizzes: {
+        stackDone: false,
+        stackScore: 0,
+        queueDone: false,
+        queueScore: 0
+    },
     miniLabBonus: 0,
     totalPlayTimeSeconds: 0,
     answersLog: [],
@@ -690,16 +696,44 @@ const StorageManager = {
     },
 
     getMiniLabBonus() {
-        if (!this.data.miniLabOps) return 0;
-        let count = 0;
-        if (this.data.miniLabOps.stackPush) count++;
-        if (this.data.miniLabOps.stackPop) count++;
-        if (this.data.miniLabOps.queueEnqueue) count++;
-        if (this.data.miniLabOps.queueDequeue) count++;
+        if (!this.data) return 0;
+        let bonus = 0;
 
-        // 4 operations => exactly +5.0 bonus points
-        const bonus = Math.min(5, parseFloat(((count / 4) * 5).toFixed(1)));
+        // 1. Bonus dari kuis pemahaman materi Stack & Queue (Masing-masing +2.5 poin, total +5 poin)
+        const mq = this.data.materialQuizzes || {};
+        if (mq.stackDone) bonus += 2.5;
+        if (mq.queueDone) bonus += 2.5;
+
+        // 2. Bonus dari uji coba interaktif mini-lab hands-on (jika kuis belum tuntas)
+        if (bonus < 5 && this.data.miniLabOps) {
+            let opsCount = 0;
+            if (this.data.miniLabOps.stackPush) opsCount++;
+            if (this.data.miniLabOps.stackPop) opsCount++;
+            if (this.data.miniLabOps.queueEnqueue) opsCount++;
+            if (this.data.miniLabOps.queueDequeue) opsCount++;
+            const opsBonus = parseFloat(((opsCount / 4) * 5).toFixed(1));
+            bonus = Math.max(bonus, opsBonus);
+        }
+
+        // Pastikan batas maksimal bonus adalah 5 poin
+        bonus = Math.min(5, Math.round(bonus * 10) / 10);
         this.data.miniLabBonus = bonus;
+        return bonus;
+    },
+
+    recordMaterialQuizBonus(topic, isDone = true, score = 100) {
+        if (!this.data.materialQuizzes) {
+            this.data.materialQuizzes = { stackDone: false, stackScore: 0, queueDone: false, queueScore: 0 };
+        }
+        if (topic === 'stack') {
+            this.data.materialQuizzes.stackDone = isDone;
+            this.data.materialQuizzes.stackScore = score;
+        } else if (topic === 'queue') {
+            this.data.materialQuizzes.queueDone = isDone;
+            this.data.materialQuizzes.queueScore = score;
+        }
+        const bonus = this.getMiniLabBonus();
+        this.save();
         return bonus;
     },
 

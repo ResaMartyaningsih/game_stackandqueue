@@ -955,6 +955,7 @@ const App = {
         }
 
         // Calculate score
+        const answeredCount = Object.values(answersObj).filter(v => v !== null).length;
         const correctCount = Object.values(answersObj).filter(v => v === true).length;
         const score = Math.round((correctCount / 3) * 100);
 
@@ -963,6 +964,25 @@ const App = {
 
         const scoreMeter = document.getElementById(`${topic}-live-page-score`);
         if (scoreMeter) scoreMeter.textContent = `${score} pts`;
+
+        // BONUS MINI-LAB AKTIF: Siswa yang menjawab kuis materi Stack & Queue mendapatkan nilai bonus (+2.5 poin per topik, total +5 poin)
+        if (window.StorageManager && typeof StorageManager.recordMaterialQuizBonus === 'function') {
+            const isDone = (answeredCount >= 2); // Minimal 2 butir terjawab
+            const bonusTotal = StorageManager.recordMaterialQuizBonus(topic, isDone, score);
+            
+            const bonusProp = `_hasAlertedBonus_${topic}`;
+            if (isDone && !this[bonusProp]) {
+                this[bonusProp] = true;
+                if (window.UI && typeof UI.showToast === 'function') {
+                    UI.showToast(`🎉 Nilai Bonus Mini-Lab Kuis ${topic.toUpperCase()} Aktif (+2.5 Poin ke Nilai Digital ND)! Total Bonus: +${bonusTotal} pts.`);
+                }
+            }
+        }
+
+        // Sinkronkan ke cloud portal guru seketika
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState(`Kuis Materi ${topic.toUpperCase()}: Soal ${qIndex} Dijawab`);
+        }
     },
 
     saveLearnScore(topic) {
@@ -975,10 +995,17 @@ const App = {
         if (window.StorageManager) {
             StorageManager.savePageScore(pageKey, finalScore, { answers: answersObj });
             StorageManager.setLevelScore(1, finalScore);
+            if (typeof StorageManager.recordMaterialQuizBonus === 'function') {
+                StorageManager.recordMaterialQuizBonus(topic, true, finalScore);
+            }
+        }
+
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState(`Kuis Materi ${topic.toUpperCase()} Selesai (${finalScore} pts)`);
         }
 
         if (window.SoundManager) SoundManager.play('levelComplete');
-        UI.showToast(`✅ Nilai Belajar ${topic.toUpperCase()} tersimpan: ${finalScore} pts!`);
+        UI.showToast(`✅ Nilai Belajar ${topic.toUpperCase()} tersimpan: ${finalScore} pts (+Bonus Mini-Lab Aktif)!`);
         UI.setKikoDialogue(`Nilai materi ${topic.toUpperCase()} berhasil disimpan! Kamu hebat, ayo lanjutkan perjalanan!`, 'cheering');
         
         // Re-render world map

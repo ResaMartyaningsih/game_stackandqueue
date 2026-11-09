@@ -25,7 +25,8 @@ const CloudSync = {
     role: 'student', // 'student' | 'guru'
     teacherListeners: [],
 
-    MQTT_BROKER_URL: 'wss://broker.emqx.io:8084/mqtt',
+    MQTT_BROKER_URL: 'wss://broker.hivemq.com:8884/mqtt',
+    MQTT_BACKUP_BROKER_URL: 'wss://test.mosquitto.org:8081/mqtt',
     MQTT_TOPIC_PREFIX: 'laraslogika/edu/v1',
 
     init(role = 'student') {

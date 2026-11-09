@@ -148,6 +148,80 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
+        .live-status-badge-online {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            font-family: 'Space Mono', monospace;
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1.5px solid #10B981;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+            white-space: nowrap;
+        }
+
+        .live-status-dot-active {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+            animation: pulse-live 1.8s infinite;
+        }
+
+        .live-status-badge-offline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            background: #F1F5F9;
+            color: #64748B;
+            border: 1.5px solid #CBD5E1;
+            white-space: nowrap;
+        }
+
+        .live-status-dot-offline {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94A3B8;
+        }
+
+        .guru-filter-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: #FFFFFF;
+            border: 1.5px solid var(--guru-sand);
+            color: var(--guru-umber);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .guru-filter-pill:hover {
+            border-color: var(--guru-crimson);
+            color: var(--guru-crimson);
+        }
+
+        .guru-filter-pill.active {
+            background: var(--guru-crimson);
+            color: #FFFFFF;
+            border-color: var(--guru-crimson);
+            box-shadow: 0 2px 8px rgba(137, 26, 16, 0.2);
+        }
+
         .btn-guru {
             display: inline-flex;
             align-items: center;
@@ -1012,6 +1086,20 @@
                         📡 Minta Seluruh Siswa Kirim Sinyal (Ping All)
                     </button>
                 </div>
+
+                <!-- Quick Filter Status Koneksi Siswa (Online vs Offline) -->
+                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 1rem; border-top: 1px solid var(--guru-sand); padding-top: 0.85rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.84rem; font-weight: 700; color: var(--guru-umber);">Status Koneksi:</span>
+                    <button type="button" id="monitor-filter-all" class="guru-filter-pill active" onclick="GuruPortal.setMonitorConnectionFilter('ALL')">
+                        Semua Siswa (<span id="monitor-count-all">0</span>)
+                    </button>
+                    <button type="button" id="monitor-filter-online" class="guru-filter-pill" onclick="GuruPortal.setMonitorConnectionFilter('ONLINE')">
+                        🟢 Hanya Online (<span id="monitor-count-online">0</span>)
+                    </button>
+                    <button type="button" id="monitor-filter-offline" class="guru-filter-pill" onclick="GuruPortal.setMonitorConnectionFilter('OFFLINE')">
+                        ⚪ Hanya Offline (<span id="monitor-count-offline">0</span>)
+                    </button>
+                </div>
             </div>
 
             <!-- Table Live Monitor -->
@@ -1163,10 +1251,19 @@
         const GuruPortal = {
             currentClass: 'ALL',
             currentMainTab: 'tab-asesmen',
+            monitorConnectionFilter: 'ALL',
             studentsData: {},
             filteredStudents: [],
             isUnlocked: false,
             STORAGE_ROSTER_KEY: 'laraslogika_guru_persistent_roster_v2',
+
+            setMonitorConnectionFilter(filterVal) {
+                this.monitorConnectionFilter = filterVal;
+                document.querySelectorAll('.guru-filter-pill').forEach(btn => {
+                    btn.classList.toggle('active', btn.id === `monitor-filter-${filterVal.toLowerCase()}`);
+                });
+                this.renderLiveMonitor();
+            },
 
             savePersistentRoster() {
                 try {
@@ -1859,14 +1956,35 @@
                 const tbody = document.getElementById('guru-monitor-tbody');
                 if (!tbody) return;
 
-                if (this.filteredStudents.length === 0) {
+                const totalAll = this.filteredStudents.length;
+                const onlineCount = this.filteredStudents.filter(s => s.status && s.status.isOnline === true).length;
+                const offlineCount = totalAll - onlineCount;
+
+                // Update counter pill pada filter status koneksi
+                const cntAll = document.getElementById('monitor-count-all');
+                if (cntAll) cntAll.textContent = totalAll;
+                const cntOn = document.getElementById('monitor-count-online');
+                if (cntOn) cntOn.textContent = onlineCount;
+                const cntOff = document.getElementById('monitor-count-offline');
+                if (cntOff) cntOff.textContent = offlineCount;
+
+                let list = this.filteredStudents;
+                if (this.monitorConnectionFilter === 'ONLINE') {
+                    list = list.filter(s => s.status && s.status.isOnline === true);
+                } else if (this.monitorConnectionFilter === 'OFFLINE') {
+                    list = list.filter(s => !s.status || s.status.isOnline !== true);
+                }
+
+                if (list.length === 0) {
                     tbody.innerHTML = `
                         <tr>
                             <td colspan="7" class="guru-empty-state">
-                                <div class="guru-empty-icon">📡</div>
-                                <h4 style="margin: 0; color: var(--guru-dark);">Belum Ada Aktivitas Terhubung</h4>
+                                <div class="guru-empty-icon">${this.monitorConnectionFilter === 'ONLINE' ? '📴' : '📡'}</div>
+                                <h4 style="margin: 0; color: var(--guru-dark);">
+                                    ${this.monitorConnectionFilter === 'ONLINE' ? 'Tidak Ada Peserta Didik yang Sedang Online' : (this.monitorConnectionFilter === 'OFFLINE' ? 'Seluruh Siswa Sedang Aktif Online!' : 'Belum Ada Aktivitas Terhubung')}
+                                </h4>
                                 <p style="margin: 0.35rem 0 0 0; font-size: 0.84rem;">
-                                    Menunggu siswa membuka media pembelajaran...
+                                    ${this.monitorConnectionFilter === 'ONLINE' ? 'Peserta didik belum membuka media atau koneksi perangkat sedang terputus.' : 'Menunggu siswa membuka media pembelajaran...'}
                                 </p>
                             </td>
                         </tr>
@@ -1875,7 +1993,7 @@
                 }
 
                 let html = '';
-                this.filteredStudents.forEach(s => {
+                list.forEach(s => {
                     const idn = s.identitas || {};
                     const st = s.status || {};
                     const val = s.nilai || {};
@@ -1885,32 +2003,40 @@
                     let lastActiveFormatted = 'Baru saja';
                     if (st.lastActiveTimestamp) {
                         const secAgo = Math.floor((Date.now() - st.lastActiveTimestamp) / 1000);
-                        if (secAgo < 20) lastActiveFormatted = '🟢 Sedang Aktif';
+                        if (secAgo < 20) lastActiveFormatted = 'Sedang Aktif';
                         else if (secAgo < 60) lastActiveFormatted = `${secAgo} detik lalu`;
                         else lastActiveFormatted = `${Math.floor(secAgo / 60)} menit lalu`;
                     }
 
                     html += `
-                        <tr>
+                        <tr style="${isOnline ? 'background: #FFFFFF; border-left: 4px solid #10B981;' : 'background: #FAF8F5; border-left: 4px solid #CBD5E1; color: #475569;'}">
                             <td style="text-align: center;">
                                 <span class="student-absen-badge">${String(idn.absen || 0).padStart(2, '0')}</span>
                             </td>
                             <td>
-                                <strong>${idn.nama || 'Peserta Didik'}</strong>
+                                <strong style="color: ${isOnline ? 'var(--guru-dark)' : '#64748B'};">${idn.nama || 'Peserta Didik'}</strong>
                             </td>
                             <td>${idn.kelas || s._class}</td>
                             <td>
-                                <span class="activity-live-badge ${isOnline ? 'online' : ''}">
-                                    ${isOnline ? '🟢 Online' : '⚪ Standby / Offline'}
-                                </span>
+                                ${isOnline ? `
+                                    <span class="live-status-badge-online">
+                                        <span class="live-status-dot-active"></span>
+                                        ONLINE (Aktif)
+                                    </span>
+                                ` : `
+                                    <span class="live-status-badge-offline">
+                                        <span class="live-status-dot-offline"></span>
+                                        OFFLINE (Tersimpan)
+                                    </span>
+                                `}
                             </td>
                             <td>
-                                <span style="font-weight: 600; color: var(--guru-crimson);">
-                                    ${activityTxt}
+                                <span style="font-weight: 600; color: ${isOnline ? 'var(--guru-crimson)' : '#64748B'};">
+                                    ${activityTxt} ${!isOnline ? '<small style="color: #94A3B8;">(Sesi Ditutup)</small>' : ''}
                                 </span>
                             </td>
-                            <td style="font-size: 0.82rem; color: #64748B;">
-                                ${isOnline ? '🟢 ' + lastActiveFormatted : (st.recordedAt ? '⚪ Rekap: ' + st.recordedAt : lastActiveFormatted)}
+                            <td style="font-size: 0.82rem;">
+                                ${isOnline ? `<span style="font-weight: 700; color: #059669;">🟢 ${lastActiveFormatted}</span>` : `<span style="color: #64748B;">⚪ Terakhir Rekap: ${st.recordedAt || 'Tersimpan'}</span>`}
                             </td>
                             <td style="text-align: center;">
                                 <strong style="color: #B45309; font-family: 'Space Mono', monospace;">
