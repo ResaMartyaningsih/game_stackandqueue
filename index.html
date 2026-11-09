@@ -242,33 +242,35 @@
 
                                 <!-- Queue Controls -->
                                 <div class="hero-stage-controls" id="hero-controls-queue">
-                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-enqueue" onclick="PBLAcademic.heroEnqueue()">
-                                        + Enqueue (Masuk Belakang)
+                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-enqueue" onclick="PBLAcademic.heroEnqueue()" title="Tambah siswa ke antrean belakang (Enqueue)">
+                                        + Tambah Antrean (Enqueue)
                                     </button>
-                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-dequeue" onclick="PBLAcademic.heroDequeue()">
-                                        &minus; Dequeue (Layani Depan)
+                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-dequeue" onclick="PBLAcademic.heroDequeue()" title="Layani &amp; keluarkan siswa terdepan (Dequeue)">
+                                        &minus; Ambil Antrean (Layani)
                                     </button>
                                     <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
-                                        🔄 Reset
+                                        🔄 Reset Antrean
                                     </button>
                                 </div>
 
                                 <!-- Stack Controls -->
                                 <div class="hero-stage-controls" id="hero-controls-stack" style="display: none;">
-                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-push" onclick="PBLAcademic.heroPush()">
-                                        + Push (Tumpuk di Puncak)
+                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-push" onclick="PBLAcademic.heroPush()" title="Taruh piring di puncak tumpukan (Push)">
+                                        + Tambah Piring (Push)
                                     </button>
-                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-pop" onclick="PBLAcademic.heroPop()">
-                                        &minus; Pop (Ambil dari Puncak)
+                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-pop" onclick="PBLAcademic.heroPop()" title="Ambil piring dari puncak tumpukan (Pop)">
+                                        &minus; Ambil Piring (Pop)
                                     </button>
                                     <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
-                                        🔄 Reset
+                                        🔄 Reset Piring
                                     </button>
                                 </div>
 
-                                <div class="hero-interactive-hint" id="hero-card-tip">
-                                    ℹ️ <strong>Eksplorasi Langsung:</strong> Ikuti misi 3 langkah di atas untuk menguji sifat FIFO (Queue) &amp; LIFO (Stack) maksimal 3 data.
+                                <!-- Pertanyaan Tantangan Interaktif Simulasi (Studi Kasus 3 Piring & Antrean Ani, Adi, Ida) -->
+                                <div id="hero-interactive-challenge-container" style="margin-top: 1rem;">
+                                    <!-- Rendered dynamically by PBLAcademic.renderHeroChallenge() -->
                                 </div>
+
                                 <div id="hero-sim-eval-badge"></div>
                             </div>
                         </div>

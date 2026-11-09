@@ -1579,20 +1579,20 @@ const PBLAcademic = {
     // HERO INTERACTIVE MINI VISUALIZER & CLUE ACCORDION
     // ----------------------------------------------------
     heroMode: 'queue',
-    heroQueueData: ['Andi'],
-    heroStackData: ['Piring Merah (P1)'],
+    heroQueueData: ['Ani'],
+    heroStackData: ['🔴 Piring Merah'],
     heroMaxCapacity: 3,
-    studentNamesPool: ['Budi', 'Citra', 'Dodi', 'Eka', 'Fani', 'Gita'],
-    plateColorsPool: ['Piring Biru (P2)', 'Piring Hijau (P3)', 'Piring Kuning (P4)', 'Piring Oranye (P5)'],
-    problemDilemmaMode: 'chaos',
-    heroMission: {
-        step: 1,
-        completed: false
+    heroQueueSequence: ['Ani', 'Adi', 'Ida'],
+    heroStackSequence: ['🔴 Piring Merah', '🟡 Piring Kuning', '🟢 Piring Hijau'],
+    heroChallengeAnswers: {
+        stack: {},
+        queue: {}
     },
+    problemDilemmaMode: 'chaos',
 
     initHeroSim() {
         this.renderHeroSim();
-        this.updateHeroMissionUI();
+        this.renderHeroChallenge();
         this.updateHeroSimulationBadge();
     },
 
@@ -1626,60 +1626,7 @@ const PBLAcademic = {
         }
 
         this.renderHeroSim();
-        this.updateHeroMissionUI();
-    },
-
-    updateHeroMissionUI() {
-        const badge = document.getElementById('mission-step-badge');
-        const text = document.getElementById('mission-instruction-text');
-        const fill = document.getElementById('mission-progress-fill');
-        const cap = document.getElementById('hero-capacity-indicator');
-
-        const currentData = (this.heroMode === 'queue') ? this.heroQueueData : this.heroStackData;
-        const count = currentData.length;
-        if (cap) {
-            cap.textContent = `Kapasitas: ${count} / 3 Data`;
-            cap.style.color = (count >= 3) ? '#B8210F' : '#891A10';
-        }
-
-        const isQueue = (this.heroMode === 'queue');
-        const inOp = isQueue ? '+ Enqueue' : '+ Push';
-        const outOp = isQueue ? '− Dequeue' : '− Pop';
-        const inPos = isQueue ? 'di belakang (REAR)' : 'di puncak tumpukan (TOP)';
-        const outPos = isQueue ? 'di depan (FRONT - FIFO)' : 'dari puncak (TOP - LIFO)';
-
-        if (!badge || !text || !fill) return;
-
-        if (this.heroMission.completed) {
-            badge.textContent = '✓ Misi 3 Langkah Tuntas!';
-            badge.style.background = '#ECFDF5';
-            badge.style.borderColor = '#10B981';
-            badge.style.color = '#065F46';
-            text.innerHTML = `🎉 <strong>Luar Biasa!</strong> Kamu berhasil menguji alur kerja dasar ${isQueue ? 'Queue (Antrean FIFO)' : 'Stack (Tumpukan LIFO)'} maksimal 3 data. Nilai pemahaman awal telah tercatat otomatis!`;
-            fill.style.width = '100%';
-            fill.style.background = '#10B981';
-            return;
-        }
-
-        if (count === 0) {
-            this.heroMission.step = 1;
-            badge.textContent = '🎯 Misi Pemahaman: Langkah 1 dari 3';
-            text.innerHTML = `👉 <strong>Langkah 1:</strong> Kolom kosong (0/3 data). Klik tombol <strong>${inOp}</strong> untuk memasukkan data pertama ${inPos}.`;
-            fill.style.width = '33%';
-            fill.style.background = '#E76814';
-        } else if (count > 0 && count < 3) {
-            this.heroMission.step = 2;
-            badge.textContent = '🎯 Misi Pemahaman: Langkah 2 dari 3';
-            text.innerHTML = `👉 <strong>Langkah 2:</strong> Data terisi (${count}/3). Klik <strong>${inOp}</strong> lagi hingga kolom penuh (Maksimal 3 data) untuk melihat batas kapasitas.`;
-            fill.style.width = '66%';
-            fill.style.background = '#E76814';
-        } else if (count >= 3) {
-            this.heroMission.step = 3;
-            badge.textContent = '🎯 Misi Pemahaman: Langkah 3 dari 3';
-            text.innerHTML = `👉 <strong>Langkah 3:</strong> Kolom penuh (3/3 data)! Sekarang klik <strong>${outOp}</strong> untuk mengambil data ${outPos}. Amati mana yang keluar duluan!`;
-            fill.style.width = '88%';
-            fill.style.background = '#F59E0B';
-        }
+        this.renderHeroChallenge();
     },
 
     renderHeroSim() {
@@ -1689,7 +1636,7 @@ const PBLAcademic = {
         if (this.heroMode === 'queue') {
             stage.classList.remove('stack-mode');
             if (this.heroQueueData.length === 0) {
-                stage.innerHTML = '<span style="font-size: 0.85rem; color: #8F726A; font-style: italic;">Antrean kasir sedang kosong (0 / 3 data)</span>';
+                stage.innerHTML = '<span style="font-size: 0.88rem; color: #8F726A; font-style: italic;">Antrean kasir sedang kosong (0 / 3 siswa)</span>';
                 return;
             }
 
@@ -1699,10 +1646,10 @@ const PBLAcademic = {
                 const isFront = idx === 0;
                 const isRear = idx === this.heroQueueData.length - 1;
                 return `
-                    <div class="hero-node-chip hero-node-queue" style="${isFront ? 'border: 2px solid #E76814; background: #FAF3EA;' : ''}">
+                    <div class="hero-node-chip hero-node-queue" style="${isFront ? 'border: 2px solid #E76814; background: #FAF3EA; font-weight: 800;' : 'font-weight: 600;'}">
                         <span>👤 ${name}</span>
-                        ${isFront ? '<span style="font-size: 0.65rem; background: #E76814; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">FRONT</span>' : ''}
-                        ${isRear && !isFront ? '<span style="font-size: 0.65rem; background: #DC8236; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">REAR</span>' : ''}
+                        ${isFront ? '<span style="font-size: 0.65rem; background: #E76814; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">FRONT (1)</span>' : ''}
+                        ${isRear && !isFront ? '<span style="font-size: 0.65rem; background: #DC8236; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">REAR (' + (idx + 1) + ')</span>' : ''}
                     </div>
                 `;
             }).join('<span style="color: #D8D4BC; font-weight: bold;">◀</span>');
@@ -1713,7 +1660,7 @@ const PBLAcademic = {
             // MODE STACK: MENUMPUK KE ATAS (Bukan ke samping!)
             stage.classList.add('stack-mode');
             if (this.heroStackData.length === 0) {
-                stage.innerHTML = '<span style="font-size: 0.85rem; color: #8F726A; font-style: italic; margin-bottom: 2rem;">Rak tumpukan piring kosong (0 / 3 data)</span>';
+                stage.innerHTML = '<span style="font-size: 0.88rem; color: #8F726A; font-style: italic; margin-bottom: 2rem;">Rak tumpukan piring kosong (0 / 3 piring)</span>';
                 return;
             }
 
@@ -1721,9 +1668,19 @@ const PBLAcademic = {
             stage.innerHTML = this.heroStackData.map((plate, idx) => {
                 const isTop = (idx === this.heroStackData.length - 1);
                 const isBottom = (idx === 0);
+
+                let colorStyles = 'border: 2px solid #891A10; background: #FFF5F3; color: #891A10;';
+                if (plate.includes('Kuning')) {
+                    colorStyles = 'border: 2px solid #F59E0B; background: #FFFBEB; color: #92400E;';
+                } else if (plate.includes('Hijau')) {
+                    colorStyles = 'border: 2px solid #10B981; background: #ECFDF5; color: #065F46;';
+                } else if (plate.includes('Merah')) {
+                    colorStyles = 'border: 2px solid #DC2626; background: #FEF2F2; color: #991B1B;';
+                }
+
                 return `
-                    <div class="hero-node-stack-vertical" style="${isTop ? 'border: 2px solid #891A10; background: #FFF5F3;' : ''}">
-                        <span>🍽️ ${plate}</span>
+                    <div class="hero-node-stack-vertical" style="${colorStyles} ${isTop ? 'box-shadow: 0 4px 12px rgba(137, 26, 16, 0.2);' : ''}">
+                        <span style="font-weight: 800;">🍽️ ${plate}</span>
                         <div style="display: flex; gap: 0.35rem; align-items: center;">
                             ${isTop ? '<span style="font-size: 0.72rem; background: #891A10; color: #FFFFFF; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-family: \'Space Mono\', monospace;">TOP (PUNCAK)</span>' : ''}
                             ${isBottom && !isTop ? '<span style="font-size: 0.72rem; background: #FAF3EA; color: #714236; border: 1px solid #D8D4BC; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-family: \'Space Mono\', monospace;">BOTTOM (DASAR)</span>' : ''}
@@ -1734,6 +1691,185 @@ const PBLAcademic = {
         }
     },
 
+    // ----------------------------------------------------
+    // PERTANYAAN TANTANGAN INTERAKTIF SIMULASI (STUDI KASUS 3 PIRING & ANTREAN ANI, ADI, IDA)
+    // ----------------------------------------------------
+    heroChallenges: {
+        stack: {
+            title: "🍽️ Tantangan Logika: Kasus Tumpukan 3 Piring (Stack - LIFO)",
+            context: "Petugas kantin menumpuk 3 piring ke dalam rak saji berurutan dari bawah ke atas: 🔴 <strong>Piring Merah</strong> (dasar), 🟡 <strong>Piring Kuning</strong> (tengah), dan 🟢 <strong>Piring Hijau</strong> (puncak TOP). Rak memiliki kapasitas <strong>maksimal 3 piring</strong>.",
+            questions: [
+                {
+                    id: 1,
+                    q: "1. Jika seorang siswa datang mengambil piring menggunakan tombol <strong>− Ambil Piring (Pop)</strong>, piring warna apakah yang terambil pertama kali?",
+                    options: [
+                        { text: "A. 🔴 Piring Merah", isCorrect: false, note: "Piring Merah berada di dasar rak (paling bawah), terhimpit piring lain." },
+                        { text: "B. 🟡 Piring Kuning", isCorrect: false, note: "Piring Kuning berada di tengah, tidak bisa diambil langsung." },
+                        { text: "C. 🟢 Piring Hijau", isCorrect: true, note: "Tepat sekali! Sesuai prinsip LIFO (Last In First Out), piring yang terakhir ditaruh di posisi puncak (TOP) adalah yang pertama diambil!" }
+                    ]
+                },
+                {
+                    id: 2,
+                    q: "2. Rak piring sudah terisi penuh 3 piring (Merah, Kuning, Hijau). Apa dampaknya jika petugas memaksa menekan tombol <strong>+ Tambah Piring</strong>?",
+                    options: [
+                        { text: "A. Terjadi Stack Overflow (Tumpukan Meluap / Piring Pecah)", isCorrect: true, note: "Benar! Melebihi kapasitas batas maksimum penampung memicu kondisi kritis Stack Overflow." },
+                        { text: "B. Piring Merah di dasar keluar sendiri otomatis", isCorrect: false, note: "Salah, wadah stack tertutup di bawah (hanya memiliki 1 pintu akses di TOP)." },
+                        { text: "C. Piring ke-4 melayang tanpa ada masalah", isCorrect: false, note: "Salah, kapasitas fisik memori atau rak selalu memiliki batas." }
+                    ]
+                },
+                {
+                    id: 3,
+                    q: "3. Semua piring telah diambil hingga rak kosong (0 piring). Apa yang terjadi jika siswa tetap menekan tombol <strong>− Ambil Piring</strong>?",
+                    options: [
+                        { text: "A. Terjadi Stack Underflow (Tumpukan Kosong / Gagal Ambil)", isCorrect: true, note: "Sangat tepat! Mengambil data dari tumpukan yang kosong memicu kondisi galat Stack Underflow." },
+                        { text: "B. Rak otomatis mendatangkan piring baru dari udara", isCorrect: false, note: "Salah, komputer/rak tidak dapat memproses objek dari ketiadaan." },
+                        { text: "C. Tangan siswa tersangkut di mesin", isCorrect: false, note: "Salah secara komputasional." }
+                    ]
+                }
+            ]
+        },
+        queue: {
+            title: "👥 Tantangan Logika: Kasus Antrean 3 Siswa (Queue - FIFO)",
+            context: "Loket kasir kantin membuka antrean dengan kapasitas kuota <strong>maksimal 3 orang</strong>. Datang 3 siswa berurutan memesan makanan: 👤 <strong>Ani</strong> (datang pertama), 👤 <strong>Adi</strong> (datang kedua), dan 👤 <strong>Ida</strong> (datang ketiga).",
+            questions: [
+                {
+                    id: 1,
+                    q: "1. Saat kasir mulai memproses pesanan dengan tombol <strong>− Ambil Antrean (Layani / Dequeue)</strong>, siapakah siswa yang pertama kali dilayani?",
+                    options: [
+                        { text: "A. 👤 Ida (Posisi Paling Belakang)", isCorrect: false, note: "Ida datang terakhir di posisi REAR, harus menunggu gilirannya." },
+                        { text: "B. 👤 Adi (Posisi Tengah)", isCorrect: false, note: "Adi berada di tengah antrean di belakang Ani." },
+                        { text: "C. 👤 Ani (Posisi Paling Depan - FRONT)", isCorrect: true, note: "Tepat sekali! Asas keadilan pelayanan waktu tunggu Queue menerapkan FIFO (First In First Out): Ani yang datang pertama berada di FRONT dan dilayani pertama kali!" }
+                    ]
+                },
+                {
+                    id: 2,
+                    q: "2. Antrean kasir telah penuh 3 orang (Ani, Adi, Ida). Apa yang terjadi jika ada siswa baru bernama Budi memaksakan <strong>+ Tambah Antrean</strong>?",
+                    options: [
+                        { text: "A. Terjadi Queue Overflow (Kapasitas Antrean Penuh)", isCorrect: true, note: "Benar! Batas kuota antrean kasir telah tercapai sehingga siswa baru harus menunggu antrean longgar (Queue Overflow)." },
+                        { text: "B. Ani langsung dikeluarkan paksa dari kasir", isCorrect: false, note: "Salah, penyerobotan atau pengeluaran paksa melanggar hukum keteraturan antrean FIFO." },
+                        { text: "C. Kasir langsung tutup melarikan diri", isCorrect: false, note: "Salah, kasir tetap melayani antrean yang ada." }
+                    ]
+                },
+                {
+                    id: 3,
+                    q: "3. Seluruh siswa telah selesai berbelanja dan antrean kini kosong (0 orang). Apa yang terjadi jika kasir menekan <strong>− Ambil Antrean (Layani)</strong>?",
+                    options: [
+                        { text: "A. Terjadi Queue Underflow (Antrean Kosong / Kasir Siaga)", isCorrect: true, note: "Tepat sekali! Memanggil operasi pengeluaran (dequeue) pada antrean kosong menghasilkan status Queue Underflow." },
+                        { text: "B. Siswa lama dipanggil kembali belanja", isCorrect: false, note: "Salah, transaksi siswa lama sudah selesai." },
+                        { text: "C. Kasir mengalami kebingungan selamanya", isCorrect: false, note: "Salah secara komputasional." }
+                    ]
+                }
+            ]
+        }
+    },
+
+    renderHeroChallenge() {
+        const container = document.getElementById('hero-interactive-challenge-container');
+        if (!container) return;
+
+        const topic = this.heroMode;
+        const chal = this.heroChallenges[topic];
+        if (!chal) return;
+
+        const savedAnswers = this.heroChallengeAnswers[topic] || {};
+
+        let html = `
+            <div style="background: #FFFFFF; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1.15rem; box-shadow: 0 4px 14px rgba(113, 66, 54, 0.05); text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem;">
+                    <h4 style="margin: 0; font-family: 'Syne', sans-serif; font-size: 0.98rem; font-weight: 800; color: #891A10;">
+                        ${chal.title}
+                    </h4>
+                    <span style="font-size: 0.74rem; background: #FAF3EA; border: 1px solid #E76814; color: #891A10; font-weight: 800; padding: 2px 8px; border-radius: 999px;">
+                        Kapasitas: Maksimal 3 Data
+                    </span>
+                </div>
+                
+                <p style="font-size: 0.86rem; color: #4A3832; line-height: 1.5; margin: 0 0 0.85rem 0; background: #FAF8F5; border-left: 3px solid #E76814; padding: 0.5rem 0.75rem; border-radius: 0 8px 8px 0;">
+                    ${chal.context}
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                    ${chal.questions.map((qObj, qIdx) => {
+                        const chosen = savedAnswers[qObj.id];
+                        const hasAnswered = (chosen !== undefined && chosen !== null);
+                        const isCorrectChosen = hasAnswered && qObj.options[chosen] && qObj.options[chosen].isCorrect;
+                        const noteText = hasAnswered ? (qObj.options[chosen]?.note || '') : '';
+
+                        return `
+                            <div style="background: #FAF6ED; border: 1px solid #EAE7D7; border-radius: 10px; padding: 0.75rem 0.9rem;">
+                                <div style="font-size: 0.86rem; font-weight: 700; color: #2E1E1A; margin-bottom: 0.5rem; line-height: 1.45;">
+                                    ${qObj.q}
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                                    ${qObj.options.map((opt, optIdx) => {
+                                        const isThisSelected = (chosen === optIdx);
+                                        let btnStyle = 'background: #FFFFFF; border: 1.5px solid #D8D4BC; color: #714236;';
+                                        if (isThisSelected) {
+                                            btnStyle = opt.isCorrect
+                                                ? 'background: #ECFDF5; border: 2px solid #10B981; color: #065F46; font-weight: 800;'
+                                                : 'background: #FEF2F2; border: 2px solid #EF4444; color: #991B1B; font-weight: 700;';
+                                        }
+
+                                        return `
+                                            <button type="button" 
+                                                onclick="PBLAcademic.checkHeroChallenge('${topic}', ${qObj.id}, ${optIdx})"
+                                                style="text-align: left; padding: 0.45rem 0.75rem; border-radius: 8px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease; ${btnStyle}">
+                                                ${opt.text}
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                                ${hasAnswered ? `
+                                    <div style="margin-top: 0.5rem; font-size: 0.8rem; line-height: 1.45; padding: 0.4rem 0.65rem; border-radius: 6px; background: ${isCorrectChosen ? '#ECFDF5' : '#FEF2F2'}; color: ${isCorrectChosen ? '#065F46' : '#991B1B'}; border: 1px solid ${isCorrectChosen ? '#A7F3D0' : '#FECACA'};">
+                                        ${isCorrectChosen ? '✓ <strong>Tepat Sekali!</strong> ' : '✕ <strong>Kurang Tepat:</strong> '} ${noteText}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    },
+
+    checkHeroChallenge(topic, questionId, optionIdx) {
+        if (!this.heroChallengeAnswers[topic]) {
+            this.heroChallengeAnswers[topic] = {};
+        }
+        this.heroChallengeAnswers[topic][questionId] = optionIdx;
+
+        const chal = this.heroChallenges[topic];
+        const qObj = chal && chal.questions.find(q => q.id === questionId);
+        const opt = qObj && qObj.options[optionIdx];
+        const isCorrect = !!(opt && opt.isCorrect);
+
+        // Record operation to storage simulation tracker
+        if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
+            const opName = (topic === 'stack') 
+                ? (questionId === 1 ? 'stackPop' : 'stackPush') 
+                : (questionId === 1 ? 'queueDequeue' : 'queueEnqueue');
+            const sim = StorageManager.recordSimulationOp(opName);
+            this.updateHeroSimulationBadge(sim);
+        }
+
+        // Sinkronkan pemahaman simulasi ke Dashboard Guru
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState(`Uji Logika Beranda (${topic.toUpperCase()} Q${questionId}): ${isCorrect ? 'Benar' : 'Mencoba'}`);
+        }
+
+        if (window.UI) {
+            if (isCorrect) {
+                UI.showToast(`✓ Jawaban tepat! ${opt.note}`);
+            } else {
+                UI.showToast(`✕ Belum tepat. ${opt.note}`);
+            }
+        }
+
+        this.renderHeroChallenge();
+    },
+
     updateHeroSimulationBadge(evalResult) {
         if (!evalResult && window.StorageManager && StorageManager.getSimulationEvaluation) {
             evalResult = StorageManager.getSimulationEvaluation();
@@ -1742,7 +1878,7 @@ const PBLAcademic = {
         if (badgeEl && evalResult) {
             const stars = '⭐'.repeat(evalResult.score || 1);
             badgeEl.innerHTML = `
-                <div style="background: #FAF3EA; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.6rem 0.85rem; margin-top: 0.75rem; text-align: left;">
+                <div style="background: #FAF3EA; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.65rem 0.9rem; margin-top: 0.85rem; text-align: left;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem;">
                         <span style="font-weight: 800; color: #891A10; font-size: 0.86rem;">
                             📊 Hasil Pemahaman Simulasi: ${stars} (${evalResult.score || 1}/4 &bull; ${evalResult.predicate || 'Perlu Bimbingan'})
@@ -1752,8 +1888,8 @@ const PBLAcademic = {
                         </span>
                     </div>
                     <div style="font-size: 0.75rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
-                        Queue (FIFO): ${evalResult.operations?.queueEnqueue ? '✓ Enqueue' : '<span style="color:#A89F91;">○ Enqueue</span>'} &bull; ${evalResult.operations?.queueDequeue ? '✓ Dequeue' : '<span style="color:#A89F91;">○ Dequeue</span>'} | 
-                        Stack (LIFO): ${evalResult.operations?.stackPush ? '✓ Push' : '<span style="color:#A89F91;">○ Push</span>'} &bull; ${evalResult.operations?.stackPop ? '✓ Pop' : '<span style="color:#A89F91;">○ Pop</span>'}
+                        Queue (FIFO): ${evalResult.operations?.queueEnqueue ? '✓ Tambah Antrean' : '<span style="color:#A89F91;">○ Tambah Antrean</span>'} &bull; ${evalResult.operations?.queueDequeue ? '✓ Ambil Antrean' : '<span style="color:#A89F91;">○ Ambil Antrean</span>'} | 
+                        Stack (LIFO): ${evalResult.operations?.stackPush ? '✓ Tambah Piring' : '<span style="color:#A89F91;">○ Tambah Piring</span>'} &bull; ${evalResult.operations?.stackPop ? '✓ Ambil Piring' : '<span style="color:#A89F91;">○ Ambil Piring</span>'}
                     </div>
                 </div>
             `;
@@ -1762,101 +1898,92 @@ const PBLAcademic = {
 
     heroEnqueue() {
         if (this.heroQueueData.length >= this.heroMaxCapacity) {
-            if (window.UI) UI.showToast("⚠️ Antrean kasir penuh! Maksimal 3 data dalam kolom.");
+            if (window.UI) UI.showToast("⚠️ Antrean kasir penuh! Maksimal 3 orang (Kondisi Queue Overflow / Antrean Penuh).");
             return;
         }
-        const nextName = this.studentNamesPool[Math.floor(Math.random() * this.studentNamesPool.length)];
+        let nextName = this.heroQueueSequence[this.heroQueueData.length];
+        if (!nextName) nextName = `Siswa ke-${this.heroQueueData.length + 1}`;
+
         this.heroQueueData.push(nextName);
         this.renderHeroSim();
-        this.updateHeroMissionUI();
 
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('queueEnqueue');
             this.updateHeroSimulationBadge(sim);
         }
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
-            window.CloudSync.syncStudentState('Simulasi Beranda: Enqueue');
+            window.CloudSync.syncStudentState(`Simulasi Antrean: Tambah antrean ${nextName}`);
         }
-        if (window.UI) UI.showToast(`+ Siswa ${nextName} masuk antrean di belakang (REAR)! [${this.heroQueueData.length}/3]`);
+        if (window.UI) UI.showToast(`+ ${nextName} datang & masuk antrean di belakang (REAR)! [${this.heroQueueData.length}/3 Siswa]`);
     },
 
     heroDequeue() {
         if (this.heroQueueData.length === 0) {
-            if (window.UI) UI.showToast("⚠️ Antrean kasir sudah kosong (Queue Underflow)!");
+            if (window.UI) UI.showToast("⚠️ Antrean kasir kosong! Tidak ada pembeli mengantre (Kondisi Queue Underflow).");
             return;
         }
         const served = this.heroQueueData.shift();
-        
-        // Cek penyelesaian misi langkah 3
-        if (this.heroMission.step >= 3) {
-            this.heroMission.completed = true;
-        }
-
         this.renderHeroSim();
-        this.updateHeroMissionUI();
 
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('queueDequeue');
             this.updateHeroSimulationBadge(sim);
         }
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
-            window.CloudSync.syncStudentState('Simulasi Beranda: Dequeue');
+            window.CloudSync.syncStudentState(`Simulasi Antrean: Layani ${served}`);
         }
-        if (window.UI) UI.showToast(`- Siswa terdepan ${served} dilayani kasir & keluar (FIFO)! [Sisa: ${this.heroQueueData.length}/3]`);
+        if (window.UI) UI.showToast(`− Kasir melayani ${served} yang terdepan (FRONT - FIFO)! [Sisa antrean: ${this.heroQueueData.length}/3 Siswa]`);
     },
 
     heroPush() {
         if (this.heroStackData.length >= this.heroMaxCapacity) {
-            if (window.UI) UI.showToast("⚠️ Tumpukan piring penuh! Maksimal 3 data dalam kolom.");
+            if (window.UI) UI.showToast("⚠️ Rak piring penuh! Maksimal 3 piring (Kondisi Stack Overflow / Tumpukan Meluap).");
             return;
         }
-        const nextPlate = this.plateColorsPool[Math.floor(Math.random() * this.plateColorsPool.length)];
+        let nextPlate = this.heroStackSequence[this.heroStackData.length];
+        if (!nextPlate) nextPlate = `Piring ke-${this.heroStackData.length + 1}`;
+
         this.heroStackData.push(nextPlate);
         this.renderHeroSim();
-        this.updateHeroMissionUI();
 
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('stackPush');
             this.updateHeroSimulationBadge(sim);
         }
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
-            window.CloudSync.syncStudentState('Simulasi Beranda: Push');
+            window.CloudSync.syncStudentState(`Simulasi Piring: Tambah ${nextPlate}`);
         }
-        if (window.UI) UI.showToast(`+ Petugas menumpuk ${nextPlate} di puncak (TOP)! [${this.heroStackData.length}/3]`);
+        if (window.UI) UI.showToast(`+ Petugas menaruh ${nextPlate} di puncak tumpukan (TOP)! [${this.heroStackData.length}/3 Piring]`);
     },
 
     heroPop() {
         if (this.heroStackData.length === 0) {
-            if (window.UI) UI.showToast("⚠️ Tumpukan piring kosong (Stack Underflow)!");
+            if (window.UI) UI.showToast("⚠️ Rak piring kosong! Tidak ada piring untuk diambil (Kondisi Stack Underflow).");
             return;
         }
         const popped = this.heroStackData.pop();
-
-        // Cek penyelesaian misi langkah 3
-        if (this.heroMission.step >= 3) {
-            this.heroMission.completed = true;
-        }
-
         this.renderHeroSim();
-        this.updateHeroMissionUI();
 
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('stackPop');
             this.updateHeroSimulationBadge(sim);
         }
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
-            window.CloudSync.syncStudentState('Simulasi Beranda: Pop');
+            window.CloudSync.syncStudentState(`Simulasi Piring: Ambil ${popped}`);
         }
-        if (window.UI) UI.showToast(`- Siswa mengambil ${popped} dari puncak (TOP - LIFO)! [Sisa: ${this.heroStackData.length}/3]`);
+        if (window.UI) UI.showToast(`− Siswa mengambil ${popped} dari puncak (TOP - LIFO)! [Sisa di rak: ${this.heroStackData.length}/3 Piring]`);
     },
 
     resetHeroSim() {
-        this.heroQueueData = ['Andi'];
-        this.heroStackData = ['Piring Merah (P1)'];
-        this.heroMission = { step: 1, completed: false };
+        if (this.heroMode === 'queue') {
+            this.heroQueueData = ['Ani'];
+            if (window.UI) UI.showToast("🔄 Antrean kasir di-reset: kembali ke 1 siswa (Ani).");
+        } else {
+            this.heroStackData = ['🔴 Piring Merah'];
+            if (window.UI) UI.showToast("🔄 Rak tumpukan piring di-reset: kembali ke 1 piring (🔴 Piring Merah).");
+        }
         this.renderHeroSim();
-        this.updateHeroMissionUI();
-        if (window.UI) UI.showToast("🔄 Simulasi dan misi 3 langkah telah di-reset ke kondisi awal.");
+        this.renderHeroChallenge();
     },
 
     toggleClue(clueId) {
