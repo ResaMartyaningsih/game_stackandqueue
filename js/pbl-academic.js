@@ -291,7 +291,8 @@ const PBLAcademic = {
                 `;
             }
 
-            // Show Next Button
+            // Hide Check Button & Show Next Button
+            if (checkBtn) checkBtn.style.display = 'none';
             if (nextBtn) {
                 nextBtn.style.display = 'inline-flex';
                 if (this.currentTaskLevel < 4) {
@@ -303,15 +304,26 @@ const PBLAcademic = {
                 }
             }
         } else {
-            // Render options as interactive single-choice (Auto-Lock on select)
+            // Render options as interactive single-choice
             if (optionsContainer) {
                 optionsContainer.innerHTML = taskData.options.map((opt, idx) => `
-                    <button type="button" class="academic-option-btn" onclick="PBLAcademic.selectTaskOption(${idx})">
+                    <button type="button" class="academic-option-btn" id="task-opt-${idx}" onclick="PBLAcademic.selectTaskOption(${idx})">
                         <span class="option-letter">${String.fromCharCode(65 + idx)}</span>
                         <span>${opt.substring(3)}</span>
                     </button>
                 `).join('');
             }
+
+            // Show Check Button (awaiting selection)
+            if (checkBtn) {
+                checkBtn.style.display = 'inline-flex';
+                checkBtn.disabled = true;
+                checkBtn.style.opacity = '0.65';
+                checkBtn.style.cursor = 'not-allowed';
+                checkBtn.innerHTML = '✓ Periksa Jawaban';
+                checkBtn.className = 'academic-btn academic-btn-primary';
+            }
+            if (nextBtn) nextBtn.style.display = 'none';
         }
 
         // Render Interactive Game / Simulation for this Level
@@ -319,28 +331,71 @@ const PBLAcademic = {
     },
 
     selectTaskOption(idx) {
-        if (!window.StorageManager || !StorageManager.saveIndividualTaskLock) return;
-        const att = StorageManager.getIndividualAttempts();
+        const att = (window.StorageManager && StorageManager.getIndividualAttempts) 
+            ? StorageManager.getIndividualAttempts() 
+            : { currentAttempt: 1, lockedTasks: {} };
         if (att.lockedTasks && att.lockedTasks[this.currentTaskLevel]?.isLocked) {
             return; // Already locked!
+        }
+
+        this.selectedTaskOption = idx;
+
+        // Visual update: highlight selected option
+        const container = document.getElementById('task-options-container');
+        if (container) {
+            container.querySelectorAll('.academic-option-btn').forEach((btn, i) => {
+                btn.classList.toggle('selected', i === idx);
+            });
+        }
+
+        // Enable and highlight "✓ Periksa Jawaban"
+        const checkBtn = document.getElementById('task-check-btn');
+        if (checkBtn) {
+            checkBtn.style.display = 'inline-flex';
+            checkBtn.disabled = false;
+            checkBtn.style.opacity = '1';
+            checkBtn.style.cursor = 'pointer';
+            checkBtn.innerHTML = `✓ Periksa Jawaban (Pilihan ${String.fromCharCode(65 + idx)})`;
+            checkBtn.className = 'academic-btn academic-btn-primary animate-pulse';
+        }
+    },
+
+    checkTaskAnswer() {
+        if (this.selectedTaskOption === null || this.selectedTaskOption === undefined) {
+            if (window.UI) UI.showToast("⚠️ Silakan pilih salah satu opsi jawaban (A, B, C, atau D) terlebih dahulu!");
+            return;
+        }
+
+        const att = (window.StorageManager && StorageManager.getIndividualAttempts) 
+            ? StorageManager.getIndividualAttempts() 
+            : { currentAttempt: 1, lockedTasks: {} };
+        if (att.lockedTasks && att.lockedTasks[this.currentTaskLevel]?.isLocked) {
+            return; // Already locked
         }
 
         const taskData = this.individualTasks.find(t => t.level === this.currentTaskLevel);
         if (!taskData) return;
 
-        this.selectedTaskOption = idx;
-        const isCorrect = (idx === taskData.correct);
+        const isCorrect = (this.selectedTaskOption === taskData.correct);
 
-        // Immediate answer lock
-        const lockResult = StorageManager.saveIndividualTaskLock(this.currentTaskLevel, idx, isCorrect);
+        // Immediate answer lock and storage persistence
+        let lockResult = null;
+        if (window.StorageManager && typeof StorageManager.saveIndividualTaskLock === 'function') {
+            lockResult = StorageManager.saveIndividualTaskLock(this.currentTaskLevel, this.selectedTaskOption, isCorrect);
+        }
 
         if (window.SoundManager) {
             SoundManager.play(isCorrect ? 'levelComplete' : 'wrong');
         }
 
-        // Re-render level UI with locked state
+        // Re-render UI with locked state
         this.renderTaskLevel(this.currentTaskLevel);
         this.updateTaskChipsState();
+
+        // Realtime Sync to Teacher Dashboard
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState(`Tugas Individu Level ${this.currentTaskLevel} Diperiksa (${isCorrect ? 'Tepat' : 'Salah'})`);
+        }
 
         if (window.UI) {
             if (isCorrect) {
@@ -1334,6 +1389,10 @@ const PBLAcademic = {
             StorageManager.save();
         }
 
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState('Refleksi 3-2-1 Disimpan');
+        }
+
         if (window.UI) {
             UI.showToast("✓ Refleksi individu berhasil disimpan!");
         }
@@ -1362,6 +1421,7 @@ const PBLAcademic = {
 
     initHeroSim() {
         this.renderHeroSim();
+        this.updateHeroSimulationBadge();
     },
 
     switchProblemDilemma(mode) {
@@ -1428,6 +1488,32 @@ const PBLAcademic = {
         }
     },
 
+    updateHeroSimulationBadge(evalResult) {
+        if (!evalResult && window.StorageManager && StorageManager.getSimulationEvaluation) {
+            evalResult = StorageManager.getSimulationEvaluation();
+        }
+        const badgeEl = document.getElementById('hero-sim-eval-badge');
+        if (badgeEl && evalResult) {
+            const stars = '⭐'.repeat(evalResult.score || 1);
+            badgeEl.innerHTML = `
+                <div style="background: #FAF3EA; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.6rem 0.85rem; margin-top: 0.75rem; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem;">
+                        <span style="font-weight: 800; color: #891A10; font-size: 0.86rem;">
+                            📊 Hasil Pemahaman Simulasi: ${stars} (${evalResult.score || 1}/4 &bull; ${evalResult.predicate || 'Perlu Bimbingan'})
+                        </span>
+                        <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; padding: 2px 8px; border-radius: 999px; font-weight: 700; font-family: 'Space Mono', monospace;">
+                            ${evalResult.count || 0}/4 Operasi Dicoba
+                        </span>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
+                        Queue (FIFO): ${evalResult.operations?.queueEnqueue ? '✓ Enqueue' : '<span style="color:#A89F91;">○ Enqueue</span>'} &bull; ${evalResult.operations?.queueDequeue ? '✓ Dequeue' : '<span style="color:#A89F91;">○ Dequeue</span>'} | 
+                        Stack (LIFO): ${evalResult.operations?.stackPush ? '✓ Push' : '<span style="color:#A89F91;">○ Push</span>'} &bull; ${evalResult.operations?.stackPop ? '✓ Pop' : '<span style="color:#A89F91;">○ Pop</span>'}
+                    </div>
+                </div>
+            `;
+        }
+    },
+
     heroEnqueue() {
         if (this.heroQueueData.length >= 5) {
             if (window.UI) UI.showToast("⚠️ Antrean kasir penuh (Kapasitas simulasi maks 5 orang)!");
@@ -1436,6 +1522,13 @@ const PBLAcademic = {
         const nextName = this.studentNamesPool[Math.floor(Math.random() * this.studentNamesPool.length)];
         this.heroQueueData.push(nextName);
         this.renderHeroSim();
+        if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
+            const sim = StorageManager.recordSimulationOp('queueEnqueue');
+            this.updateHeroSimulationBadge(sim);
+        }
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState('Simulasi Beranda: Enqueue');
+        }
         if (window.UI) UI.showToast(`+ Siswa ${nextName} masuk antrean di posisi paling belakang (REAR)!`);
     },
 
@@ -1446,6 +1539,13 @@ const PBLAcademic = {
         }
         const served = this.heroQueueData.shift();
         this.renderHeroSim();
+        if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
+            const sim = StorageManager.recordSimulationOp('queueDequeue');
+            this.updateHeroSimulationBadge(sim);
+        }
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState('Simulasi Beranda: Dequeue');
+        }
         if (window.UI) UI.showToast(`- Siswa terdepan ${served} dilayani kasir & keluar (FIFO)!`);
     },
 
@@ -1457,6 +1557,13 @@ const PBLAcademic = {
         const nextPlate = this.plateColorsPool[Math.floor(Math.random() * this.plateColorsPool.length)];
         this.heroStackData.push(nextPlate);
         this.renderHeroSim();
+        if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
+            const sim = StorageManager.recordSimulationOp('stackPush');
+            this.updateHeroSimulationBadge(sim);
+        }
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState('Simulasi Beranda: Push');
+        }
         if (window.UI) UI.showToast(`+ Petugas menaruh ${nextPlate} di puncak tumpukan (TOP)!`);
     },
 
@@ -1467,6 +1574,13 @@ const PBLAcademic = {
         }
         const popped = this.heroStackData.pop();
         this.renderHeroSim();
+        if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
+            const sim = StorageManager.recordSimulationOp('stackPop');
+            this.updateHeroSimulationBadge(sim);
+        }
+        if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
+            window.CloudSync.syncStudentState('Simulasi Beranda: Pop');
+        }
         if (window.UI) UI.showToast(`- Siswa mengambil ${popped} dari posisi puncak (TOP - LIFO)!`);
     },
 

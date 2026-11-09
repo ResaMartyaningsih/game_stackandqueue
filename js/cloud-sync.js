@@ -110,6 +110,10 @@ const CloudSync = {
                     // Siswa mendengarkan perintah PING dari guru & evaluasi presentasi
                     this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/cmd/request_sync`, { qos: 0 });
                     this.mqttClient.subscribe(`${this.MQTT_TOPIC_PREFIX}/eval/#`, { qos: 0 });
+                    // Kirim data langsung begitu terhubung ke broker
+                    setTimeout(() => {
+                        this.syncStudentState('Terhubung ke Cloud Guru');
+                    }, 300);
                 }
             });
 
@@ -301,6 +305,14 @@ const CloudSync = {
         // Ambil bonus minilab
         const bonusMiniLab = data.miniLabBonus || 0;
 
+        // Ambil data evaluasi simulasi (Skala 1 - 4)
+        const simData = (window.StorageManager && typeof StorageManager.getSimulationEvaluation === 'function')
+            ? StorageManager.getSimulationEvaluation()
+            : (data.simulationEvaluation || { score: 1, predicate: 'Perlu Bimbingan', count: 0, operations: {} });
+
+        // Ambil data refleksi 3-2-1
+        const refData = data.reflection || null;
+
         // Ambil rincian data kelompok
         const gp = data.groupProject || {};
         const groupName = gp.groupName || '-';
@@ -320,6 +332,14 @@ const CloudSync = {
                 lastActive: new Date().toISOString(),
                 lastActiveTimestamp: Date.now()
             },
+            simulasi: {
+                score: simData.score || 1, // Skala 1 sampai 4
+                predicate: simData.predicate || 'Perlu Bimbingan',
+                count: simData.count || 0,
+                operations: simData.operations || {},
+                lastUpdated: simData.lastUpdated || null
+            },
+            refleksi: refData,
             nilai: {
                 digitalScore: digitalScore,
                 tugasIndividu: {
@@ -517,98 +537,6 @@ const CloudSync = {
             return this.db.ref(`laraslogika/students/${classKey}`).remove();
         }
         return Promise.resolve();
-    },
-
-    /**
-     * Generator data demo untuk simulasi tampilan guru saat belum ada siswa online
-     */
-    generateDemoStudentsData() {
-        const sampleClasses = ['X-1', 'X-2', 'X-3'];
-        const sampleNames = [
-            'Ahmad Fauzi', 'Anisa Rahmawati', 'Budi Santoso', 'Citra Dewi',
-            'Dimas Pratama', 'Eka Putri Lestari', 'Fajar Nugraha', 'Gita Permata',
-            'Hafizh Ramadhan', 'Indah Kusuma', 'Joko Susilo', 'Kartika Sari',
-            'Lukman Hakim', 'Maulana Malik', 'Nabila Zahra', 'Oki Setiawan'
-        ];
-
-        const activities = [
-            '🟢 Mengerjakan Evaluasi Akhir',
-            '🟢 Diskusi LKPD Kasus Kantin',
-            '🟢 Mengerjakan Tantangan Level 3',
-            '🟡 Mempelajari Materi Queue',
-            '🟢 Mengerjakan Tantangan Level 1',
-            '⚪ Selesai (Rapor Digital)'
-        ];
-
-        const demoData = {};
-        sampleClasses.forEach(cls => {
-            demoData[cls] = {};
-            sampleNames.forEach((name, idx) => {
-                const absen = idx + 1;
-                const studentKey = `absen_${String(absen).padStart(2, '0')}_${name.toLowerCase().replace(/\s+/g, '_')}`;
-                
-                const indivScore = (idx % 4 === 0) ? 100 : (idx % 3 === 0) ? 75 : 100;
-                const lkpdScore = (idx % 2 === 0) ? 90 : 85;
-                const evalScore = (idx % 5 === 0) ? 100 : 80;
-                const bonus = 5;
-                const digitalScore = Math.min(100, Math.round((indivScore * 0.3) + (lkpdScore * 0.35) + (evalScore * 0.35) + bonus));
-                const presentasiScore = (idx % 3 === 0) ? 95 : 88;
-
-                demoData[cls][studentKey] = {
-                    identitas: {
-                        nama: name,
-                        kelas: `Kelas ${cls.replace('-', '.')}`,
-                        classKey: cls,
-                        absen: absen
-                    },
-                    status: {
-                        isOnline: idx < 10,
-                        currentActivity: activities[idx % activities.length],
-                        lastActive: new Date(Date.now() - (idx * 180000)).toISOString(),
-                        lastActiveTimestamp: Date.now() - (idx * 180000)
-                    },
-                    nilai: {
-                        digitalScore: digitalScore,
-                        tugasIndividu: {
-                            bestScore: indivScore,
-                            currentAttempt: (idx % 3) + 1,
-                            history: [{ attempt: 1, score: indivScore }],
-                            isLocked: true
-                        },
-                        lkpdKelompok: {
-                            groupName: `Kelompok ${Math.floor(idx / 4) + 1}`,
-                            bestScore: lkpdScore,
-                            currentAttempt: 1,
-                            history: [{ attempt: 1, score: lkpdScore }],
-                            isLocked: true,
-                            worksheet: {
-                                selectedStructure: 'Queue (FIFO - First In First Out)',
-                                reasoning: 'Loket pemesanan makanan kantin wajib melayani siswa yang datang lebih dulu secara adil.',
-                                steps: '1. Siswa antre di loket kasir belakang (Rear)\n2. Kasir melayani siswa terdepan (Front)\n3. Siswa selesai diproses lalu keluar (Dequeue)',
-                                conclusion: 'Struktur data Queue mencegah penyerobotan antrean dan memastikan waktu tunggu adil.'
-                            }
-                        },
-                        evaluasiAkhir: {
-                            score: evalScore,
-                            isCompleted: true
-                        },
-                        bonusMiniLab: bonus,
-                        breakdown: {
-                            I: indivScore,
-                            L: lkpdScore,
-                            E: evalScore,
-                            B: bonus
-                        }
-                    },
-                    teacherEvaluation: {
-                        scorePresentasi: presentasiScore,
-                        catatanGuru: 'Argumentasi komputasional sangat logis dan runtut.'
-                    }
-                };
-            });
-        });
-
-        return demoData;
     }
 };
 

@@ -486,6 +486,20 @@ const StorageManager = {
 
         const currentScore = correctCount * 25;
 
+        // In-progress tracking: pastikan skor langsung tercatat dan terbaca di dashboard guru
+        if (typeof att.bestScore !== 'number' || currentScore > att.bestScore) {
+            att.bestScore = currentScore;
+        }
+
+        if (!this.data.pageScores) this.data.pageScores = {};
+        this.data.pageScores['individual-tasks'] = {
+            score: att.bestScore,
+            lastAttemptScore: currentScore,
+            attempt: att.currentAttempt,
+            completed: (lockedCount === 4),
+            savedAt: new Date().toISOString()
+        };
+
         // If all 4 tasks are locked in this attempt, record attempt to history
         if (lockedCount === 4) {
             const curIdx = att.currentAttempt;
@@ -506,20 +520,75 @@ const StorageManager = {
             // Update bestScore
             const allScores = att.history.map(h => h.score);
             att.bestScore = Math.max(...allScores, currentScore);
-
-            // Sync with pageScores
-            if (!this.data.pageScores) this.data.pageScores = {};
-            this.data.pageScores['individual-tasks'] = {
-                score: att.bestScore,
-                lastAttemptScore: currentScore,
-                attempt: curIdx,
-                completed: true,
-                savedAt: new Date().toISOString()
-            };
+            this.data.pageScores['individual-tasks'].score = att.bestScore;
         }
 
         this.save();
         return { lockedCount, correctCount, currentScore, isAllLocked: lockedCount === 4 };
+    },
+
+    // ----------------------------------------------------
+    // EVALUASI SIMULASI EKSPLORASI SISWA (SKALA 1 - 4)
+    // ----------------------------------------------------
+    recordSimulationOp(opName) {
+        if (!this.data.simulationEvaluation) {
+            this.data.simulationEvaluation = {
+                score: 1,
+                predicate: 'Perlu Bimbingan',
+                operations: {},
+                count: 0,
+                lastUpdated: new Date().toISOString()
+            };
+        }
+
+        const sim = this.data.simulationEvaluation;
+        if (!sim.operations) sim.operations = {};
+        sim.operations[opName] = true;
+
+        // Hitung berapa operasi dari 4 operasi inti yang sudah dicoba
+        // 1. queueEnqueue, 2. queueDequeue, 3. stackPush, 4. stackPop
+        const ops = ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'];
+        let triedCount = 0;
+        ops.forEach(op => {
+            if (sim.operations[op]) triedCount++;
+        });
+
+        sim.count = triedCount;
+        // Skala 1 sampai 4
+        // 4 ops = 4 (Sangat Paham)
+        // 3 ops = 3 (Paham)
+        // 2 ops = 2 (Cukup Paham)
+        // 1 atau 0 ops = 1 (Perlu Bimbingan)
+        if (triedCount >= 4) {
+            sim.score = 4;
+            sim.predicate = 'Sangat Paham';
+        } else if (triedCount === 3) {
+            sim.score = 3;
+            sim.predicate = 'Paham';
+        } else if (triedCount === 2) {
+            sim.score = 2;
+            sim.predicate = 'Cukup Paham';
+        } else {
+            sim.score = 1;
+            sim.predicate = 'Perlu Bimbingan';
+        }
+
+        sim.lastUpdated = new Date().toISOString();
+        this.save();
+        return sim;
+    },
+
+    getSimulationEvaluation() {
+        if (!this.data.simulationEvaluation) {
+            return {
+                score: 1,
+                predicate: 'Perlu Bimbingan',
+                operations: {},
+                count: 0,
+                lastUpdated: null
+            };
+        }
+        return this.data.simulationEvaluation;
     },
 
     resetIndividualAttempt() {
