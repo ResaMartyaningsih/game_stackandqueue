@@ -234,6 +234,7 @@ button,
     display: flex !important;
     flex-wrap: wrap !important;
     gap: 0.75rem !important;
+    align-items: center !important;
 }
 
 .problem-split-grid {
@@ -508,6 +509,16 @@ button,
    B. TABLET PORTRAIT & MEDIUM DEVICES (max-width: 860px)
    -------------------------------------------------------------------------- */
 @media (max-width: 860px) {
+    /* Hide decorative studio corner crosshairs to prevent text collisions */
+    .studio-corner-decor {
+        display: none !important;
+    }
+
+    /* Studio section padding adjustment */
+    .studio-section {
+        padding: 2.75rem 1.25rem !important;
+    }
+
     /* Hide desktop nav, reveal mobile bottom nav */
     .desktop-nav {
         display: none !important;
@@ -538,12 +549,28 @@ button,
     .academic-stepper {
         grid-template-columns: repeat(2, 1fr) !important;
     }
+
+    /* Editorial titles on tablets */
+    .hero-editorial-title {
+        font-size: clamp(2rem, 5.2vw, 2.85rem) !important;
+        line-height: 1.15 !important;
+    }
+
+    .problem-editorial-title,
+    .duel-editorial-title,
+    .goals-editorial-title,
+    .cta-editorial-title {
+        font-size: 1.85rem !important;
+        line-height: 1.2 !important;
+    }
 }
 
 /* --------------------------------------------------------------------------
    C. MOBILE PHONES (max-width: 640px)
+   Precision adaptations for iPhone, Samsung, Xiaomi, and other smartphones
    -------------------------------------------------------------------------- */
 @media (max-width: 640px) {
+    /* Header & Branding */
     .header-container {
         padding: 0.5rem 0.85rem !important;
     }
@@ -561,7 +588,7 @@ button,
     }
 
     .main-wrapper {
-        padding: 0.85rem 0.65rem 6.5rem 0.65rem !important;
+        padding: 0.75rem 0.65rem 6.5rem 0.65rem !important;
     }
 
     .academic-card {
@@ -570,38 +597,391 @@ button,
     }
 
     .academic-card-title {
+        font-size: 1.2rem !important;
+    }
+
+    /* --- SECTION PADDINGS & CONTAINERS ON MOBILE --- */
+    .studio-section {
+        padding: 2rem 0.85rem !important;
+    }
+
+    .studio-container {
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* --- HERO SECTION MOBILE TUNING --- */
+    .hero-meta-pill {
+        font-size: 0.72rem !important;
+        padding: 0.35rem 0.75rem !important;
+        white-space: normal !important;
+        display: inline-flex !important;
+        line-height: 1.4 !important;
+        margin-bottom: 0.85rem !important;
+        text-align: left !important;
+    }
+
+    .hero-editorial-title {
+        font-size: clamp(1.65rem, 6.2vw, 2.15rem) !important;
+        line-height: 1.15 !important;
+        margin: 0.75rem 0 !important;
+        letter-spacing: -0.025em !important;
+    }
+
+    .hero-lead-text {
+        font-size: 0.92rem !important;
+        line-height: 1.6 !important;
+        margin-bottom: 1.15rem !important;
+    }
+
+    /* Hero Buttons - Natural Inline-Flex Pill Buttons (NO STRETCH) */
+    .hero-actions-group {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .hero-actions-group > *,
+    .studio-btn-hero-primary,
+    .studio-btn-hero-outline {
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.55rem 0.95rem !important;
+        font-size: 0.86rem !important;
+        border-radius: 9px !important;
+        white-space: normal !important;
+    }
+
+    .hero-ct-tags-row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.35rem !important;
+        margin-top: 0.85rem !important;
+    }
+
+    .hero-ct-tag {
+        font-size: 0.72rem !important;
+        padding: 0.3rem 0.55rem !important;
+        border-radius: 6px !important;
+    }
+
+    /* Hero Interactive Live Simulator Card */
+    .hero-studio-card {
+        padding: 1.1rem 0.85rem !important;
+        border-radius: 14px !important;
+        margin-top: 1rem !important;
+    }
+
+    .hero-studio-card-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.65rem !important;
+    }
+
+    .hero-studio-label {
+        font-size: 0.68rem !important;
+    }
+
+    .hero-studio-card-title {
+        font-size: 1.1rem !important;
+        margin: 0 !important;
+    }
+
+    .hero-vis-tabs {
+        display: flex !important;
+        width: 100% !important;
+        gap: 0.35rem !important;
+    }
+
+    .hero-vis-tab-btn {
+        flex: 1 1 50% !important;
+        font-size: 0.78rem !important;
+        padding: 0.45rem 0.5rem !important;
+        text-align: center !important;
+    }
+
+    .hero-stage-viewport {
+        min-height: 95px !important;
+        height: auto !important;
+        padding: 0.65rem !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .hero-stage-controls {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.4rem !important;
+    }
+
+    .hero-stage-controls button,
+    .hero-action-btn-primary,
+    .hero-action-btn-amber {
+        flex: 1 1 calc(50% - 0.4rem) !important;
+        min-width: 120px !important;
+        width: auto !important;
+        font-size: 0.76rem !important;
+        padding: 0.5rem 0.55rem !important;
+        border-radius: 8px !important;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+
+    .hero-interactive-hint {
+        font-size: 0.76rem !important;
+        padding: 0.5rem 0.7rem !important;
+    }
+
+    /* --- PROBLEM SECTION (SINTAKS 1 PBL) --- */
+    .problem-editorial-tag,
+    .duel-editorial-tag,
+    .goals-editorial-tag {
+        font-size: 0.72rem !important;
+        padding: 0.3rem 0.65rem !important;
+        margin-bottom: 0.65rem !important;
+    }
+
+    .problem-editorial-title,
+    .duel-editorial-title,
+    .goals-editorial-title,
+    .cta-editorial-title {
+        font-size: clamp(1.35rem, 5.2vw, 1.85rem) !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .problem-editorial-sub,
+    .duel-lead-sub,
+    .cta-editorial-sub {
+        font-size: 0.88rem !important;
+        line-height: 1.55 !important;
+        margin-bottom: 1.15rem !important;
+    }
+
+    .problem-stimulus-card,
+    .problem-dilemma-card {
+        padding: 1.15rem 0.85rem !important;
+        border-radius: 14px !important;
+    }
+
+    .stimulus-badge,
+    .dilemma-header-label {
+        font-size: 0.72rem !important;
+        padding: 0.3rem 0.65rem !important;
+    }
+
+    .problem-stimulus-quote {
+        font-size: 0.9rem !important;
+        line-height: 1.55 !important;
+        padding-left: 0.75rem !important;
+    }
+
+    .problem-questions-block {
+        font-size: 0.84rem !important;
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+    }
+
+    .problem-ct-pills-row {
+        gap: 0.35rem !important;
+    }
+
+    .problem-ct-pill {
+        font-size: 0.72rem !important;
+        padding: 0.25rem 0.55rem !important;
+    }
+
+    .dilemma-switch-tabs {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.35rem !important;
+    }
+
+    .dilemma-tab-btn {
+        flex: 1 1 calc(50% - 0.35rem) !important;
+        font-size: 0.75rem !important;
+        padding: 0.45rem 0.5rem !important;
+        text-align: center !important;
+    }
+
+    .dilemma-metrics-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.4rem !important;
+    }
+
+    .dilemma-metric-chip {
+        font-size: 0.72rem !important;
+        padding: 0.3rem 0.45rem !important;
+    }
+
+    .btn-dilemma-lkpd {
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        padding: 0.6rem 1.15rem !important;
+        font-size: 0.86rem !important;
+        border-radius: 9px !important;
+    }
+
+    /* --- DUEL CONCEPT SECTION (LIFO VS FIFO) --- */
+    .duel-concept-card {
+        padding: 1.25rem 0.95rem !important;
+        border-radius: 14px !important;
+    }
+
+    .duel-card-heading {
         font-size: 1.25rem !important;
     }
 
-    /* Hero Buttons Full-Width Stack */
-    .hero-actions-group {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
+    .duel-card-desc {
+        font-size: 0.86rem !important;
+        line-height: 1.55 !important;
     }
 
-    .hero-actions-group > * {
-        width: 100% !important;
-        justify-content: center !important;
+    .duel-card-methods {
+        padding: 0.75rem !important;
+        font-size: 0.82rem !important;
+    }
+
+    .duel-methods-pills {
+        gap: 0.35rem !important;
+    }
+
+    .duel-method-code {
+        font-size: 0.76rem !important;
+        padding: 0.2rem 0.5rem !important;
+    }
+
+    .btn-duel-queue,
+    .btn-duel-stack {
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-self: flex-start !important;
+        padding: 0.6rem 1.15rem !important;
+        font-size: 0.86rem !important;
+        border-radius: 9px !important;
+    }
+
+    /* --- GOALS SECTION (ABCD STANDARDS) --- */
+    .goals-stack-list {
+        gap: 0.85rem !important;
+    }
+
+    .goal-card-item {
+        padding: 1rem 0.85rem !important;
+        border-radius: 14px !important;
+        gap: 0.75rem !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+    }
+
+    .goal-num-badge {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 1rem !important;
+        flex-shrink: 0 !important;
+    }
+
+    .goal-info h4 {
+        font-size: 0.92rem !important;
+        line-height: 1.35 !important;
+        margin: 0 0 0.3rem 0 !important;
+    }
+
+    .goal-cognitive-tag {
+        font-size: 0.68rem !important;
+        padding: 0.2rem 0.45rem !important;
+        margin-top: 0.2rem !important;
+    }
+
+    .goal-info p {
+        font-size: 0.84rem !important;
+        line-height: 1.5 !important;
+    }
+
+    /* --- CTA BOTTOM SECTION --- */
+    .studio-cta-section {
+        padding: 2.25rem 1rem !important;
+        border-radius: 16px !important;
         text-align: center !important;
     }
 
-    /* Attempt Trackers Stack */
+    .cta-buttons-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+
+    .cta-buttons-row > button,
+    .btn-cta-light,
+    .btn-cta-trans {
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.55rem 0.95rem !important;
+        font-size: 0.84rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* --- UNIVERSAL ACTION BUTTON SIZING (PREVENTS 100% BLOAT) --- */
+    .academic-btn,
+    .btn-primary,
+    .academic-btn-primary,
+    .academic-btn-outline,
+    .academic-btn-success,
+    .btn-action-primary {
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.55rem 0.95rem !important;
+        font-size: 0.85rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* Attempt Trackers in Tugas Individu & LKPD Kelompok */
     #individual-attempt-tracker,
     #group-attempt-tracker {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        text-align: center !important;
-        gap: 0.75rem !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        text-align: left !important;
+        gap: 0.5rem !important;
+        padding: 0.65rem 0.85rem !important;
     }
 
     #individual-attempt-tracker button,
     #group-attempt-tracker button {
-        width: 100% !important;
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
         justify-content: center !important;
+        padding: 0.45rem 0.85rem !important;
+        font-size: 0.82rem !important;
+        border-radius: 8px !important;
     }
 
-    /* Profile Screen Hero Card Stacking */
+    /* Profile Screen Header Card & Action Buttons */
     #screen-profile .academic-card:first-child > div {
         flex-direction: column !important;
         align-items: stretch !important;
@@ -617,14 +997,22 @@ button,
 
     #screen-profile .academic-card:first-child > div > div:last-child {
         display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
         gap: 0.5rem !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
     }
 
     #screen-profile .academic-card:first-child button {
-        width: 100% !important;
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
         justify-content: center !important;
+        padding: 0.55rem 0.95rem !important;
+        font-size: 0.84rem !important;
+        border-radius: 8px !important;
     }
 
     /* Profile Score Card Stack */
@@ -653,33 +1041,108 @@ button,
         grid-column: 2 !important;
         width: 100% !important;
         min-width: 0 !important;
+        font-size: 0.85rem !important;
+        padding: 0.45rem 0.65rem !important;
     }
 
     .gp-member-row button {
         grid-column: 3 !important;
+        padding: 0.45rem 0.65rem !important;
     }
 
     .gp-member-row .gp-member-absen-input {
         grid-column: 1 / span 3 !important;
         width: 100% !important;
+        font-size: 0.85rem !important;
+        padding: 0.45rem 0.65rem !important;
     }
 
     .gp-member-row .gp-member-role-select {
         grid-column: 1 / span 3 !important;
         width: 100% !important;
         min-width: 0 !important;
+        font-size: 0.85rem !important;
+        padding: 0.45rem 0.65rem !important;
     }
 
-    /* LKPD Action Buttons Stack */
+    /* LKPD Action Buttons Bar (Clean Wrap, Not 100% Brick) */
     .gp-action-bar {
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
         width: 100% !important;
     }
 
     .gp-action-bar > button {
-        width: 100% !important;
+        width: auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
         justify-content: center !important;
+        padding: 0.55rem 0.95rem !important;
+        font-size: 0.84rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* Materi Learn Pages Action Bar (Bottom Persistence Bar) */
+    .page-score-action-bar {
+        padding: 1rem 0.85rem !important;
+        border-radius: 14px !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.85rem !important;
+    }
+
+    .score-summary-left {
+        gap: 0.75rem !important;
+    }
+
+    .score-trophy-icon {
+        font-size: 1.75rem !important;
+    }
+
+    .score-summary-left h4 {
+        font-size: 1rem !important;
+    }
+
+    .score-summary-left p {
+        font-size: 0.8rem !important;
+    }
+
+    .score-actions-right {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+    }
+
+    .btn-save-score,
+    .btn-next-level-nav {
+        width: auto !important;
+        flex: 1 1 auto !important;
+        max-width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.6rem 0.95rem !important;
+        font-size: 0.84rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* Multiple-choice option buttons (Clean Reading Flow) */
+    .task-option-btn,
+    .remedial-opt-btn,
+    .gp-hots-option-btn {
+        width: 100% !important;
+        padding: 0.65rem 0.85rem !important;
+        font-size: 0.86rem !important;
+        line-height: 1.45 !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        border-radius: 8px !important;
     }
 
     /* Toast Notification Mobile Safe Placement */
@@ -706,6 +1169,17 @@ button,
     }
 
     .hero-editorial-title {
-        font-size: 1.7rem !important;
+        font-size: 1.45rem !important;
+    }
+
+    .problem-editorial-title,
+    .duel-editorial-title,
+    .goals-editorial-title,
+    .cta-editorial-title {
+        font-size: 1.25rem !important;
+    }
+
+    .studio-section {
+        padding: 1.5rem 0.65rem !important;
     }
 }
