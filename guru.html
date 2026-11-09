@@ -1043,7 +1043,7 @@
 
                     <div style="background: #FAF8F5; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.9rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="color: #891A10; font-size: 0.86rem;">👥 2. Nomor 1: Soal Queue (FIFO)</strong>
+                            <strong style="color: #891A10; font-size: 0.86rem;">👥 2. Nomor 1: Soal Queue</strong>
                             <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">30 Pts</span>
                         </div>
                         <div style="font-size: 0.76rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
@@ -1053,7 +1053,7 @@
 
                     <div style="background: #FAF8F5; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.9rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="color: #891A10; font-size: 0.86rem;">🍽️ 3. Nomor 2: Soal Stack (LIFO)</strong>
+                            <strong style="color: #891A10; font-size: 0.86rem;">🍽️ 3. Nomor 2: Soal Stack</strong>
                             <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">30 Pts</span>
                         </div>
                         <div style="font-size: 0.76rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
@@ -1070,7 +1070,7 @@
                     </div>
                     <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 0.55rem 0.75rem;">
                         <div style="font-weight: 800; color: #1E40AF; font-size: 0.82rem;">⭐⭐⭐ Skor 3: Paham</div>
-                        <div style="font-size: 0.74rem; color: #1D4ED8;">Akumulasi 60 - 79 Pts (Memahami prinsip FIFO &amp; LIFO).</div>
+                        <div style="font-size: 0.74rem; color: #1D4ED8;">Akumulasi 60 - 79 Pts (Memahami aturan Queue &amp; Stack).</div>
                     </div>
                     <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 0.55rem 0.75rem;">
                         <div style="font-weight: 800; color: #92400E; font-size: 0.82rem;">⭐⭐ Skor 2: Cukup Paham</div>
@@ -2363,29 +2363,29 @@
                     <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">1. LIVE INTERACTIVE LAB (Simulasi Operasi Instan - ${opsScore}/40 Pts):</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.85rem;">
                         <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.55rem 0.8rem; border-radius: 8px;">
-                            <strong style="color: #E76814; font-size: 0.82rem;">Antrean Kasir (Queue - FIFO):</strong><br>
+                            <strong style="color: #E76814; font-size: 0.82rem;">Antrean Kasir (Queue):</strong><br>
                             • Tambah Antrean (+Enqueue): ${ops.queueEnqueue ? '✅ Selesai (+10)' : '❌ Belum'}<br>
                             • Ambil Antrean (−Dequeue): ${ops.queueDequeue ? '✅ Selesai (+10)' : '❌ Belum'}
                         </div>
                         <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.55rem 0.8rem; border-radius: 8px;">
-                            <strong style="color: #891A10; font-size: 0.82rem;">Tumpukan Piring (Stack - LIFO):</strong><br>
+                            <strong style="color: #891A10; font-size: 0.82rem;">Tumpukan Piring (Stack):</strong><br>
                             • Tambah Piring (+Push): ${ops.stackPush ? '✅ Selesai (+10)' : '❌ Belum'}<br>
                             • Ambil Piring (−Pop): ${ops.stackPop ? '✅ Selesai (+10)' : '❌ Belum'}
                         </div>
                     </div>
 
-                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">2. Nomor 1: Tantangan Logika Queue (FIFO) - ${qScore}/30 Pts:</h4>
+                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">2. Nomor 1: Tantangan Logika Queue - ${qScore}/30 Pts:</h4>
                     <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.65rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
                         <strong>Kasus Antrean 3 Siswa di Loket Kasir Kantin:</strong><br>
                         • Pertanyaan: Siapakah siswa yang pertama kali dilayani saat kasir menekan tombol layani?<br>
-                        • Status Jawaban: ${qAnswered ? (qCorrect ? '✅ <strong>Benar (+30 Pts)</strong> - Siswa memilih Ani (FRONT - FIFO)' : '❌ <strong>Belum Tepat (0 Pts)</strong>') : '⚪ <strong>Belum Dikerjakan (0 Pts)</strong>'}
+                        • Status Jawaban: ${qAnswered ? (qCorrect ? '✅ <strong>Benar (+30 Pts)</strong> - Siswa memilih Ani (FRONT)' : '❌ <strong>Belum Tepat (0 Pts)</strong>') : '⚪ <strong>Belum Dikerjakan (0 Pts)</strong>'}
                     </div>
 
-                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">3. Nomor 2: Tantangan Logika Stack (LIFO) - ${sScore}/30 Pts:</h4>
+                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">3. Nomor 2: Tantangan Logika Stack - ${sScore}/30 Pts:</h4>
                     <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.65rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
                         <strong>Kasus Tumpukan 3 Piring di Rak Saji Kantin:</strong><br>
                         • Pertanyaan: Piring warna apakah yang terambil pertama kali saat siswa menekan tombol ambil piring?<br>
-                        • Status Jawaban: ${sAnswered ? (sCorrect ? '✅ <strong>Benar (+30 Pts)</strong> - Siswa memilih Piring Hijau (TOP - LIFO)' : '❌ <strong>Belum Tepat (0 Pts)</strong>') : '⚪ <strong>Belum Dikerjakan (0 Pts)</strong>'}
+                        • Status Jawaban: ${sAnswered ? (sCorrect ? '✅ <strong>Benar (+30 Pts)</strong> - Siswa memilih Piring Hijau (TOP)' : '❌ <strong>Belum Tepat (0 Pts)</strong>') : '⚪ <strong>Belum Dikerjakan (0 Pts)</strong>'}
                     </div>
 
                     <p style="font-size: 0.8rem; color: #64748B; margin: 0.5rem 0 0 0;">

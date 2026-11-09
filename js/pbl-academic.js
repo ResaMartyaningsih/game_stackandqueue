@@ -1703,33 +1703,33 @@ const PBLAcademic = {
 
     // ----------------------------------------------------
     // PERTANYAAN TANTANGAN LOGIKA BERANDA (2 NOMOR JADI 1 KARTU TERPADU)
-    // NOMOR 1: SOAL QUEUE (FIFO) | NOMOR 2: SOAL STACK (LIFO)
+    // NOMOR 1: SOAL QUEUE | NOMOR 2: SOAL STACK
     // ----------------------------------------------------
     heroUnifiedChallenges: [
         {
             num: 1,
             topic: 'queue',
-            badge: 'Queue (FIFO) - Antrean Kasir',
-            title: '👥 Nomor 1: Tantangan Logika Antrean Kasir (Queue - FIFO)',
+            badge: 'Queue - Antrean Kasir',
+            title: '👥 Nomor 1: Tantangan Logika Antrean Kasir (Queue)',
             context: 'Loket kasir kantin melayani antrean kuota maksimal 3 siswa. Datang 3 siswa berurutan memesan makanan: 👤 <strong>Ani</strong> (datang ke-1), 👤 <strong>Adi</strong> (datang ke-2), dan 👤 <strong>Ida</strong> (datang ke-3).',
-            q: '1. Berdasarkan aturan FIFO (First In First Out), saat kasir menekan tombol <strong>− Ambil Antrean (Layani / Dequeue)</strong>, siapakah siswa yang pertama kali dilayani?',
+            q: '1. Berdasarkan aturan Queue, saat kasir menekan tombol <strong>− Ambil Antrean (Layani / Dequeue)</strong>, siapakah siswa yang pertama kali dilayani?',
             options: [
-                { text: 'A. 👤 Ida (Posisi Paling Belakang - REAR)', isCorrect: false, note: 'Ida datang terakhir di posisi REAR, harus menunggu giliran antrean.' },
+                { text: 'A. 👤 Ida (Posisi Paling Belakang - REAR)', isCorrect: false, note: 'Ida datang terakhir di posisi paling belakang (REAR), harus menunggu giliran antrean.' },
                 { text: 'B. 👤 Adi (Posisi Tengah)', isCorrect: false, note: 'Adi berada di tengah antrean di belakang Ani.' },
-                { text: 'C. 👤 Ani (Posisi Paling Depan - FRONT)', isCorrect: true, note: 'Tepat sekali! Asas keadilan antrean Queue menerapkan FIFO (First In First Out): Ani yang datang pertama berada di FRONT dan dilayani pertama kali!' }
+                { text: 'C. 👤 Ani (Posisi Paling Depan - FRONT)', isCorrect: true, note: 'Tepat sekali! Sesuai aturan Queue: Ani yang datang pertama berada di posisi paling depan (FRONT) dan dilayani pertama kali!' }
             ]
         },
         {
             num: 2,
             topic: 'stack',
-            badge: 'Stack (LIFO) - Tumpukan Piring',
-            title: '🍽️ Nomor 2: Tantangan Logika Tumpukan Piring (Stack - LIFO)',
+            badge: 'Stack - Tumpukan Piring',
+            title: '🍽️ Nomor 2: Tantangan Logika Tumpukan Piring (Stack)',
             context: 'Petugas kantin menumpuk 3 piring ke dalam rak saji dari bawah ke atas: 🔴 <strong>Piring Merah</strong> (dasar), 🟡 <strong>Piring Kuning</strong> (tengah), dan 🟢 <strong>Piring Hijau</strong> (puncak TOP). Kapasitas rak maksimal 3 piring.',
-            q: '2. Berdasarkan aturan LIFO (Last In First Out), jika seorang siswa datang mengambil piring menggunakan tombol <strong>− Ambil Piring (Pop)</strong>, piring warna apakah yang terambil pertama kali?',
+            q: '2. Berdasarkan aturan Stack, jika seorang siswa datang mengambil piring menggunakan tombol <strong>− Ambil Piring (Pop)</strong>, piring warna apakah yang terambil pertama kali?',
             options: [
                 { text: 'A. 🔴 Piring Merah (Dasar Rak)', isCorrect: false, note: 'Piring Merah berada di dasar rak (paling bawah), terhimpit piring lain.' },
                 { text: 'B. 🟡 Piring Kuning (Tengah Rak)', isCorrect: false, note: 'Piring Kuning berada di tengah rak, tidak bisa diambil langsung.' },
-                { text: 'C. 🟢 Piring Hijau (Puncak - TOP)', isCorrect: true, note: 'Tepat sekali! Sesuai prinsip LIFO (Last In First Out), piring yang terakhir ditaruh di puncak (TOP) adalah yang pertama diambil!' }
+                { text: 'C. 🟢 Piring Hijau (Puncak - TOP)', isCorrect: true, note: 'Tepat sekali! Sesuai aturan Stack: piring yang terakhir ditaruh di puncak (TOP) adalah yang pertama diambil!' }
             ]
         }
     ],
@@ -1743,7 +1743,7 @@ const PBLAcademic = {
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
                     <div>
                         <h4 style="margin: 0; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; color: #891A10;">
-                            🎯 Tantangan Logika Komputasional: Queue (FIFO) &amp; Stack (LIFO)
+                            🎯 Tantangan Logika Komputasional: Queue &amp; Stack
                         </h4>
                         <p style="margin: 0.2rem 0 0 0; font-size: 0.8rem; color: #714236;">
                             Uji penalaran Anda pada 2 nomor studi kasus pelayanan kantin sekolah berikut:
