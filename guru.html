@@ -1166,11 +1166,43 @@
             studentsData: {},
             filteredStudents: [],
             isUnlocked: false,
+            STORAGE_ROSTER_KEY: 'laraslogika_guru_persistent_roster_v2',
+
+            savePersistentRoster() {
+                try {
+                    localStorage.setItem(this.STORAGE_ROSTER_KEY, JSON.stringify(this.studentsData));
+                } catch (e) {}
+            },
+
+            loadPersistentRoster() {
+                try {
+                    const raw = localStorage.getItem(this.STORAGE_ROSTER_KEY);
+                    if (raw) {
+                        const saved = JSON.parse(raw);
+                        if (saved && typeof saved === 'object') {
+                            Object.keys(saved).forEach(cls => {
+                                if (!this.studentsData[cls]) this.studentsData[cls] = {};
+                                Object.keys(saved[cls]).forEach(sk => {
+                                    const s = saved[cls][sk];
+                                    if (s && s.status) {
+                                        const lastActive = s.status.lastActiveTimestamp || 0;
+                                        // Siswa yang tidak ada heartbeat > 35 detik dianggap offline, tetapi progresnya tetap tersimpan
+                                        s.status.isOnline = (Date.now() - lastActive) < 35000;
+                                    }
+                                    this.studentsData[cls][sk] = s;
+                                });
+                            });
+                        }
+                    }
+                } catch (e) {}
+            },
 
             init() {
                 if (sessionStorage.getItem('guru_authenticated') === 'true') {
                     this.unlockPortal();
                 }
+                // Muat data tersimpan terlebih dahulu agar saat refresh data siswa tidak hilang
+                this.loadPersistentRoster();
                 this.connectCloudDatabase();
                 this.applyFilters();
             },
@@ -1301,6 +1333,11 @@
             handleIncomingStudentData(data) {
                 if (!data || typeof data !== 'object') return;
 
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const timeStampText = `${dateStr}, ${timeStr} WIB`;
+
                 // Format 1: Single student packet (MQTT / BroadcastChannel)
                 if (data.identitas && (data.identitas.classKey || data.identitas.kelas)) {
                     let cls = data.identitas.classKey;
@@ -1312,8 +1349,18 @@
                     const studentKey = (window.CloudSync && CloudSync.cleanStudentKey) 
                         ? CloudSync.cleanStudentKey(data.identitas.absen, data.identitas.nama)
                         : `absen_${data.identitas.absen || '00'}_${data.identitas.nama || 'siswa'}`;
+                    
+                    if (!data.status) data.status = {};
+                    data.status.recordedAt = timeStampText;
+                    data.status.lastActiveTimestamp = Date.now();
+                    data.status.isOnline = true;
+
                     if (!this.studentsData[cls]) this.studentsData[cls] = {};
                     this.studentsData[cls][studentKey] = data;
+
+                    // Simpan permanen ke localStorage guru
+                    this.savePersistentRoster();
+
                     this.updateClassCounts();
                     this.applyFilters();
                     return;
@@ -1327,13 +1374,18 @@
                             const normCls = k.replace('.', '-');
                             if (!this.studentsData[normCls]) this.studentsData[normCls] = {};
                             Object.keys(data[k]).forEach(sk => {
-                                this.studentsData[normCls][sk] = data[k][sk];
+                                const item = data[k][sk];
+                                if (item && item.status) {
+                                    if (!item.status.recordedAt) item.status.recordedAt = timeStampText;
+                                }
+                                this.studentsData[normCls][sk] = item;
                                 hasNew = true;
                             });
                         }
                     }
                 });
                 if (hasNew) {
+                    this.savePersistentRoster();
                     this.updateClassCounts();
                     this.applyFilters();
                 }
@@ -1607,8 +1659,8 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="activity-live-badge ${isOnline ? 'online' : ''}">
-                                    ${isOnline ? '🟢' : '⚪'} ${activityTxt}
+                                <span class="activity-live-badge ${isOnline ? 'online' : ''}" title="${st.recordedAt ? 'Waktu rekap: ' + st.recordedAt : ''}">
+                                    ${isOnline ? '🟢 ' + activityTxt : '⚪ Offline (' + (st.recordedAt || 'Tersimpan') + ')'}
                                 </span>
                             </td>
                             <td style="text-align: center;">
@@ -1858,7 +1910,7 @@
                                 </span>
                             </td>
                             <td style="font-size: 0.82rem; color: #64748B;">
-                                ${lastActiveFormatted}
+                                ${isOnline ? '🟢 ' + lastActiveFormatted : (st.recordedAt ? '⚪ Rekap: ' + st.recordedAt : lastActiveFormatted)}
                             </td>
                             <td style="text-align: center;">
                                 <strong style="color: #B45309; font-family: 'Space Mono', monospace;">
@@ -1890,6 +1942,7 @@
                     }
                     this.studentsData[classKey][studentKey].teacherEvaluation.scorePresentasi = parseInt(score, 10) || 0;
                 }
+                this.savePersistentRoster();
                 this.applyFilters();
             },
 
@@ -1972,6 +2025,7 @@
                 try {
                     localStorage.removeItem(`laraslogika_student_${classKey}_${studentKey}`);
                 } catch (e) {}
+                this.savePersistentRoster();
                 this.updateClassCounts();
                 this.applyFilters();
             },
@@ -1991,6 +2045,7 @@
                         CloudSync.resetClassRecords(this.currentClass);
                     }
                 }
+                this.savePersistentRoster();
                 this.updateClassCounts();
                 this.applyFilters();
             },

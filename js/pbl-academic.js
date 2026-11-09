@@ -331,11 +331,19 @@ const PBLAcademic = {
     },
 
     selectTaskOption(idx) {
+        idx = parseInt(idx, 10);
+        const curLvl = parseInt(this.currentTaskLevel, 10) || 1;
         const att = (window.StorageManager && StorageManager.getIndividualAttempts) 
             ? StorageManager.getIndividualAttempts() 
             : { currentAttempt: 1, lockedTasks: {} };
-        if (att.lockedTasks && att.lockedTasks[this.currentTaskLevel]?.isLocked) {
+        if (att.lockedTasks && att.lockedTasks[curLvl]?.isLocked) {
             return; // Already locked!
+        }
+
+        // Jika mengklik opsi yang sama untuk kedua kalinya, langsung kunci & periksa!
+        if (this.selectedTaskOption === idx) {
+            this.checkTaskAnswer();
+            return;
         }
 
         this.selectedTaskOption = idx;
@@ -348,14 +356,14 @@ const PBLAcademic = {
             });
         }
 
-        // Enable and highlight "✓ Periksa Jawaban"
+        // Enable and highlight "🔒 Kunci & Periksa Jawaban"
         const checkBtn = document.getElementById('task-check-btn');
         if (checkBtn) {
             checkBtn.style.display = 'inline-flex';
             checkBtn.disabled = false;
             checkBtn.style.opacity = '1';
             checkBtn.style.cursor = 'pointer';
-            checkBtn.innerHTML = `✓ Periksa Jawaban (Pilihan ${String.fromCharCode(65 + idx)})`;
+            checkBtn.innerHTML = `🔒 Kunci &amp; Periksa Jawaban (Pilihan ${String.fromCharCode(65 + idx)})`;
             checkBtn.className = 'academic-btn academic-btn-primary animate-pulse';
         }
     },
@@ -366,14 +374,15 @@ const PBLAcademic = {
             return;
         }
 
+        const curLvl = parseInt(this.currentTaskLevel, 10) || 1;
         const att = (window.StorageManager && StorageManager.getIndividualAttempts) 
             ? StorageManager.getIndividualAttempts() 
             : { currentAttempt: 1, lockedTasks: {} };
-        if (att.lockedTasks && att.lockedTasks[this.currentTaskLevel]?.isLocked) {
+        if (att.lockedTasks && att.lockedTasks[curLvl]?.isLocked) {
             return; // Already locked
         }
 
-        const taskData = this.individualTasks.find(t => t.level === this.currentTaskLevel);
+        const taskData = this.individualTasks.find(t => t.level === curLvl);
         if (!taskData) return;
 
         const isCorrect = (this.selectedTaskOption === taskData.correct);
@@ -381,7 +390,7 @@ const PBLAcademic = {
         // Immediate answer lock and storage persistence
         let lockResult = null;
         if (window.StorageManager && typeof StorageManager.saveIndividualTaskLock === 'function') {
-            lockResult = StorageManager.saveIndividualTaskLock(this.currentTaskLevel, this.selectedTaskOption, isCorrect);
+            lockResult = StorageManager.saveIndividualTaskLock(curLvl, this.selectedTaskOption, isCorrect);
         }
 
         if (window.SoundManager) {
@@ -389,19 +398,19 @@ const PBLAcademic = {
         }
 
         // Re-render UI with locked state
-        this.renderTaskLevel(this.currentTaskLevel);
+        this.renderTaskLevel(curLvl);
         this.updateTaskChipsState();
 
         // Realtime Sync to Teacher Dashboard
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
-            window.CloudSync.syncStudentState(`Tugas Individu Level ${this.currentTaskLevel} Diperiksa (${isCorrect ? 'Tepat' : 'Salah'})`);
+            window.CloudSync.syncStudentState(`Tugas Individu Level ${curLvl} Diperiksa (${isCorrect ? 'Tepat' : 'Salah'})`);
         }
 
         if (window.UI) {
             if (isCorrect) {
-                UI.showToast(`🔒 Jawaban Level ${this.currentTaskLevel} Terkunci: Tepat Sekali! (+25 Poin)`);
+                UI.showToast(`🔒 Jawaban Level ${curLvl} Terkunci: Tepat Sekali! (+25 Poin)`);
             } else {
-                UI.showToast(`🔒 Jawaban Level ${this.currentTaskLevel} Terkunci: Kurang Tepat. Pelajari pembahasannya!`);
+                UI.showToast(`🔒 Jawaban Level ${curLvl} Terkunci: Kurang Tepat. Pelajari pembahasannya!`);
             }
 
             if (lockResult && lockResult.isAllLocked) {
@@ -416,9 +425,18 @@ const PBLAcademic = {
     },
 
     goToNextTaskLevel() {
-        if (this.currentTaskLevel < 4) {
-            this.renderTaskLevel(this.currentTaskLevel + 1);
-            window.scrollTo({ top: 300, behavior: 'smooth' });
+        const curLvl = parseInt(this.currentTaskLevel, 10) || 1;
+        if (curLvl < 4) {
+            this.renderTaskLevel(curLvl + 1);
+            const cardEl = document.getElementById('task-title-text');
+            if (cardEl) {
+                cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        } else {
+            if (window.UI) {
+                UI.showToast("🎉 Seluruh 4 Level Individu Tuntas! Lanjut ke LKPD Kelompok.");
+                UI.switchScreen('group-project');
+            }
         }
     },
 
@@ -1413,14 +1431,20 @@ const PBLAcademic = {
     // HERO INTERACTIVE MINI VISUALIZER & CLUE ACCORDION
     // ----------------------------------------------------
     heroMode: 'queue',
-    heroQueueData: ['Andi', 'Budi', 'Citra'],
-    heroStackData: ['Piring Hijau', 'Piring Biru', 'Piring Merah'],
-    studentNamesPool: ['Dodi', 'Eka', 'Fani', 'Gita', 'Hadi', 'Intan'],
-    plateColorsPool: ['Piring Kuning', 'Piring Oranye', 'Piring Ungu', 'Piring Emas'],
+    heroQueueData: ['Andi'],
+    heroStackData: ['Piring Merah (P1)'],
+    heroMaxCapacity: 3,
+    studentNamesPool: ['Budi', 'Citra', 'Dodi', 'Eka', 'Fani', 'Gita'],
+    plateColorsPool: ['Piring Biru (P2)', 'Piring Hijau (P3)', 'Piring Kuning (P4)', 'Piring Oranye (P5)'],
     problemDilemmaMode: 'chaos',
+    heroMission: {
+        step: 1,
+        completed: false
+    },
 
     initHeroSim() {
         this.renderHeroSim();
+        this.updateHeroMissionUI();
         this.updateHeroSimulationBadge();
     },
 
@@ -1448,7 +1472,66 @@ const PBLAcademic = {
         if (controlsQueue) controlsQueue.style.display = (mode === 'queue') ? 'flex' : 'none';
         if (controlsStack) controlsStack.style.display = (mode === 'stack') ? 'flex' : 'none';
 
+        const stage = document.getElementById('hero-vis-stage');
+        if (stage) {
+            stage.classList.toggle('stack-mode', mode === 'stack');
+        }
+
         this.renderHeroSim();
+        this.updateHeroMissionUI();
+    },
+
+    updateHeroMissionUI() {
+        const badge = document.getElementById('mission-step-badge');
+        const text = document.getElementById('mission-instruction-text');
+        const fill = document.getElementById('mission-progress-fill');
+        const cap = document.getElementById('hero-capacity-indicator');
+
+        const currentData = (this.heroMode === 'queue') ? this.heroQueueData : this.heroStackData;
+        const count = currentData.length;
+        if (cap) {
+            cap.textContent = `Kapasitas: ${count} / 3 Data`;
+            cap.style.color = (count >= 3) ? '#B8210F' : '#891A10';
+        }
+
+        const isQueue = (this.heroMode === 'queue');
+        const inOp = isQueue ? '+ Enqueue' : '+ Push';
+        const outOp = isQueue ? '− Dequeue' : '− Pop';
+        const inPos = isQueue ? 'di belakang (REAR)' : 'di puncak tumpukan (TOP)';
+        const outPos = isQueue ? 'di depan (FRONT - FIFO)' : 'dari puncak (TOP - LIFO)';
+
+        if (!badge || !text || !fill) return;
+
+        if (this.heroMission.completed) {
+            badge.textContent = '✓ Misi 3 Langkah Tuntas!';
+            badge.style.background = '#ECFDF5';
+            badge.style.borderColor = '#10B981';
+            badge.style.color = '#065F46';
+            text.innerHTML = `🎉 <strong>Luar Biasa!</strong> Kamu berhasil menguji alur kerja dasar ${isQueue ? 'Queue (Antrean FIFO)' : 'Stack (Tumpukan LIFO)'} maksimal 3 data. Nilai pemahaman awal telah tercatat otomatis!`;
+            fill.style.width = '100%';
+            fill.style.background = '#10B981';
+            return;
+        }
+
+        if (count === 0) {
+            this.heroMission.step = 1;
+            badge.textContent = '🎯 Misi Pemahaman: Langkah 1 dari 3';
+            text.innerHTML = `👉 <strong>Langkah 1:</strong> Kolom kosong (0/3 data). Klik tombol <strong>${inOp}</strong> untuk memasukkan data pertama ${inPos}.`;
+            fill.style.width = '33%';
+            fill.style.background = '#E76814';
+        } else if (count > 0 && count < 3) {
+            this.heroMission.step = 2;
+            badge.textContent = '🎯 Misi Pemahaman: Langkah 2 dari 3';
+            text.innerHTML = `👉 <strong>Langkah 2:</strong> Data terisi (${count}/3). Klik <strong>${inOp}</strong> lagi hingga kolom penuh (Maksimal 3 data) untuk melihat batas kapasitas.`;
+            fill.style.width = '66%';
+            fill.style.background = '#E76814';
+        } else if (count >= 3) {
+            this.heroMission.step = 3;
+            badge.textContent = '🎯 Misi Pemahaman: Langkah 3 dari 3';
+            text.innerHTML = `👉 <strong>Langkah 3:</strong> Kolom penuh (3/3 data)! Sekarang klik <strong>${outOp}</strong> untuk mengambil data ${outPos}. Amati mana yang keluar duluan!`;
+            fill.style.width = '88%';
+            fill.style.background = '#F59E0B';
+        }
     },
 
     renderHeroSim() {
@@ -1456,35 +1539,50 @@ const PBLAcademic = {
         if (!stage) return;
 
         if (this.heroMode === 'queue') {
+            stage.classList.remove('stack-mode');
             if (this.heroQueueData.length === 0) {
-                stage.innerHTML = '<span style="font-size: 0.85rem; color: #8F726A; font-style: italic;">Antrean kasir kosong (isEmpty == true)</span>';
+                stage.innerHTML = '<span style="font-size: 0.85rem; color: #8F726A; font-style: italic;">Antrean kasir sedang kosong (0 / 3 data)</span>';
                 return;
             }
-            stage.innerHTML = this.heroQueueData.map((name, idx) => {
+
+            let html = '<div style="display: flex; align-items: center; justify-content: center; background: #FAF6ED; border: 1.5px solid #E76814; border-radius: 8px; padding: 0.4rem 0.65rem; font-weight: 800; font-size: 0.76rem; color: #891A10; flex-shrink: 0;"><span>🏪</span> LOKET KASIR<br><small style="color: #E76814;">(FRONT)</small></div><span style="color: #DC8236; font-weight: bold; font-size: 1.1rem;">◀</span>';
+
+            html += this.heroQueueData.map((name, idx) => {
                 const isFront = idx === 0;
                 const isRear = idx === this.heroQueueData.length - 1;
                 return `
-                    <div class="hero-node-chip hero-node-queue">
+                    <div class="hero-node-chip hero-node-queue" style="${isFront ? 'border: 2px solid #E76814; background: #FAF3EA;' : ''}">
                         <span>👤 ${name}</span>
-                        ${isFront ? '<span style="font-size: 0.68rem; background: #E76814; color: #FAF8F5; padding: 1px 4px; border-radius: 4px;">FRONT</span>' : ''}
-                        ${isRear && !isFront ? '<span style="font-size: 0.68rem; background: #DC8236; color: #FAF8F5; padding: 1px 4px; border-radius: 4px;">REAR</span>' : ''}
+                        ${isFront ? '<span style="font-size: 0.65rem; background: #E76814; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">FRONT</span>' : ''}
+                        ${isRear && !isFront ? '<span style="font-size: 0.65rem; background: #DC8236; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">REAR</span>' : ''}
                     </div>
                 `;
-            }).join('<span style="color: #D8D4BC; font-weight: bold;">➔</span>');
+            }).join('<span style="color: #D8D4BC; font-weight: bold;">◀</span>');
+
+            html += '<span style="color: #DC8236; font-weight: bold; font-size: 1.1rem;">◀</span><div style="font-size: 0.74rem; color: #714236; font-weight: 700; text-align: center; flex-shrink: 0;">🚪 PINTU MASUK<br><small style="color: #DC8236;">(REAR)</small></div>';
+            stage.innerHTML = html;
         } else {
+            // MODE STACK: MENUMPUK KE ATAS (Bukan ke samping!)
+            stage.classList.add('stack-mode');
             if (this.heroStackData.length === 0) {
-                stage.innerHTML = '<span style="font-size: 0.85rem; color: #8F726A; font-style: italic;">Tumpukan piring kosong (isEmpty == true)</span>';
+                stage.innerHTML = '<span style="font-size: 0.85rem; color: #8F726A; font-style: italic; margin-bottom: 2rem;">Rak tumpukan piring kosong (0 / 3 data)</span>';
                 return;
             }
+
+            // Tampilkan bertingkat dari bawah ke atas (column-reverse meletakkan index terakhir di posisi paling atas)
             stage.innerHTML = this.heroStackData.map((plate, idx) => {
-                const isTop = idx === this.heroStackData.length - 1;
+                const isTop = (idx === this.heroStackData.length - 1);
+                const isBottom = (idx === 0);
                 return `
-                    <div class="hero-node-chip hero-node-stack">
+                    <div class="hero-node-stack-vertical" style="${isTop ? 'border: 2px solid #891A10; background: #FFF5F3;' : ''}">
                         <span>🍽️ ${plate}</span>
-                        ${isTop ? '<span style="font-size: 0.68rem; background: #891A10; color: #FAF8F5; padding: 1px 4px; border-radius: 4px;">TOP</span>' : ''}
+                        <div style="display: flex; gap: 0.35rem; align-items: center;">
+                            ${isTop ? '<span style="font-size: 0.72rem; background: #891A10; color: #FFFFFF; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-family: \'Space Mono\', monospace;">TOP (PUNCAK)</span>' : ''}
+                            ${isBottom && !isTop ? '<span style="font-size: 0.72rem; background: #FAF3EA; color: #714236; border: 1px solid #D8D4BC; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-family: \'Space Mono\', monospace;">BOTTOM (DASAR)</span>' : ''}
+                        </div>
                     </div>
                 `;
-            }).join('<span style="color: #D8D4BC; font-weight: bold;">▲</span>');
+            }).join('');
         }
     },
 
@@ -1515,13 +1613,15 @@ const PBLAcademic = {
     },
 
     heroEnqueue() {
-        if (this.heroQueueData.length >= 5) {
-            if (window.UI) UI.showToast("⚠️ Antrean kasir penuh (Kapasitas simulasi maks 5 orang)!");
+        if (this.heroQueueData.length >= this.heroMaxCapacity) {
+            if (window.UI) UI.showToast("⚠️ Antrean kasir penuh! Maksimal 3 data dalam kolom.");
             return;
         }
         const nextName = this.studentNamesPool[Math.floor(Math.random() * this.studentNamesPool.length)];
         this.heroQueueData.push(nextName);
         this.renderHeroSim();
+        this.updateHeroMissionUI();
+
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('queueEnqueue');
             this.updateHeroSimulationBadge(sim);
@@ -1529,7 +1629,7 @@ const PBLAcademic = {
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
             window.CloudSync.syncStudentState('Simulasi Beranda: Enqueue');
         }
-        if (window.UI) UI.showToast(`+ Siswa ${nextName} masuk antrean di posisi paling belakang (REAR)!`);
+        if (window.UI) UI.showToast(`+ Siswa ${nextName} masuk antrean di belakang (REAR)! [${this.heroQueueData.length}/3]`);
     },
 
     heroDequeue() {
@@ -1538,7 +1638,15 @@ const PBLAcademic = {
             return;
         }
         const served = this.heroQueueData.shift();
+        
+        // Cek penyelesaian misi langkah 3
+        if (this.heroMission.step >= 3) {
+            this.heroMission.completed = true;
+        }
+
         this.renderHeroSim();
+        this.updateHeroMissionUI();
+
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('queueDequeue');
             this.updateHeroSimulationBadge(sim);
@@ -1546,17 +1654,19 @@ const PBLAcademic = {
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
             window.CloudSync.syncStudentState('Simulasi Beranda: Dequeue');
         }
-        if (window.UI) UI.showToast(`- Siswa terdepan ${served} dilayani kasir & keluar (FIFO)!`);
+        if (window.UI) UI.showToast(`- Siswa terdepan ${served} dilayani kasir & keluar (FIFO)! [Sisa: ${this.heroQueueData.length}/3]`);
     },
 
     heroPush() {
-        if (this.heroStackData.length >= 5) {
-            if (window.UI) UI.showToast("⚠️ Tumpukan piring sudah penuh (Maks 5 piring)!");
+        if (this.heroStackData.length >= this.heroMaxCapacity) {
+            if (window.UI) UI.showToast("⚠️ Tumpukan piring penuh! Maksimal 3 data dalam kolom.");
             return;
         }
         const nextPlate = this.plateColorsPool[Math.floor(Math.random() * this.plateColorsPool.length)];
         this.heroStackData.push(nextPlate);
         this.renderHeroSim();
+        this.updateHeroMissionUI();
+
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('stackPush');
             this.updateHeroSimulationBadge(sim);
@@ -1564,7 +1674,7 @@ const PBLAcademic = {
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
             window.CloudSync.syncStudentState('Simulasi Beranda: Push');
         }
-        if (window.UI) UI.showToast(`+ Petugas menaruh ${nextPlate} di puncak tumpukan (TOP)!`);
+        if (window.UI) UI.showToast(`+ Petugas menumpuk ${nextPlate} di puncak (TOP)! [${this.heroStackData.length}/3]`);
     },
 
     heroPop() {
@@ -1573,7 +1683,15 @@ const PBLAcademic = {
             return;
         }
         const popped = this.heroStackData.pop();
+
+        // Cek penyelesaian misi langkah 3
+        if (this.heroMission.step >= 3) {
+            this.heroMission.completed = true;
+        }
+
         this.renderHeroSim();
+        this.updateHeroMissionUI();
+
         if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
             const sim = StorageManager.recordSimulationOp('stackPop');
             this.updateHeroSimulationBadge(sim);
@@ -1581,7 +1699,16 @@ const PBLAcademic = {
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
             window.CloudSync.syncStudentState('Simulasi Beranda: Pop');
         }
-        if (window.UI) UI.showToast(`- Siswa mengambil ${popped} dari posisi puncak (TOP - LIFO)!`);
+        if (window.UI) UI.showToast(`- Siswa mengambil ${popped} dari puncak (TOP - LIFO)! [Sisa: ${this.heroStackData.length}/3]`);
+    },
+
+    resetHeroSim() {
+        this.heroQueueData = ['Andi'];
+        this.heroStackData = ['Piring Merah (P1)'];
+        this.heroMission = { step: 1, completed: false };
+        this.renderHeroSim();
+        this.updateHeroMissionUI();
+        if (window.UI) UI.showToast("🔄 Simulasi dan misi 3 langkah telah di-reset ke kondisi awal.");
     },
 
     toggleClue(clueId) {

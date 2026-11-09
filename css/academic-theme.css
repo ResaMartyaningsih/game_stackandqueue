@@ -1902,6 +1902,49 @@ body {
     gap: 0.6rem;
     margin-bottom: 1.25rem;
     overflow-x: auto;
+    transition: all 0.3s ease;
+}
+
+/* Stack Vertikal Tumpukan (Menumpuk ke Atas, Bukan ke Samping) */
+.hero-stage-viewport.stack-mode {
+    flex-direction: column-reverse !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-height: 230px !important;
+    padding: 1rem 1.25rem 0.75rem 1.25rem !important;
+    border-bottom: 5px solid #891A10 !important;
+    border-left: 2px dashed #D8D4BC !important;
+    border-right: 2px dashed #D8D4BC !important;
+    background: #FAF6ED !important;
+}
+
+.hero-node-stack-vertical {
+    width: 90%;
+    max-width: 290px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: #FFFFFF;
+    border: 2px solid #891A10;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: #714236;
+    box-shadow: 0 4px 10px rgba(137, 26, 16, 0.08);
+    animation: stackSlideDown 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin: 3px 0;
+}
+
+@keyframes stackSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .hero-stage-controls {

@@ -234,6 +234,24 @@
                                         <button type="button" id="hero-vis-tab-stack" class="hero-vis-tab-btn" onclick="PBLAcademic.switchHeroSim('stack')">Stack (LIFO)</button>
                                     </div>
                                 </div>
+
+                                <!-- Panduan Misi 3 Langkah (Pemahaman Awal - Maksimal 3 Data) -->
+                                <div class="hero-3step-mission-box" id="hero-3step-mission-box" style="background: #FFFFFF; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 0.85rem 1rem; margin-top: 0.85rem; box-shadow: 0 2px 8px rgba(113, 66, 54, 0.04);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem;">
+                                        <span id="mission-step-badge" style="font-size: 0.76rem; font-weight: 800; color: #891A10; background: #FAF3EA; border: 1px solid #E76814; padding: 2px 8px; border-radius: 999px; text-transform: uppercase;">
+                                            🎯 Misi Pemahaman: Langkah 1 dari 3
+                                        </span>
+                                        <span id="hero-capacity-indicator" style="font-family: 'Space Mono', monospace; font-size: 0.78rem; font-weight: 700; color: #891A10; background: #FAF6ED; border: 1px solid #D8D4BC; padding: 2px 8px; border-radius: 999px;">
+                                            Kapasitas: 0 / 3 Data
+                                        </span>
+                                    </div>
+                                    <div id="mission-instruction-text" style="font-size: 0.86rem; color: #2E1E1A; line-height: 1.45; font-weight: 600;">
+                                        👉 <strong>Langkah 1:</strong> Klik tombol <strong>+ Enqueue</strong> untuk memasukkan data pertama ke dalam antrean.
+                                    </div>
+                                    <div style="background: #FAF8F5; border-radius: 999px; height: 6px; overflow: hidden; margin-top: 0.5rem; border: 1px solid #EAE7D7;">
+                                        <div id="mission-progress-fill" style="background: linear-gradient(90deg, #E76814, #10B981); height: 100%; width: 33%; transition: width 0.3s ease;"></div>
+                                    </div>
+                                </div>
                                 
                                 <!-- Visual Stage Viewport -->
                                 <div class="hero-stage-viewport" id="hero-vis-stage" aria-label="Area Visualisasi Elemen">
@@ -242,26 +260,32 @@
 
                                 <!-- Queue Controls -->
                                 <div class="hero-stage-controls" id="hero-controls-queue">
-                                    <button type="button" class="hero-action-btn-primary" onclick="PBLAcademic.heroEnqueue()">
+                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-enqueue" onclick="PBLAcademic.heroEnqueue()">
                                         + Enqueue (Masuk Belakang)
                                     </button>
-                                    <button type="button" class="hero-action-btn-amber" onclick="PBLAcademic.heroDequeue()">
+                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-dequeue" onclick="PBLAcademic.heroDequeue()">
                                         &minus; Dequeue (Layani Depan)
+                                    </button>
+                                    <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
+                                        🔄 Reset
                                     </button>
                                 </div>
 
                                 <!-- Stack Controls -->
                                 <div class="hero-stage-controls" id="hero-controls-stack" style="display: none;">
-                                    <button type="button" class="hero-action-btn-primary" onclick="PBLAcademic.heroPush()">
+                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-push" onclick="PBLAcademic.heroPush()">
                                         + Push (Tumpuk di Puncak)
                                     </button>
-                                    <button type="button" class="hero-action-btn-amber" onclick="PBLAcademic.heroPop()">
+                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-pop" onclick="PBLAcademic.heroPop()">
                                         &minus; Pop (Ambil dari Puncak)
+                                    </button>
+                                    <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
+                                        🔄 Reset
                                     </button>
                                 </div>
 
                                 <div class="hero-interactive-hint" id="hero-card-tip">
-                                    ℹ️ <strong>Eksplorasi Langsung:</strong> Uji perubahan elemen secara instan sebelum masuk ke materi lengkap.
+                                    ℹ️ <strong>Eksplorasi Langsung:</strong> Ikuti misi 3 langkah di atas untuk menguji sifat FIFO (Queue) &amp; LIFO (Stack) maksimal 3 data.
                                 </div>
                                 <div id="hero-sim-eval-badge"></div>
                             </div>
@@ -607,7 +631,7 @@
                                 <button type="button" class="academic-btn academic-btn-primary" id="task-check-btn" onclick="PBLAcademic.checkTaskAnswer()">
                                     ✓ Periksa Jawaban
                                 </button>
-                                <button type="button" class="academic-btn academic-btn-success" id="task-next-btn" style="display: none;">
+                                <button type="button" class="academic-btn academic-btn-success" id="task-next-btn" style="display: none;" onclick="PBLAcademic.goToNextTaskLevel()">
                                     Lanjut ke Level Berikutnya ➔
                                 </button>
                             </div>
