@@ -1591,6 +1591,20 @@ const PBLAcademic = {
     problemDilemmaMode: 'chaos',
 
     initHeroSim() {
+        // Muat jawaban tersimpan tantangan logika dari StorageManager jika ada
+        if (window.StorageManager && typeof StorageManager.getSimulationEvaluation === 'function') {
+            const sim = StorageManager.getSimulationEvaluation();
+            if (sim.stackChallenges) {
+                Object.keys(sim.stackChallenges).forEach(qId => {
+                    this.heroChallengeAnswers.stack[qId] = sim.stackChallenges[qId].chosen;
+                });
+            }
+            if (sim.queueChallenges) {
+                Object.keys(sim.queueChallenges).forEach(qId => {
+                    this.heroChallengeAnswers.queue[qId] = sim.queueChallenges[qId].chosen;
+                });
+            }
+        }
         this.renderHeroSim();
         this.renderHeroChallenge();
         this.updateHeroSimulationBadge();
@@ -1845,18 +1859,16 @@ const PBLAcademic = {
         const opt = qObj && qObj.options[optionIdx];
         const isCorrect = !!(opt && opt.isCorrect);
 
-        // Record operation to storage simulation tracker
-        if (window.StorageManager && typeof StorageManager.recordSimulationOp === 'function') {
-            const opName = (topic === 'stack') 
-                ? (questionId === 1 ? 'stackPop' : 'stackPush') 
-                : (questionId === 1 ? 'queueDequeue' : 'queueEnqueue');
-            const sim = StorageManager.recordSimulationOp(opName);
+        // Rekam jawaban tantangan logika ke storage & hitung akumulasi skor simulasi
+        let sim = null;
+        if (window.StorageManager && typeof StorageManager.recordHeroChallengeAnswer === 'function') {
+            sim = StorageManager.recordHeroChallengeAnswer(topic, questionId, optionIdx, isCorrect);
             this.updateHeroSimulationBadge(sim);
         }
 
         // Sinkronkan pemahaman simulasi ke Dashboard Guru
         if (window.CloudSync && typeof window.CloudSync.syncStudentState === 'function') {
-            window.CloudSync.syncStudentState(`Uji Logika Beranda (${topic.toUpperCase()} Q${questionId}): ${isCorrect ? 'Benar' : 'Mencoba'}`);
+            window.CloudSync.syncStudentState(`Tantangan ${topic.toUpperCase()} (Q${questionId}): ${isCorrect ? 'Tepat' : 'Mencoba'} [Akumulasi: ${sim?.totalScore || 0} pts]`);
         }
 
         if (window.UI) {
@@ -1877,19 +1889,23 @@ const PBLAcademic = {
         const badgeEl = document.getElementById('hero-sim-eval-badge');
         if (badgeEl && evalResult) {
             const stars = '⭐'.repeat(evalResult.score || 1);
+            const totalScore = evalResult.totalScore || 0;
+            const stats = evalResult.stats || { opsCount: 0, queueCorrect: 0, stackCorrect: 0 };
+
             badgeEl.innerHTML = `
-                <div style="background: #FAF3EA; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.65rem 0.9rem; margin-top: 0.85rem; text-align: left;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem;">
-                        <span style="font-weight: 800; color: #891A10; font-size: 0.86rem;">
-                            📊 Hasil Pemahaman Simulasi: ${stars} (${evalResult.score || 1}/4 &bull; ${evalResult.predicate || 'Perlu Bimbingan'})
+                <div style="background: #FAF3EA; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.95rem; margin-top: 0.85rem; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem;">
+                        <span style="font-weight: 800; color: #891A10; font-size: 0.9rem;">
+                            📊 Akumulasi Eksplorasi: ${stars} ${totalScore}/100 Pts (${evalResult.predicate || 'Perlu Bimbingan'})
                         </span>
-                        <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; padding: 2px 8px; border-radius: 999px; font-weight: 700; font-family: 'Space Mono', monospace;">
-                            ${evalResult.count || 0}/4 Operasi Dicoba
+                        <span style="font-size: 0.76rem; background: #E76814; color: #FFFFFF; padding: 3px 10px; border-radius: 999px; font-weight: 700; font-family: 'Space Mono', monospace;">
+                            ⭐ Skor ${evalResult.score || 1}/4
                         </span>
                     </div>
-                    <div style="font-size: 0.75rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
-                        Queue (FIFO): ${evalResult.operations?.queueEnqueue ? '✓ Tambah Antrean' : '<span style="color:#A89F91;">○ Tambah Antrean</span>'} &bull; ${evalResult.operations?.queueDequeue ? '✓ Ambil Antrean' : '<span style="color:#A89F91;">○ Ambil Antrean</span>'} | 
-                        Stack (LIFO): ${evalResult.operations?.stackPush ? '✓ Tambah Piring' : '<span style="color:#A89F91;">○ Tambah Piring</span>'} &bull; ${evalResult.operations?.stackPop ? '✓ Ambil Piring' : '<span style="color:#A89F91;">○ Ambil Piring</span>'}
+                    <div style="font-size: 0.78rem; color: #714236; margin-top: 0.45rem; line-height: 1.45; display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                        <span>🧪 <strong>Simulasi Instan:</strong> ${stats.opsCount}/4 operasi</span>
+                        <span>👥 <strong>Kasus Antrean:</strong> ${stats.queueCorrect}/3 benar</span>
+                        <span>🍽️ <strong>Kasus Piring:</strong> ${stats.stackCorrect}/3 benar</span>
                     </div>
                 </div>
             `;

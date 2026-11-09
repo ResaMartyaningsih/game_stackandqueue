@@ -341,9 +341,13 @@ const CloudSync = {
             },
             simulasi: {
                 score: simData.score || 1, // Skala 1 sampai 4
+                totalScore: simData.totalScore || 0, // Akumulasi nilai 0 - 100 pts
                 predicate: simData.predicate || 'Perlu Bimbingan',
                 count: simData.count || 0,
                 operations: simData.operations || {},
+                queueChallenges: simData.queueChallenges || {},
+                stackChallenges: simData.stackChallenges || {},
+                stats: simData.stats || { opsCount: 0, queueCorrect: 0, stackCorrect: 0, totalCompleted: 0 },
                 lastUpdated: simData.lastUpdated || null
             },
             refleksi: refData,

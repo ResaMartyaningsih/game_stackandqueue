@@ -634,6 +634,32 @@
         }
         .op-check-tag.done { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
         .op-check-tag.pending { background: #F8FAFC; color: #94A3B8; border: 1px solid #E2E8F0; }
+        .op-check-tag.wrong { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+
+        .sim-accum-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            background: #FAF8F5;
+            border: 1.5px solid #E76814;
+            font-family: 'Space Mono', monospace;
+            box-shadow: 0 2px 6px rgba(231, 104, 20, 0.08);
+        }
+        .sim-accum-val {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #891A10;
+            line-height: 1.1;
+        }
+        .sim-accum-sub {
+            font-size: 0.7rem;
+            color: #714236;
+            font-weight: 700;
+            margin-top: 2px;
+        }
 
         /* Refleksi Card Styles */
         .refleksi-grid {
@@ -976,7 +1002,7 @@
         </section>
 
         <!-- ===================================================================
-             PANE 2: DATA HASIL SIMULASI SISWA (SKALA 1 - 4)
+             PANE 2: DATA HASIL SIMULASI SISWA (AKUMULASI SKOR 0 - 100 & SKALA 1 - 4)
              =================================================================== -->
         <section id="pane-tab-simulasi" class="guru-tab-pane" style="display: none;">
             <!-- Heading & Rubrik Info Card -->
@@ -987,7 +1013,7 @@
                             🧪 Data Hasil Eksplorasi Simulasi Siswa (Beranda &amp; Mini-Lab)
                         </h3>
                         <p style="margin: 0.25rem 0 0 0; font-size: 0.84rem; color: #64748B;">
-                            Penilaian formatif otomatis untuk memantau pemahaman awal konsep operasi linear Stack (Push/Pop) dan Queue (Enqueue/Dequeue).
+                            Akumulasi penilaian formatif pemahaman awal dari 3 aktivitas beranda: (1) Simulasi Operasi Instan, (2) Kasus Antrean 3 Siswa (Queue), dan (3) Kasus Tumpukan 3 Piring (Stack).
                         </p>
                     </div>
                     <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.requestPingAll(event)">
@@ -995,23 +1021,56 @@
                     </button>
                 </div>
 
-                <!-- Rubrik Penilaian 1 - 4 -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.65rem; margin-top: 1rem;">
-                    <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 0.65rem 0.85rem;">
-                        <div style="font-weight: 800; color: #065F46; font-size: 0.85rem;">⭐⭐⭐⭐ Skor 4: Sangat Paham</div>
-                        <div style="font-size: 0.75rem; color: #047857; margin-top: 0.2rem;">Berhasil mencoba ke-4 operasi inti: Enqueue, Dequeue, Push, dan Pop.</div>
+                <!-- 3 Komponen Akumulasi Formula Card -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem; margin-top: 1rem;">
+                    <div style="background: #FAF8F5; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: #891A10; font-size: 0.86rem;">🔬 1. Simulasi Operasi Instan</strong>
+                            <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">Maks 40 Pts</span>
+                        </div>
+                        <div style="font-size: 0.76rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
+                            4 Operasi @ 10 pts: Tambah Antrean, Ambil Antrean, Tambah Piring, dan Ambil Piring.
+                        </div>
                     </div>
-                    <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 0.65rem 0.85rem;">
-                        <div style="font-weight: 800; color: #1E40AF; font-size: 0.85rem;">⭐⭐⭐ Skor 3: Paham</div>
-                        <div style="font-size: 0.75rem; color: #1D4ED8; margin-top: 0.2rem;">Mencoba 3 dari 4 operasi inti, menguasai sebagian besar alur FIFO/LIFO.</div>
+
+                    <div style="background: #FAF8F5; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: #891A10; font-size: 0.86rem;">👥 2. Kasus Antrean 3 Siswa (Queue)</strong>
+                            <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">Maks 30 Pts</span>
+                        </div>
+                        <div style="font-size: 0.76rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
+                            3 Soal Bernalar @ 10 pts: Urutan Pelayanan (Ani di FRONT), Queue Overflow, dan Queue Underflow.
+                        </div>
                     </div>
-                    <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 0.65rem 0.85rem;">
-                        <div style="font-weight: 800; color: #92400E; font-size: 0.85rem;">⭐⭐ Skor 2: Cukup Paham</div>
-                        <div style="font-size: 0.75rem; color: #B45309; margin-top: 0.2rem;">Baru mencoba 2 operasi dasar pada salah satu struktur data.</div>
+
+                    <div style="background: #FAF8F5; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: #891A10; font-size: 0.86rem;">🍽️ 3. Kasus Tumpukan 3 Piring (Stack)</strong>
+                            <span style="font-size: 0.75rem; background: #E76814; color: #FFFFFF; font-weight: 800; padding: 1px 7px; border-radius: 999px;">Maks 30 Pts</span>
+                        </div>
+                        <div style="font-size: 0.76rem; color: #714236; margin-top: 0.35rem; line-height: 1.4;">
+                            3 Soal Bernalar @ 10 pts: Urutan Pengambilan (Hijau di TOP), Stack Overflow, dan Stack Underflow.
+                        </div>
                     </div>
-                    <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 10px; padding: 0.65rem 0.85rem;">
-                        <div style="font-weight: 800; color: #991B1B; font-size: 0.85rem;">⭐ Skor 1: Perlu Bimbingan</div>
-                        <div style="font-size: 0.75rem; color: #B91C1C; margin-top: 0.2rem;">Baru mencoba 1 operasi atau belum mengeksplorasi simulasi.</div>
+                </div>
+
+                <!-- Rubrik Pemahaman 1 - 4 Berbasis Akumulasi Nilai -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.65rem; margin-top: 0.75rem;">
+                    <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 0.55rem 0.75rem;">
+                        <div style="font-weight: 800; color: #065F46; font-size: 0.82rem;">⭐⭐⭐⭐ Skor 4: Sangat Paham</div>
+                        <div style="font-size: 0.74rem; color: #047857;">Akumulasi &ge; 80 Pts (Menguasai operasi dan bernalar kritis).</div>
+                    </div>
+                    <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 0.55rem 0.75rem;">
+                        <div style="font-weight: 800; color: #1E40AF; font-size: 0.82rem;">⭐⭐⭐ Skor 3: Paham</div>
+                        <div style="font-size: 0.74rem; color: #1D4ED8;">Akumulasi 60 - 79 Pts (Memahami prinsip FIFO &amp; LIFO).</div>
+                    </div>
+                    <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 0.55rem 0.75rem;">
+                        <div style="font-weight: 800; color: #92400E; font-size: 0.82rem;">⭐⭐ Skor 2: Cukup Paham</div>
+                        <div style="font-size: 0.74rem; color: #B45309;">Akumulasi 40 - 59 Pts (Mulai memahami salah satu struktur).</div>
+                    </div>
+                    <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 10px; padding: 0.55rem 0.75rem;">
+                        <div style="font-weight: 800; color: #991B1B; font-size: 0.82rem;">⭐ Skor 1: Perlu Bimbingan</div>
+                        <div style="font-size: 0.74rem; color: #B91C1C;">Akumulasi &lt; 40 Pts (Perlu bimbingan konsep dasar).</div>
                     </div>
                 </div>
             </div>
@@ -1022,14 +1081,15 @@
                     <table class="guru-data-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; text-align: center;">Abs</th>
+                                <th style="width: 45px; text-align: center;">Abs</th>
                                 <th>Identitas Peserta Didik</th>
                                 <th>Kelas</th>
-                                <th style="text-align: center;">Skor Pemahaman (1-4)</th>
+                                <th style="text-align: center;">Akumulasi Nilai</th>
                                 <th>Predikat</th>
-                                <th>Operasi Antrean Kasir (FIFO)</th>
-                                <th>Operasi Tumpukan Piring (LIFO)</th>
-                                <th>Waktu Terakhir Eksplorasi</th>
+                                <th>1. Simulasi Instan (4 Ops - 40 Pts)</th>
+                                <th>2. Kasus Antrean (3 Soal - 30 Pts)</th>
+                                <th>3. Kasus Piring (3 Soal - 30 Pts)</th>
+                                <th>Waktu Terakhir</th>
                                 <th>Rekomendasi Guru</th>
                             </tr>
                         </thead>
@@ -1390,7 +1450,16 @@
                 const digitalScore = Math.min(100, Math.round((indivScore * 0.3) + (lkpdScore * 0.35) + (evalScore * 0.35) + bonusMiniLab));
 
                 const gp = d.groupProject || {};
-                const sim = d.simulationEvaluation || { score: 1, predicate: 'Perlu Bimbingan', count: 0, operations: {} };
+                const sim = d.simulationEvaluation || {
+                    score: 1,
+                    totalScore: 0,
+                    predicate: 'Perlu Bimbingan',
+                    count: 0,
+                    operations: {},
+                    queueChallenges: {},
+                    stackChallenges: {},
+                    stats: { opsCount: 0, queueCorrect: 0, stackCorrect: 0, totalCompleted: 0 }
+                };
 
                 return {
                     identitas: {
@@ -1822,11 +1891,11 @@
                 if (this.filteredStudents.length === 0) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="8" class="guru-empty-state">
+                            <td colspan="10" class="guru-empty-state">
                                 <div class="guru-empty-icon">🧪</div>
                                 <h4 style="margin: 0; color: var(--guru-dark);">Belum Ada Data Simulasi Siswa</h4>
                                 <p style="margin: 0.35rem 0 0 0; font-size: 0.84rem;">
-                                    Ketika siswa mencoba simulasi operasi Stack/Queue di beranda, skor pemahaman (skala 1-4) akan otomatis terdata di sini.
+                                    Ketika siswa mengeksplorasi Simulasi Operasi Instan &amp; Tantangan Logika di Beranda, akumulasi nilai akan otomatis terdata di sini.
                                 </p>
                             </td>
                         </tr>
@@ -1837,16 +1906,56 @@
                 let html = '';
                 this.filteredStudents.forEach(s => {
                     const idn = s.identitas || {};
-                    const sim = s.simulasi || { score: 1, predicate: 'Perlu Bimbingan', count: 0, operations: {} };
+                    const sim = s.simulasi || { score: 1, totalScore: 0, predicate: 'Perlu Bimbingan', count: 0, operations: {}, queueChallenges: {}, stackChallenges: {} };
                     const ops = sim.operations || {};
+                    const qChal = sim.queueChallenges || {};
+                    const sChal = sim.stackChallenges || {};
 
-                    const score = sim.score || 1;
+                    // 1. Hitung poin operasi simulasi instan (4 Ops - Maks 40 Pts)
+                    const opList = ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'];
+                    let opsCount = 0;
+                    opList.forEach(op => { if (ops[op]) opsCount++; });
+                    const opsScore = opsCount * 10;
+
+                    // 2. Hitung poin tantangan antrean 3 siswa (Queue - Maks 30 Pts)
+                    let qCorrect = 0;
+                    [1, 2, 3].forEach(id => {
+                        if (qChal[id] && qChal[id].isCorrect) qCorrect++;
+                    });
+                    const qScore = qCorrect * 10;
+
+                    // 3. Hitung poin tantangan tumpukan 3 piring (Stack - Maks 30 Pts)
+                    let sCorrect = 0;
+                    [1, 2, 3].forEach(id => {
+                        if (sChal[id] && sChal[id].isCorrect) sCorrect++;
+                    });
+                    const sScore = sCorrect * 10;
+
+                    // Akumulasi total skor (0 - 100 Pts)
+                    const calculatedTotal = opsScore + qScore + sScore;
+                    const totalScore = (typeof sim.totalScore === 'number' && sim.totalScore > calculatedTotal)
+                        ? sim.totalScore
+                        : calculatedTotal;
+
+                    // Konversi ke Skala Pemahaman 1 - 4
+                    let score = sim.score || 1;
+                    if (totalScore >= 80) score = 4;
+                    else if (totalScore >= 60) score = 3;
+                    else if (totalScore >= 40) score = 2;
+                    else score = 1;
+
+                    let pred = sim.predicate || 'Perlu Bimbingan';
+                    if (score === 4) pred = 'Sangat Paham';
+                    else if (score === 3) pred = 'Paham';
+                    else if (score === 2) pred = 'Cukup Paham';
+                    else pred = 'Perlu Bimbingan';
+
                     const stars = '⭐'.repeat(score);
 
-                    let reco = 'Perlu bimbingan guru dalam memahami konsep dasar keluar-masuk elemen.';
-                    if (score === 4) reco = 'Sangat baik! Mampu menganalisis kedua struktur data secara menyeluruh.';
-                    else if (score === 3) reco = 'Baik! Pemahaman alur FIFO/LIFO cukup solid, dorong untuk melengkapi semua operasi.';
-                    else if (score === 2) reco = 'Cukup. Mulai memahami salah satu konsep, perlu latihan terarah pada konsep berikutnya.';
+                    let reco = 'Perlu bimbingan guru dalam memahami konsep dasar alur keluar-masuk elemen.';
+                    if (totalScore >= 80) reco = 'Sangat baik! Mampu menguasai operasi linear dan bernalar kritis pada kasus antrean & tumpukan.';
+                    else if (totalScore >= 60) reco = 'Baik! Pemahaman konsep dasar solid, dorong untuk melengkapi seluruh tantangan kasus.';
+                    else if (totalScore >= 40) reco = 'Cukup. Mulai memahami salah satu konsep, perlu pendampingan pada kondisi overflow & underflow.';
 
                     html += `
                         <tr>
@@ -1858,20 +1967,40 @@
                             </td>
                             <td>${idn.kelas || s._class}</td>
                             <td style="text-align: center;">
+                                <div class="sim-accum-badge">
+                                    <span class="sim-accum-val">${totalScore} / 100</span>
+                                    <span class="sim-accum-sub">${stars} (${score}/4)</span>
+                                </div>
+                            </td>
+                            <td>
                                 <span class="sim-star-pill sim-star-${score}">
-                                    ${stars} ${score}/4
+                                    ${pred}
                                 </span>
                             </td>
                             <td>
-                                <strong>${sim.predicate || 'Perlu Bimbingan'}</strong>
+                                <div style="font-size: 0.74rem; font-weight: 700; color: #891A10; margin-bottom: 2px;">
+                                    ${opsScore}/40 Pts (${opsCount}/4 Selesai)
+                                </div>
+                                <span class="op-check-tag ${ops.queueEnqueue ? 'done' : 'pending'}">${ops.queueEnqueue ? '✓ +Antrean' : '○ +Antrean'}</span>
+                                <span class="op-check-tag ${ops.queueDequeue ? 'done' : 'pending'}">${ops.queueDequeue ? '✓ −Antrean' : '○ −Antrean'}</span>
+                                <span class="op-check-tag ${ops.stackPush ? 'done' : 'pending'}">${ops.stackPush ? '✓ +Piring' : '○ +Piring'}</span>
+                                <span class="op-check-tag ${ops.stackPop ? 'done' : 'pending'}">${ops.stackPop ? '✓ −Piring' : '○ −Piring'}</span>
                             </td>
                             <td>
-                                <span class="op-check-tag ${ops.queueEnqueue ? 'done' : 'pending'}">${ops.queueEnqueue ? '✓ Tambah Antrean' : '○ Tambah Antrean'}</span>
-                                <span class="op-check-tag ${ops.queueDequeue ? 'done' : 'pending'}">${ops.queueDequeue ? '✓ Ambil Antrean' : '○ Ambil Antrean'}</span>
+                                <div style="font-size: 0.74rem; font-weight: 700; color: #891A10; margin-bottom: 2px;">
+                                    ${qScore}/30 Pts (${qCorrect}/3 Benar)
+                                </div>
+                                <span class="op-check-tag ${qChal[1] ? (qChal[1].isCorrect ? 'done' : 'wrong') : 'pending'}">Q1: ${qChal[1] ? (qChal[1].isCorrect ? '✓ FRONT' : '✕ Salah') : '○ FRONT'}</span>
+                                <span class="op-check-tag ${qChal[2] ? (qChal[2].isCorrect ? 'done' : 'wrong') : 'pending'}">Q2: ${qChal[2] ? (qChal[2].isCorrect ? '✓ Overflow' : '✕ Salah') : '○ Overflow'}</span>
+                                <span class="op-check-tag ${qChal[3] ? (qChal[3].isCorrect ? 'done' : 'wrong') : 'pending'}">Q3: ${qChal[3] ? (qChal[3].isCorrect ? '✓ Underflow' : '✕ Salah') : '○ Underflow'}</span>
                             </td>
                             <td>
-                                <span class="op-check-tag ${ops.stackPush ? 'done' : 'pending'}">${ops.stackPush ? '✓ Tambah Piring' : '○ Tambah Piring'}</span>
-                                <span class="op-check-tag ${ops.stackPop ? 'done' : 'pending'}">${ops.stackPop ? '✓ Ambil Piring' : '○ Ambil Piring'}</span>
+                                <div style="font-size: 0.74rem; font-weight: 700; color: #891A10; margin-bottom: 2px;">
+                                    ${sScore}/30 Pts (${sCorrect}/3 Benar)
+                                </div>
+                                <span class="op-check-tag ${sChal[1] ? (sChal[1].isCorrect ? 'done' : 'wrong') : 'pending'}">Q1: ${sChal[1] ? (sChal[1].isCorrect ? '✓ TOP' : '✕ Salah') : '○ TOP'}</span>
+                                <span class="op-check-tag ${sChal[2] ? (sChal[2].isCorrect ? 'done' : 'wrong') : 'pending'}">Q2: ${sChal[2] ? (sChal[2].isCorrect ? '✓ Overflow' : '✕ Salah') : '○ Overflow'}</span>
+                                <span class="op-check-tag ${sChal[3] ? (sChal[3].isCorrect ? 'done' : 'wrong') : 'pending'}">Q3: ${sChal[3] ? (sChal[3].isCorrect ? '✓ Underflow' : '✕ Salah') : '○ Underflow'}</span>
                             </td>
                             <td style="font-size: 0.78rem; color: #64748B;">
                                 ${sim.lastUpdated ? new Date(sim.lastUpdated).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'Baru Membuka'}
@@ -2133,32 +2262,82 @@
                 `;
                 document.getElementById('detail-eval-content').innerHTML = evHtml;
 
-                // Tab 4: Simulasi Beranda (Skala 1 - 4)
-                const sim = s.simulasi || { score: 1, predicate: 'Perlu Bimbingan', count: 0, operations: {} };
+                // Tab 4: Simulasi Beranda (Akumulasi Nilai 0 - 100 & Skala 1 - 4)
+                const sim = s.simulasi || { score: 1, totalScore: 0, predicate: 'Perlu Bimbingan', count: 0, operations: {}, queueChallenges: {}, stackChallenges: {} };
                 const ops = sim.operations || {};
-                const stars = '⭐'.repeat(sim.score || 1);
+                const qChal = sim.queueChallenges || {};
+                const sChal = sim.stackChallenges || {};
+
+                // Subtotal poin
+                const opList = ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'];
+                let opsCount = 0;
+                opList.forEach(op => { if (ops[op]) opsCount++; });
+                const opsScore = opsCount * 10;
+
+                let qCorrect = 0;
+                [1, 2, 3].forEach(id => { if (qChal[id] && qChal[id].isCorrect) qCorrect++; });
+                const qScore = qCorrect * 10;
+
+                let sCorrect = 0;
+                [1, 2, 3].forEach(id => { if (sChal[id] && sChal[id].isCorrect) sCorrect++; });
+                const sScore = sCorrect * 10;
+
+                const totalScore = (typeof sim.totalScore === 'number' && sim.totalScore > 0)
+                    ? sim.totalScore
+                    : (opsScore + qScore + sScore);
+
+                let score = sim.score || 1;
+                if (totalScore >= 80) score = 4;
+                else if (totalScore >= 60) score = 3;
+                else if (totalScore >= 40) score = 2;
+                else score = 1;
+
+                const stars = '⭐'.repeat(score);
 
                 let simHtml = `
                     <div style="background: #FAF6ED; border: 1.5px solid var(--guru-sand); border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem;">
-                        <strong>Skor Pemahaman Awal Simulasi:</strong> <span style="color: #D97706; font-weight: 800; font-size: 1.15rem;">${stars} ${sim.score || 1}/4 Poin</span><br>
-                        <strong>Predikat Pemahaman:</strong> <span style="font-weight: 700; color: #891A10;">${sim.predicate || 'Perlu Bimbingan'}</span><br>
-                        <strong>Total Operasi Dicoba:</strong> ${sim.count || 0} dari 4 operasi inti.
-                    </div>
-                    <h4 style="margin: 0.5rem 0 0.35rem 0; font-size: 0.86rem; color: #714236;">Status Eksplorasi Operasi Instan di Beranda:</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.75rem;">
-                        <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px;">
-                            <strong style="color: #E76814;">Queue (Antrean Kasir FIFO):</strong><br>
-                            • Tambah Antrean (Enqueue): ${ops.queueEnqueue ? '✅ Selesai' : '❌ Belum'}<br>
-                            • Ambil Antrean (Layani): ${ops.queueDequeue ? '✅ Selesai' : '❌ Belum'}
-                        </div>
-                        <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px;">
-                            <strong style="color: #891A10;">Stack (Tumpukan Piring LIFO):</strong><br>
-                            • Tambah Piring (Push): ${ops.stackPush ? '✅ Selesai' : '❌ Belum'}<br>
-                            • Ambil Piring (Pop): ${ops.stackPop ? '✅ Selesai' : '❌ Belum'}
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <div>
+                                <strong style="font-size: 0.88rem; color: #714236;">Akumulasi Skor Eksplorasi Beranda:</strong><br>
+                                <span style="color: #891A10; font-weight: 800; font-size: 1.35rem; font-family: 'Space Mono', monospace;">${totalScore} / 100 Poin</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-size: 1.1rem;">${stars}</span><br>
+                                <strong style="color: #891A10; font-size: 0.86rem;">Skor ${score}/4 (${sim.predicate || 'Perlu Bimbingan'})</strong>
+                            </div>
                         </div>
                     </div>
-                    <p style="font-size: 0.82rem; color: #64748B; margin: 0;">
-                        Waktu Terakhir: ${sim.lastUpdated ? new Date(sim.lastUpdated).toLocaleString('id-ID') : 'Siswa baru membuka media'}
+
+                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">1. LIVE INTERACTIVE LAB (Simulasi Operasi Instan - ${opsScore}/40 Pts):</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 0.85rem;">
+                        <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.55rem 0.8rem; border-radius: 8px;">
+                            <strong style="color: #E76814; font-size: 0.82rem;">Antrean Kasir (Queue - FIFO):</strong><br>
+                            • Tambah Antrean (+Enqueue): ${ops.queueEnqueue ? '✅ Selesai (+10)' : '❌ Belum'}<br>
+                            • Ambil Antrean (−Dequeue): ${ops.queueDequeue ? '✅ Selesai (+10)' : '❌ Belum'}
+                        </div>
+                        <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.55rem 0.8rem; border-radius: 8px;">
+                            <strong style="color: #891A10; font-size: 0.82rem;">Tumpukan Piring (Stack - LIFO):</strong><br>
+                            • Tambah Piring (+Push): ${ops.stackPush ? '✅ Selesai (+10)' : '❌ Belum'}<br>
+                            • Ambil Piring (−Pop): ${ops.stackPop ? '✅ Selesai (+10)' : '❌ Belum'}
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">2. Tantangan Logika: Kasus Antrean 3 Siswa (Queue - ${qScore}/30 Pts):</h4>
+                    <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
+                        • Soal 1 (Urutan Layanan Pertama - Ani di FRONT): ${qChal[1] ? (qChal[1].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
+                        • Soal 2 (Kapasitas Penuh 3 Orang - Queue Overflow): ${qChal[2] ? (qChal[2].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
+                        • Soal 3 (Kondisi Antrean Kosong - Queue Underflow): ${qChal[3] ? (qChal[3].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}
+                    </div>
+
+                    <h4 style="margin: 0.6rem 0 0.35rem 0; font-size: 0.88rem; color: #891A10;">3. Tantangan Logika: Kasus Tumpukan 3 Piring (Stack - ${sScore}/30 Pts):</h4>
+                    <div style="background: #FFFFFF; border: 1px solid #D8D4BC; padding: 0.6rem 0.85rem; border-radius: 8px; margin-bottom: 0.85rem; font-size: 0.82rem; line-height: 1.5;">
+                        • Soal 1 (Piring Terambil Pertama - Hijau di TOP): ${sChal[1] ? (sChal[1].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
+                        • Soal 2 (Rak Penuh 3 Piring - Stack Overflow): ${sChal[2] ? (sChal[2].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}<br>
+                        • Soal 3 (Kondisi Rak Kosong - Stack Underflow): ${sChal[3] ? (sChal[3].isCorrect ? '✅ Benar (+10)' : '❌ Salah (0)') : '⚪ Belum dikerjakan'}
+                    </div>
+
+                    <p style="font-size: 0.8rem; color: #64748B; margin: 0.5rem 0 0 0;">
+                        Waktu Terakhir Eksplorasi: ${sim.lastUpdated ? new Date(sim.lastUpdated).toLocaleString('id-ID') : 'Siswa baru membuka media'}
                     </p>
                 `;
                 document.getElementById('detail-simulasi-content').innerHTML = simHtml;
@@ -2219,7 +2398,7 @@
                     return;
                 }
 
-                let csv = 'No,Nomor Absen,Nama Siswa,Kelas,Tugas Individu (30%),LKPD Kelompok (35%),Evaluasi Akhir (35%),Bonus Mini-Lab,Nilai Digital (ND),Nilai Presentasi (10%),Nilai Akhir (NA),Status Ketuntasan,Skor Simulasi (1-4),Predikat Simulasi,Refleksi Konsep Utama,Refleksi Bagian Menantang\n';
+                let csv = 'No,Nomor Absen,Nama Siswa,Kelas,Tugas Individu (30%),LKPD Kelompok (35%),Evaluasi Akhir (35%),Bonus Mini-Lab,Nilai Digital (ND),Nilai Presentasi (10%),Nilai Akhir (NA),Status Ketuntasan,Akumulasi Skor Simulasi (0-100),Skor Bintang Simulasi (1-4),Predikat Simulasi,Refleksi Konsep Utama,Refleksi Bagian Menantang\n';
 
                 this.filteredStudents.forEach((s, idx) => {
                     const idn = s.identitas || {};
@@ -2237,6 +2416,7 @@
                     const na = this.calculateFinalScore(s);
                     const status = na >= 75 ? 'Tuntas' : 'Perlu Remedial';
 
+                    const simTotal = (typeof sim.totalScore === 'number' && sim.totalScore > 0) ? sim.totalScore : ((sim.score || 1) * 25);
                     const simScore = sim.score || 1;
                     const simPred = sim.predicate || 'Perlu Bimbingan';
                     const refKonsep = (ref.conceptLearned || '-').replace(/"/g, '""');
@@ -2255,6 +2435,7 @@
                         pres,
                         na,
                         `"${status}"`,
+                        simTotal,
                         simScore,
                         `"${simPred}"`,
                         `"${refKonsep}"`,

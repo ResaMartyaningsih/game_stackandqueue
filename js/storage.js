@@ -534,44 +534,87 @@ const StorageManager = {
     },
 
     // ----------------------------------------------------
-    // EVALUASI SIMULASI EKSPLORASI SISWA (SKALA 1 - 4)
+    // EVALUASI SIMULASI EKSPLORASI SISWA (AKUMULASI SKOR 0 - 100 & SKALA 1 - 4)
     // ----------------------------------------------------
-    recordSimulationOp(opName) {
+    initSimulationEvaluationState() {
         if (!this.data.simulationEvaluation) {
             this.data.simulationEvaluation = {
                 score: 1,
+                totalScore: 0,
                 predicate: 'Perlu Bimbingan',
                 operations: {},
+                queueChallenges: {},
+                stackChallenges: {},
+                stats: {
+                    opsCount: 0,
+                    queueCorrect: 0,
+                    stackCorrect: 0,
+                    totalCompleted: 0
+                },
                 count: 0,
                 lastUpdated: new Date().toISOString()
             };
         }
-
         const sim = this.data.simulationEvaluation;
         if (!sim.operations) sim.operations = {};
-        sim.operations[opName] = true;
+        if (!sim.queueChallenges) sim.queueChallenges = {};
+        if (!sim.stackChallenges) sim.stackChallenges = {};
+        if (!sim.stats) {
+            sim.stats = { opsCount: 0, queueCorrect: 0, stackCorrect: 0, totalCompleted: 0 };
+        }
+        return sim;
+    },
 
-        // Hitung berapa operasi dari 4 operasi inti yang sudah dicoba
-        // 1. queueEnqueue, 2. queueDequeue, 3. stackPush, 4. stackPop
+    recalculateSimulationAccumulation() {
+        const sim = this.initSimulationEvaluationState();
+
+        // 1. Komponen 1: Operasi Simulasi Instan (4 Operasi: Enqueue, Dequeue, Push, Pop) - Masing-masing 10 Pts (Maks 40 Pts)
         const ops = ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'];
-        let triedCount = 0;
+        let opsCount = 0;
         ops.forEach(op => {
-            if (sim.operations[op]) triedCount++;
+            if (sim.operations[op]) opsCount++;
         });
+        const opsScore = opsCount * 10; // Maks 40 Pts
 
-        sim.count = triedCount;
-        // Skala 1 sampai 4
-        // 4 ops = 4 (Sangat Paham)
-        // 3 ops = 3 (Paham)
-        // 2 ops = 2 (Cukup Paham)
-        // 1 atau 0 ops = 1 (Perlu Bimbingan)
-        if (triedCount >= 4) {
+        // 2. Komponen 2: Tantangan Logika Antrean 3 Siswa (Queue - FIFO) - 3 Soal @ 10 Pts (Maks 30 Pts)
+        let queueCorrect = 0;
+        Object.keys(sim.queueChallenges).forEach(qId => {
+            if (sim.queueChallenges[qId] && sim.queueChallenges[qId].isCorrect) queueCorrect++;
+        });
+        const queueScore = queueCorrect * 10; // Maks 30 Pts
+
+        // 3. Komponen 3: Tantangan Logika Tumpukan 3 Piring (Stack - LIFO) - 3 Soal @ 10 Pts (Maks 30 Pts)
+        let stackCorrect = 0;
+        Object.keys(sim.stackChallenges).forEach(qId => {
+            if (sim.stackChallenges[qId] && sim.stackChallenges[qId].isCorrect) stackCorrect++;
+        });
+        const stackScore = stackCorrect * 10; // Maks 30 Pts
+
+        // Akumulasi Total Nilai Eksplorasi (0 - 100 Pts)
+        const totalScore = opsScore + queueScore + stackScore;
+        const totalCompleted = opsCount + Object.keys(sim.queueChallenges).length + Object.keys(sim.stackChallenges).length;
+
+        sim.stats = {
+            opsCount: opsCount,
+            queueCorrect: queueCorrect,
+            stackCorrect: stackCorrect,
+            totalCompleted: totalCompleted
+        };
+        sim.count = opsCount;
+        sim.totalScore = totalScore;
+
+        // Skala Pemahaman 1 - 4 Berbasis Akumulasi Nilai
+        // >= 80 pts: Skor 4 (Sangat Paham / Mahir)
+        // 60 - 79 pts: Skor 3 (Paham / Cakap)
+        // 40 - 59 pts: Skor 2 (Cukup Paham / Berkembang)
+        // < 40 pts: Skor 1 (Perlu Bimbingan / Awal)
+        if (totalScore >= 80) {
             sim.score = 4;
             sim.predicate = 'Sangat Paham';
-        } else if (triedCount === 3) {
+        } else if (totalScore >= 60) {
             sim.score = 3;
             sim.predicate = 'Paham';
-        } else if (triedCount === 2) {
+        } else if (totalScore >= 40) {
             sim.score = 2;
             sim.predicate = 'Cukup Paham';
         } else {
@@ -580,21 +623,34 @@ const StorageManager = {
         }
 
         sim.lastUpdated = new Date().toISOString();
+        return sim;
+    },
+
+    recordSimulationOp(opName) {
+        const sim = this.initSimulationEvaluationState();
+        sim.operations[opName] = true;
+        this.recalculateSimulationAccumulation();
+        this.save();
+        return sim;
+    },
+
+    recordHeroChallengeAnswer(topic, questionId, optionIdx, isCorrect) {
+        const sim = this.initSimulationEvaluationState();
+        if (topic === 'queue') {
+            sim.queueChallenges[questionId] = { chosen: optionIdx, isCorrect: !!isCorrect };
+        } else if (topic === 'stack') {
+            sim.stackChallenges[questionId] = { chosen: optionIdx, isCorrect: !!isCorrect };
+        }
+        this.recalculateSimulationAccumulation();
         this.save();
         return sim;
     },
 
     getSimulationEvaluation() {
         if (!this.data.simulationEvaluation) {
-            return {
-                score: 1,
-                predicate: 'Perlu Bimbingan',
-                operations: {},
-                count: 0,
-                lastUpdated: null
-            };
+            return this.initSimulationEvaluationState();
         }
-        return this.data.simulationEvaluation;
+        return this.recalculateSimulationAccumulation();
     },
 
     resetIndividualAttempt() {
