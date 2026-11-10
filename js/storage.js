@@ -641,6 +641,17 @@ const StorageManager = {
         }
 
         sim.lastUpdated = new Date().toISOString();
+
+        // Sinkronkan ke progres asesmen diagnostik Pemahaman Awal
+        if (!this.data.pageScores) this.data.pageScores = {};
+        this.data.pageScores['learn-intro'] = {
+            score: totalScore,
+            completed: totalScore > 0,
+            simScore: sim.score,
+            savedAt: sim.lastUpdated
+        };
+        this.data.introCompleted = (totalScore > 0);
+
         return sim;
     },
 

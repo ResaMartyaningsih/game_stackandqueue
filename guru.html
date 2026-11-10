@@ -860,7 +860,7 @@
                     <span>📊 1. Rekap Nilai Utama</span>
                 </button>
                 <button type="button" class="guru-main-tab-btn" id="btn-tab-simulasi" onclick="GuruPortal.switchMainTab('tab-simulasi')">
-                    <span>🧪 2. Data Simulasi Siswa (1-4)</span>
+                    <span>🧪 2. Diagnostik Awal (Simulasi Instan 1-4 ⭐)</span>
                 </button>
                 <button type="button" class="guru-main-tab-btn" id="btn-tab-refleksi" onclick="GuruPortal.switchMainTab('tab-refleksi')">
                     <span>💭 3. Lembar Refleksi Siswa</span>
@@ -1018,10 +1018,10 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
                     <div>
                         <h3 style="margin: 0; font-family: 'Syne', sans-serif; color: var(--guru-crimson); font-size: 1.2rem;">
-                            🧪 Data Hasil Eksplorasi Simulasi Siswa (Beranda &amp; Mini-Lab)
+                            🧪 Asesmen Diagnostik Awal: LIVE INTERACTIVE LAB &amp; Simulasi Operasi Instan
                         </h3>
                         <p style="margin: 0.25rem 0 0 0; font-size: 0.84rem; color: #64748B;">
-                            Akumulasi penilaian formatif pemahaman awal dari 3 aktivitas beranda: (1) Simulasi Operasi Instan, (2) Kasus Antrean 3 Siswa (Queue), dan (3) Kasus Tumpukan 3 Piring (Stack).
+                            Hasil Asesmen Diagnostik Kesiapan Belajar Awal siswa (terintegrasi di Halaman Pemahaman Awal &amp; Beranda): (1) Simulasi Operasi Instan (4 Ops - 40 Pts), (2) Kasus Antrean 3 Siswa (Queue - 30 Pts), dan (3) Kasus Tumpukan 3 Piring (Stack - 30 Pts).
                         </p>
                     </div>
                     <button type="button" class="btn-guru btn-guru-outline" onclick="GuruPortal.requestPingAll(event)">
@@ -1243,7 +1243,7 @@
                 <button type="button" class="modal-detail-tab active" onclick="GuruPortal.switchDetailTab('tab-indiv')">Tugas Individu</button>
                 <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-lkpd')">Lembar Kerja LKPD</button>
                 <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-eval')">Evaluasi Akhir</button>
-                <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-simulasi')">Simulasi Beranda (1-4)</button>
+                <button type="button" class="modal-detail-tab" onclick="GuruPortal.switchDetailTab('tab-simulasi')">Diagnostik Awal (1-4 ⭐)</button>
             </div>
 
             <!-- Tab 1: Tugas Individu -->
@@ -2350,7 +2350,7 @@
                     <div style="background: #FAF6ED; border: 1.5px solid var(--guru-sand); border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
                             <div>
-                                <strong style="font-size: 0.88rem; color: #714236;">Akumulasi Skor Eksplorasi Beranda:</strong><br>
+                                <strong style="font-size: 0.88rem; color: #714236;">Akumulasi Skor Diagnostik Awal:</strong><br>
                                 <span style="color: #891A10; font-weight: 800; font-size: 1.35rem; font-family: 'Space Mono', monospace;">${totalScore} / 100 Poin</span>
                             </div>
                             <div style="text-align: right;">
@@ -2450,7 +2450,7 @@
                     return;
                 }
 
-                let csv = 'No,Nomor Absen,Nama Siswa,Kelas,Tugas Individu (30%),LKPD Kelompok (35%),Evaluasi Akhir (35%),Bonus Mini-Lab,Nilai Digital (ND),Nilai Presentasi (10%),Nilai Akhir (NA),Status Ketuntasan,Akumulasi Skor Simulasi (0-100),Skor Bintang Simulasi (1-4),Predikat Simulasi,Refleksi Konsep Utama,Refleksi Bagian Menantang\n';
+                let csv = 'No,Nomor Absen,Nama Siswa,Kelas,Tugas Individu (30%),LKPD Kelompok (35%),Evaluasi Akhir (35%),Bonus Mini-Lab,Nilai Digital (ND),Nilai Presentasi (10%),Nilai Akhir (NA),Status Ketuntasan,Akumulasi Diagnostik Awal (0-100),Skor Bintang Diagnostik (1-4),Predikat Diagnostik Awal,Refleksi Konsep Utama,Refleksi Bagian Menantang\n';
 
                 this.filteredStudents.forEach((s, idx) => {
                     const idn = s.identitas || {};

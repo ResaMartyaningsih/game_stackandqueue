@@ -1620,84 +1620,88 @@ const PBLAcademic = {
 
     switchHeroSim(mode) {
         this.heroMode = mode;
-        const qBtn = document.getElementById('hero-vis-tab-queue');
-        const sBtn = document.getElementById('hero-vis-tab-stack');
-        if (qBtn) qBtn.classList.toggle('active', mode === 'queue');
-        if (sBtn) sBtn.classList.toggle('active', mode === 'stack');
+        const qBtns = document.querySelectorAll('.hero-vis-tab-queue, #hero-vis-tab-queue');
+        const sBtns = document.querySelectorAll('.hero-vis-tab-stack, #hero-vis-tab-stack');
+        qBtns.forEach(b => b.classList.toggle('active', mode === 'queue'));
+        sBtns.forEach(b => b.classList.toggle('active', mode === 'stack'));
 
-        const controlsQueue = document.getElementById('hero-controls-queue');
-        const controlsStack = document.getElementById('hero-controls-stack');
-        if (controlsQueue) controlsQueue.style.display = (mode === 'queue') ? 'flex' : 'none';
-        if (controlsStack) controlsStack.style.display = (mode === 'stack') ? 'flex' : 'none';
+        const controlsQueues = document.querySelectorAll('.hero-controls-queue, #hero-controls-queue');
+        const controlsStacks = document.querySelectorAll('.hero-controls-stack, #hero-controls-stack');
+        controlsQueues.forEach(cq => { cq.style.display = (mode === 'queue') ? 'flex' : 'none'; });
+        controlsStacks.forEach(cs => { cs.style.display = (mode === 'stack') ? 'flex' : 'none'; });
 
-        const stage = document.getElementById('hero-vis-stage');
-        if (stage) {
+        const stages = document.querySelectorAll('.hero-vis-stage, #hero-vis-stage');
+        stages.forEach(stage => {
             stage.classList.toggle('stack-mode', mode === 'stack');
-        }
+        });
 
         this.renderHeroSim();
         this.renderHeroChallenge();
     },
 
     renderHeroSim() {
-        const stage = document.getElementById('hero-vis-stage');
-        if (!stage) return;
+        const stages = document.querySelectorAll('.hero-vis-stage, #hero-vis-stage');
+        if (!stages || stages.length === 0) return;
 
+        let content = '';
         if (this.heroMode === 'queue') {
-            stage.classList.remove('stack-mode');
             if (this.heroQueueData.length === 0) {
-                stage.innerHTML = '<span style="font-size: 0.88rem; color: #8F726A; font-style: italic;">Antrean kasir sedang kosong (0 / 3 siswa)</span>';
-                return;
+                content = '<span style="font-size: 0.88rem; color: #8F726A; font-style: italic;">Antrean kasir sedang kosong (0 / 3 siswa)</span>';
+            } else {
+                let html = '<div style="display: flex; align-items: center; justify-content: center; background: #FAF6ED; border: 1.5px solid #E76814; border-radius: 8px; padding: 0.4rem 0.65rem; font-weight: 800; font-size: 0.76rem; color: #891A10; flex-shrink: 0;"><span>🏪</span> LOKET KASIR<br><small style="color: #E76814;">(FRONT)</small></div><span style="color: #DC8236; font-weight: bold; font-size: 1.1rem;">◀</span>';
+
+                html += this.heroQueueData.map((name, idx) => {
+                    const isFront = idx === 0;
+                    const isRear = idx === this.heroQueueData.length - 1;
+                    return `
+                        <div class="hero-node-chip hero-node-queue" style="${isFront ? 'border: 2px solid #E76814; background: #FAF3EA; font-weight: 800;' : 'font-weight: 600;'}">
+                            <span>👤 ${name}</span>
+                            ${isFront ? '<span style="font-size: 0.65rem; background: #E76814; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">FRONT (1)</span>' : ''}
+                            ${isRear && !isFront ? '<span style="font-size: 0.65rem; background: #DC8236; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">REAR (' + (idx + 1) + ')</span>' : ''}
+                        </div>
+                    `;
+                }).join('<span style="color: #D8D4BC; font-weight: bold;">◀</span>');
+
+                html += '<span style="color: #DC8236; font-weight: bold; font-size: 1.1rem;">◀</span><div style="font-size: 0.74rem; color: #714236; font-weight: 700; text-align: center; flex-shrink: 0;">🚪 PINTU MASUK<br><small style="color: #DC8236;">(REAR)</small></div>';
+                content = html;
             }
-
-            let html = '<div style="display: flex; align-items: center; justify-content: center; background: #FAF6ED; border: 1.5px solid #E76814; border-radius: 8px; padding: 0.4rem 0.65rem; font-weight: 800; font-size: 0.76rem; color: #891A10; flex-shrink: 0;"><span>🏪</span> LOKET KASIR<br><small style="color: #E76814;">(FRONT)</small></div><span style="color: #DC8236; font-weight: bold; font-size: 1.1rem;">◀</span>';
-
-            html += this.heroQueueData.map((name, idx) => {
-                const isFront = idx === 0;
-                const isRear = idx === this.heroQueueData.length - 1;
-                return `
-                    <div class="hero-node-chip hero-node-queue" style="${isFront ? 'border: 2px solid #E76814; background: #FAF3EA; font-weight: 800;' : 'font-weight: 600;'}">
-                        <span>👤 ${name}</span>
-                        ${isFront ? '<span style="font-size: 0.65rem; background: #E76814; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">FRONT (1)</span>' : ''}
-                        ${isRear && !isFront ? '<span style="font-size: 0.65rem; background: #DC8236; color: #FAF8F5; padding: 1px 5px; border-radius: 4px; font-weight: 800;">REAR (' + (idx + 1) + ')</span>' : ''}
-                    </div>
-                `;
-            }).join('<span style="color: #D8D4BC; font-weight: bold;">◀</span>');
-
-            html += '<span style="color: #DC8236; font-weight: bold; font-size: 1.1rem;">◀</span><div style="font-size: 0.74rem; color: #714236; font-weight: 700; text-align: center; flex-shrink: 0;">🚪 PINTU MASUK<br><small style="color: #DC8236;">(REAR)</small></div>';
-            stage.innerHTML = html;
+            stages.forEach(stage => {
+                stage.classList.remove('stack-mode');
+                stage.innerHTML = content;
+            });
         } else {
             // MODE STACK: MENUMPUK KE ATAS (Bukan ke samping!)
-            stage.classList.add('stack-mode');
             if (this.heroStackData.length === 0) {
-                stage.innerHTML = '<span style="font-size: 0.88rem; color: #8F726A; font-style: italic; margin-bottom: 2rem;">Rak tumpukan piring kosong (0 / 3 piring)</span>';
-                return;
-            }
+                content = '<span style="font-size: 0.88rem; color: #8F726A; font-style: italic; margin-bottom: 2rem;">Rak tumpukan piring kosong (0 / 3 piring)</span>';
+            } else {
+                content = this.heroStackData.map((plate, idx) => {
+                    const isTop = (idx === this.heroStackData.length - 1);
+                    const isBottom = (idx === 0);
 
-            // Tampilkan bertingkat dari bawah ke atas (column-reverse meletakkan index terakhir di posisi paling atas)
-            stage.innerHTML = this.heroStackData.map((plate, idx) => {
-                const isTop = (idx === this.heroStackData.length - 1);
-                const isBottom = (idx === 0);
+                    let colorStyles = 'border: 2px solid #891A10; background: #FFF5F3; color: #891A10;';
+                    if (plate.includes('Kuning')) {
+                        colorStyles = 'border: 2px solid #F59E0B; background: #FFFBEB; color: #92400E;';
+                    } else if (plate.includes('Hijau')) {
+                        colorStyles = 'border: 2px solid #10B981; background: #ECFDF5; color: #065F46;';
+                    } else if (plate.includes('Merah')) {
+                        colorStyles = 'border: 2px solid #DC2626; background: #FEF2F2; color: #991B1B;';
+                    }
 
-                let colorStyles = 'border: 2px solid #891A10; background: #FFF5F3; color: #891A10;';
-                if (plate.includes('Kuning')) {
-                    colorStyles = 'border: 2px solid #F59E0B; background: #FFFBEB; color: #92400E;';
-                } else if (plate.includes('Hijau')) {
-                    colorStyles = 'border: 2px solid #10B981; background: #ECFDF5; color: #065F46;';
-                } else if (plate.includes('Merah')) {
-                    colorStyles = 'border: 2px solid #DC2626; background: #FEF2F2; color: #991B1B;';
-                }
-
-                return `
-                    <div class="hero-node-stack-vertical" style="${colorStyles} ${isTop ? 'box-shadow: 0 4px 12px rgba(137, 26, 16, 0.2);' : ''}">
-                        <span style="font-weight: 800;">🍽️ ${plate}</span>
-                        <div style="display: flex; gap: 0.35rem; align-items: center;">
-                            ${isTop ? '<span style="font-size: 0.72rem; background: #891A10; color: #FFFFFF; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-family: \'Space Mono\', monospace;">TOP (PUNCAK)</span>' : ''}
-                            ${isBottom && !isTop ? '<span style="font-size: 0.72rem; background: #FAF3EA; color: #714236; border: 1px solid #D8D4BC; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-family: \'Space Mono\', monospace;">BOTTOM (DASAR)</span>' : ''}
+                    return `
+                        <div class="hero-node-stack-vertical" style="${colorStyles} ${isTop ? 'box-shadow: 0 4px 12px rgba(137, 26, 16, 0.2);' : ''}">
+                            <span style="font-weight: 800;">🍽️ ${plate}</span>
+                            <div style="display: flex; gap: 0.35rem; align-items: center;">
+                                ${isTop ? '<span style="font-size: 0.72rem; background: #891A10; color: #FFFFFF; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-family: \'Space Mono\', monospace;">TOP (PUNCAK)</span>' : ''}
+                                ${isBottom && !isTop ? '<span style="font-size: 0.72rem; background: #FAF3EA; color: #714236; border: 1px solid #D8D4BC; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-family: \'Space Mono\', monospace;">BOTTOM (DASAR)</span>' : ''}
+                            </div>
                         </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            }
+            stages.forEach(stage => {
+                stage.classList.add('stack-mode');
+                stage.innerHTML = content;
+            });
         }
     },
 
@@ -1735,8 +1739,8 @@ const PBLAcademic = {
     ],
 
     renderHeroChallenge() {
-        const container = document.getElementById('hero-interactive-challenge-container');
-        if (!container) return;
+        const containers = document.querySelectorAll('.hero-interactive-challenge-container, #hero-interactive-challenge-container');
+        if (!containers || containers.length === 0) return;
 
         let html = `
             <div style="background: #FFFFFF; border: 1.5px solid #D8D4BC; border-radius: 12px; padding: 1.15rem; box-shadow: 0 4px 14px rgba(113, 66, 54, 0.05); text-align: left;">
@@ -1812,7 +1816,9 @@ const PBLAcademic = {
             </div>
         `;
 
-        container.innerHTML = html;
+        containers.forEach(container => {
+            container.innerHTML = html;
+        });
     },
 
     checkHeroChallenge(topic, num, optionIdx) {
@@ -1849,30 +1855,34 @@ const PBLAcademic = {
         if (!evalResult && window.StorageManager && StorageManager.getSimulationEvaluation) {
             evalResult = StorageManager.getSimulationEvaluation();
         }
-        const badgeEl = document.getElementById('hero-sim-eval-badge');
-        if (badgeEl && evalResult) {
-            const stars = '⭐'.repeat(evalResult.score || 1);
-            const totalScore = evalResult.totalScore || 0;
-            const stats = evalResult.stats || { opsCount: 0, queueCorrect: 0, stackCorrect: 0 };
+        const badgeEls = document.querySelectorAll('.hero-sim-eval-badge, #hero-sim-eval-badge');
+        if (!badgeEls || badgeEls.length === 0 || !evalResult) return;
 
-            badgeEl.innerHTML = `
-                <div style="background: #FAF3EA; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.95rem; margin-top: 0.85rem; text-align: left;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem;">
-                        <span style="font-weight: 800; color: #891A10; font-size: 0.9rem;">
-                            📊 Akumulasi Eksplorasi: ${stars} ${totalScore}/100 Pts (${evalResult.predicate || 'Perlu Bimbingan'})
-                        </span>
-                        <span style="font-size: 0.76rem; background: #E76814; color: #FFFFFF; padding: 3px 10px; border-radius: 999px; font-weight: 700; font-family: 'Space Mono', monospace;">
-                            ⭐ Skor ${evalResult.score || 1}/4
-                        </span>
-                    </div>
-                    <div style="font-size: 0.78rem; color: #714236; margin-top: 0.45rem; line-height: 1.45; display: flex; flex-wrap: wrap; gap: 0.75rem;">
-                        <span>🧪 <strong>Simulasi Instan:</strong> ${stats.opsCount}/4 operasi</span>
-                        <span>👥 <strong>No. 1 (Queue):</strong> ${stats.queueCorrect ? '✅ Benar (+30 Pts)' : '❌ Belum (+0 Pts)'}</span>
-                        <span>🍽️ <strong>No. 2 (Stack):</strong> ${stats.stackCorrect ? '✅ Benar (+30 Pts)' : '❌ Belum (+0 Pts)'}</span>
-                    </div>
+        const stars = '⭐'.repeat(evalResult.score || 1);
+        const totalScore = evalResult.totalScore || 0;
+        const stats = evalResult.stats || { opsCount: 0, queueCorrect: 0, stackCorrect: 0 };
+
+        const html = `
+            <div style="background: #FAF3EA; border: 1.5px solid #E76814; border-radius: 10px; padding: 0.75rem 0.95rem; margin-top: 0.85rem; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem;">
+                    <span style="font-weight: 800; color: #891A10; font-size: 0.9rem;">
+                        📊 Diagnostik Kesiapan Awal: ${stars} ${totalScore}/100 Pts (${evalResult.predicate || 'Perlu Bimbingan'})
+                    </span>
+                    <span style="font-size: 0.76rem; background: #E76814; color: #FFFFFF; padding: 3px 10px; border-radius: 999px; font-weight: 700; font-family: 'Space Mono', monospace;">
+                        ⭐ Skor ${evalResult.score || 1}/4
+                    </span>
                 </div>
-            `;
-        }
+                <div style="font-size: 0.78rem; color: #714236; margin-top: 0.45rem; line-height: 1.45; display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <span>🧪 <strong>Simulasi Instan:</strong> ${stats.opsCount}/4 operasi</span>
+                    <span>👥 <strong>No. 1 (Queue):</strong> ${stats.queueCorrect ? '✅ Benar (+30 Pts)' : '❌ Belum (+0 Pts)'}</span>
+                    <span>🍽️ <strong>No. 2 (Stack):</strong> ${stats.stackCorrect ? '✅ Benar (+30 Pts)' : '❌ Belum (+0 Pts)'}</span>
+                </div>
+            </div>
+        `;
+
+        badgeEls.forEach(badgeEl => {
+            badgeEl.innerHTML = html;
+        });
     },
 
     heroEnqueue() {

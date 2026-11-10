@@ -237,6 +237,18 @@ const UI = {
             this.renderWorldMap();
             if (window.Player) Player.updatePlayerUI();
             this.setKikoDialogue(t('kikoGreeting'));
+            if (window.PBLAcademic) {
+                PBLAcademic.renderHeroSim();
+                PBLAcademic.renderHeroChallenge();
+                PBLAcademic.updateHeroSimulationBadge();
+            }
+        } else if (screenId === 'learn-intro') {
+            this.setKikoDialogue("Pelajari fondasi Berpikir Komputasional dan selesaikan Asesmen Diagnostik Awal!", 'happy');
+            if (window.PBLAcademic) {
+                PBLAcademic.renderHeroSim();
+                PBLAcademic.renderHeroChallenge();
+                PBLAcademic.updateHeroSimulationBadge();
+            }
         } else if (screenId === 'learn-stack') {
             this.setKikoDialogue("Pelajari konsep LIFO melalui infografis foto, video interaktif, dan coba tumpuk piring mini!", 'happy');
             if (window.App) {
