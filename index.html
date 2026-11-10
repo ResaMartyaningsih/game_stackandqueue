@@ -188,8 +188,8 @@
                 <div class="studio-corner-decor tl" aria-hidden="true">+ [CT-SQ // FASE-E]</div>
                 <div class="studio-corner-decor tr" aria-hidden="true">+ LARASLOGIKA.STUDIO</div>
                 <div class="studio-container">
-                    <div class="studio-hero-grid">
-                        <!-- Hero Left Column: Editorial Statement -->
+                    <div class="studio-hero-grid" style="grid-template-columns: 1fr !important; max-width: 880px; margin: 0 auto;">
+                        <!-- Hero Editorial Statement -->
                         <div>
                             <div class="hero-meta-pill">
                                 <span>📘</span> Informatika Fase E &bull; ⏱ 2 JP (90 Menit) &bull; 🧩 Model PBL
@@ -218,60 +218,6 @@
                                 <span class="hero-ct-tag">🔍 Pengenalan Pola</span>
                                 <span class="hero-ct-tag">💡 Abstraksi</span>
                                 <span class="hero-ct-tag">⚙️ Perancangan Algoritma</span>
-                            </div>
-                        </div>
-
-                        <!-- Hero Right Column: Interactive Live Showcase Lab -->
-                        <div>
-                            <div class="hero-studio-card">
-                                <div class="hero-studio-card-header">
-                                    <div>
-                                        <div class="hero-studio-label">🔬 LIVE INTERACTIVE LAB</div>
-                                        <h3 class="hero-studio-card-title">Simulasi Operasi Instan</h3>
-                                    </div>
-                                    <div class="hero-vis-tabs">
-                                        <button type="button" id="hero-vis-tab-queue" class="hero-vis-tab-btn hero-vis-tab-queue active" onclick="PBLAcademic.switchHeroSim('queue')">Queue (FIFO)</button>
-                                        <button type="button" id="hero-vis-tab-stack" class="hero-vis-tab-btn hero-vis-tab-stack" onclick="PBLAcademic.switchHeroSim('stack')">Stack (LIFO)</button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Visual Stage Viewport -->
-                                <div class="hero-stage-viewport hero-vis-stage" id="hero-vis-stage" aria-label="Area Visualisasi Elemen">
-                                    <!-- Rendered dynamically by PBLAcademic.renderHeroSim() -->
-                                </div>
-
-                                <!-- Queue Controls -->
-                                <div class="hero-stage-controls hero-controls-queue" id="hero-controls-queue">
-                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-enqueue" onclick="PBLAcademic.heroEnqueue()" title="Tambah siswa ke antrean belakang (Enqueue)">
-                                        + Tambah Antrean (Enqueue)
-                                    </button>
-                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-dequeue" onclick="PBLAcademic.heroDequeue()" title="Layani &amp; keluarkan siswa terdepan (Dequeue)">
-                                        &minus; Ambil Antrean (Layani)
-                                    </button>
-                                    <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
-                                        🔄 Reset Antrean
-                                    </button>
-                                </div>
-
-                                <!-- Stack Controls -->
-                                <div class="hero-stage-controls hero-controls-stack" id="hero-controls-stack" style="display: none;">
-                                    <button type="button" class="hero-action-btn-primary" id="btn-hero-push" onclick="PBLAcademic.heroPush()" title="Taruh piring di puncak tumpukan (Push)">
-                                        + Tambah Piring (Push)
-                                    </button>
-                                    <button type="button" class="hero-action-btn-amber" id="btn-hero-pop" onclick="PBLAcademic.heroPop()" title="Ambil piring dari puncak tumpukan (Pop)">
-                                        &minus; Ambil Piring (Pop)
-                                    </button>
-                                    <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
-                                        🔄 Reset Piring
-                                    </button>
-                                </div>
-
-                                <!-- Pertanyaan Tantangan Interaktif Simulasi (Studi Kasus 3 Piring & Antrean Ani, Adi, Ida) -->
-                                <div id="hero-interactive-challenge-container" class="hero-interactive-challenge-container" style="margin-top: 1rem;">
-                                    <!-- Rendered dynamically by PBLAcademic.renderHeroChallenge() -->
-                                </div>
-
-                                <div id="hero-sim-eval-badge" class="hero-sim-eval-badge"></div>
                             </div>
                         </div>
                     </div>
@@ -1756,22 +1702,22 @@
                                     <h3 class="hero-studio-card-title">Simulasi Operasi Instan</h3>
                                 </div>
                                 <div class="hero-vis-tabs">
-                                    <button type="button" class="hero-vis-tab-btn hero-vis-tab-queue active" onclick="PBLAcademic.switchHeroSim('queue')">Queue (FIFO)</button>
-                                    <button type="button" class="hero-vis-tab-btn hero-vis-tab-stack" onclick="PBLAcademic.switchHeroSim('stack')">Stack (LIFO)</button>
+                                    <button type="button" id="hero-vis-tab-queue" class="hero-vis-tab-btn hero-vis-tab-queue active" onclick="PBLAcademic.switchHeroSim('queue')">Queue (FIFO)</button>
+                                    <button type="button" id="hero-vis-tab-stack" class="hero-vis-tab-btn hero-vis-tab-stack" onclick="PBLAcademic.switchHeroSim('stack')">Stack (LIFO)</button>
                                 </div>
                             </div>
                             
                             <!-- Visual Stage Viewport -->
-                            <div class="hero-stage-viewport hero-vis-stage" aria-label="Area Visualisasi Elemen Diagnostik">
+                            <div class="hero-stage-viewport hero-vis-stage" id="hero-vis-stage" aria-label="Area Visualisasi Elemen Diagnostik">
                                 <!-- Rendered dynamically by PBLAcademic.renderHeroSim() -->
                             </div>
 
                             <!-- Queue Controls -->
-                            <div class="hero-stage-controls hero-controls-queue">
-                                <button type="button" class="hero-action-btn-primary" onclick="PBLAcademic.heroEnqueue()" title="Tambah siswa ke antrean belakang (Enqueue)">
+                            <div class="hero-stage-controls hero-controls-queue" id="hero-controls-queue">
+                                <button type="button" class="hero-action-btn-primary" id="btn-hero-enqueue" onclick="PBLAcademic.heroEnqueue()" title="Tambah siswa ke antrean belakang (Enqueue)">
                                     + Tambah Antrean (Enqueue)
                                 </button>
-                                <button type="button" class="hero-action-btn-amber" onclick="PBLAcademic.heroDequeue()" title="Layani &amp; keluarkan siswa terdepan (Dequeue)">
+                                <button type="button" class="hero-action-btn-amber" id="btn-hero-dequeue" onclick="PBLAcademic.heroDequeue()" title="Layani &amp; keluarkan siswa terdepan (Dequeue)">
                                     &minus; Ambil Antrean (Layani)
                                 </button>
                                 <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
@@ -1780,11 +1726,11 @@
                             </div>
 
                             <!-- Stack Controls -->
-                            <div class="hero-stage-controls hero-controls-stack" style="display: none;">
-                                <button type="button" class="hero-action-btn-primary" onclick="PBLAcademic.heroPush()" title="Taruh piring di puncak tumpukan (Push)">
+                            <div class="hero-stage-controls hero-controls-stack" id="hero-controls-stack" style="display: none;">
+                                <button type="button" class="hero-action-btn-primary" id="btn-hero-push" onclick="PBLAcademic.heroPush()" title="Taruh piring di puncak tumpukan (Push)">
                                     + Tambah Piring (Push)
                                 </button>
-                                <button type="button" class="hero-action-btn-amber" onclick="PBLAcademic.heroPop()" title="Ambil piring dari puncak tumpukan (Pop)">
+                                <button type="button" class="hero-action-btn-amber" id="btn-hero-pop" onclick="PBLAcademic.heroPop()" title="Ambil piring dari puncak tumpukan (Pop)">
                                     &minus; Ambil Piring (Pop)
                                 </button>
                                 <button type="button" class="hero-action-btn-outline" style="border: 1.5px solid #D8D4BC; background: #FAF8F5; color: #714236; font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 10px; cursor: pointer;" onclick="PBLAcademic.resetHeroSim()">
@@ -1793,11 +1739,11 @@
                             </div>
 
                             <!-- Pertanyaan Tantangan Interaktif Simulasi (2 Nomor) -->
-                            <div class="hero-interactive-challenge-container" style="margin-top: 1rem;">
+                            <div id="hero-interactive-challenge-container" class="hero-interactive-challenge-container" style="margin-top: 1rem;">
                                 <!-- Rendered dynamically by PBLAcademic.renderHeroChallenge() -->
                             </div>
 
-                            <div class="hero-sim-eval-badge"></div>
+                            <div id="hero-sim-eval-badge" class="hero-sim-eval-badge"></div>
                         </div>
                     </div>
 
