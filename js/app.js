@@ -1031,108 +1031,108 @@ const App = {
         cases: {
             case1: {
                 id: 'case1',
-                icon: '🍽️',
-                badge: 'Kasus 1: Antrean Kasir Kantin Sekolah (Mewakili Queue - FIFO)',
-                title: 'Optimalisasi Sistem Antrean Kasir & Pemesanan Kantin Sekolah',
-                category: 'Manajemen Layanan Publik & Pemesanan Kantin',
-                desc: 'Pada jam istirahat sekolah yang hanya berdurasi 30 menit, kantin dipadati lebih dari 60 siswa. Karena tidak ada jalur antrean yang teratur, siswa yang baru datang sering kali langsung menyerobot ke dekat meja kasir dan dilayani duluan, sementara siswa yang sudah antre 10 menit di depan justru terabaikan. Kasir juga kewalahan mencatat urutan pemesan sehingga pesanan sering kali salah buat atau tertukar. Kondisi ini menimbulkan kegaduhan, ketidakadilan waktu tunggu, dan keterlambatan kembali ke kelas.',
-                problemChallenge: 'Bagaimana merancang model antrean berbasis struktur data Queue (FIFO) dengan penetapan posisi Front (kasir) dan Rear (ujung antrean siswa baru), serta bagaimana operasi Enqueue dan Dequeue diterapkan untuk menjamin keadilan pelayanan dan mencegah antrean macet?',
-                recommendedStructure: 'Queue (FIFO - First In First Out)',
-                defaultItems: ['1. Antrean Siswa Budi (09.30)', '2. Antrean Siswa Siti (09.31)', '3. Antrean Siswa Ahmad (09.32)'],
+                icon: '↩️',
+                badge: 'Studi Kasus 1: Sistem Undo dan Redo pada Editor Teks (Mewakili Stack)',
+                title: 'Sistem Undo dan Redo pada Editor Teks',
+                category: 'Rekayasa Perangkat Lunak & Struktur Data LIFO',
+                desc: 'Dalam aplikasi pengolah kata dan editor teks (seperti VS Code, Microsoft Word, atau Google Docs), setiap aksi pengetikan atau pemformatan pengguna disimpan secara berurutan. Ketika pengguna melakukan kesalahan pengetikan dan menekan tombol Undo (Ctrl+Z), aksi pengetikan terakhir yang dilakukan adalah aksi yang pertama kali dibatalkan dan dikembalikan ke kondisi sebelumnya. Begitu pula saat aksi yang dibatalkan ingin dikembalikan lagi melalui perintah Redo (Ctrl+Y), sistem mengelola riwayat aksi menggunakan dua wadah tumpukan: Undo Stack dan Redo Stack. Jika riwayat tumpukan kosong dan pengguna tetap menekan tombol Undo, editor tidak dapat melakukan pembatalan (Stack Underflow). Sebaliknya, aplikasi perlu membatasi jumlah riwayat maksimal (misal 50 aksi) agar memori komputer tidak penuh (mencegah Stack Overflow).',
+                problemChallenge: 'Bagaimana merancang model sistem Undo dan Redo menggunakan struktur data Stack dengan prinsip Last In First Out (LIFO), di mana aksi terakhir ditaruh di puncak (TOP of Stack) dan dibatalkan pertama kali, serta bagaimana mekanisme perpindahan data antara Undo Stack dan Redo Stack saat pengguna mengetik aksi baru?',
+                recommendedStructure: 'Stack (LIFO - Last In First Out)',
+                defaultItems: ['1. Ketik: "Halo Dunia"', '2. Format: Bold (Tebal)', '3. Ketik: "Selamat Datang" (TOP)'],
                 hots: {
                     mc: {
-                        question: 'Mengapa sistem antrean kasir kantin sekolah wajib menerapkan struktur data Queue (FIFO) dan BUKAN Stack (LIFO)?',
+                        question: 'Mengapa fitur Undo (Ctrl+Z) pada editor teks wajib diimplementasikan menggunakan struktur data Stack dan BUKAN Queue?',
                         options: [
-                            { key: 'A', text: 'Karena prinsip FIFO menjamin siswa yang datang lebih awal berada di posisi Front dan dilayani pertama kali (dequeue), sehingga menciptakan keadilan pelayanan dan kepastian waktu tunggu.', isCorrect: true, feedback: 'Tepat sekali! Asas keadilan pelayanan waktu tunggu hanya dapat dijamin oleh Queue (FIFO).' },
-                            { key: 'B', text: 'Karena Queue memperbolehkan siswa yang baru datang menyerobot langsung ke posisi Front.', isCorrect: false, feedback: 'Salah, penyerobotan antrean melanggar aturan komputasional FIFO.' },
-                            { key: 'C', text: 'Karena memori Queue tidak memerlukan pemrosesan komputer.', isCorrect: false, feedback: 'Salah, Queue tetap membutuhkan struktur memori teratur.' },
-                            { key: 'D', text: 'Karena Queue otomatis membatalkan pesanan yang belum selesai.', isCorrect: false, feedback: 'Salah, Queue memproses secara berurutan, bukan membatalkan data.' }
+                            { key: 'A', text: 'Karena prinsip LIFO menjamin aksi pengetikan terakhir yang dilakukan pengguna (di posisi TOP) adalah aksi yang pertama kali dibatalkan, sesuai urutan pembalikan kronologis kerja pengguna.', isCorrect: true, feedback: 'Tepat sekali! Operasi pembatalan (Undo) selalu membatalkan aksi paling mutakhir/terakhir yang berada di posisi TOP stack (Last In First Out).' },
+                            { key: 'B', text: 'Karena Queue hanya dapat membatalkan aksi yang pertama kali dibuat saat dokumen baru dibuka.', isCorrect: false, feedback: 'Salah, pembatalan aksi pertama justru merusak dokumen awal, bukan sifat Undo.' },
+                            { key: 'C', text: 'Karena Stack dapat mengedit dokumen tanpa memerlukan alokasi memori komputer.', isCorrect: false, feedback: 'Salah, Stack tetap membutuhkan alokasi memori komputer.' },
+                            { key: 'D', text: 'Karena Stack secara otomatis menghapus seluruh isi dokumen sekaligus saat tombol ditekan.', isCorrect: false, feedback: 'Salah, Stack membatalkan per elemen aksi secara terurut, bukan menghapus seluruh dokumen.' }
                         ]
                     },
                     tf: [
                         {
                             id: 'tf1',
-                            statement: 'Ketika seorang siswa baru datang ke kantin dan bergabung ke barisan belakang, operasi komputasional yang terjadi adalah Enqueue pada posisi Rear.',
+                            statement: 'Ketika pengguna mengetik teks baru di dokumen, operasi komputasional yang dilakukan editor teks adalah Push aksi tersebut ke puncak Undo Stack.',
                             isTrue: true,
                             correct: true,
-                            explanation: 'Tepat! Elemen baru dalam Queue selalu ditambahkan di bagian belakang (Rear) melalui operasi Enqueue.',
-                            feedback: 'Tepat! Elemen baru dalam Queue selalu ditambahkan di bagian belakang (Rear) melalui operasi Enqueue.'
+                            explanation: 'Tepat! Setiap penambahan aksi baru disimpan di puncak tumpukan (TOP) melalui operasi Push.',
+                            feedback: 'Tepat! Setiap penambahan aksi baru disimpan di puncak tumpukan (TOP) melalui operasi Push.'
                         },
                         {
                             id: 'tf2',
-                            statement: 'Jika kasir melayani siswa yang berdiri paling belakang alih-alih siswa di depan, maka kasir tersebut sedang menjalankan operasi Dequeue yang sah.',
-                            isTrue: false,
-                            correct: false,
-                            explanation: 'Salah! Dequeue selalu mengambil elemen dari posisi paling depan (Front), bukan dari belakang.',
-                            feedback: 'Salah! Dequeue selalu mengambil elemen dari posisi paling depan (Front), bukan dari belakang.'
+                            statement: 'Saat pengguna menekan tombol Undo, editor mengeksekusi operasi Pop pada Undo Stack untuk mengambil aksi terakhir, lalu mem-Push aksi tersebut ke Redo Stack.',
+                            isTrue: true,
+                            correct: true,
+                            explanation: 'Tepat! Aksi yang di-Undo dipindahkan ke Redo Stack agar pengguna sewaktu-waktu dapat mengembalikannya jika berubah pikiran.',
+                            feedback: 'Tepat! Aksi yang di-Undo dipindahkan ke Redo Stack agar pengguna sewaktu-waktu dapat mengembalikannya jika berubah pikiran.'
                         },
                         {
                             id: 'tf3',
-                            statement: 'Kondisi Queue Underflow terjadi saat kasir memanggil pesanan berikutnya (dequeue), namun tidak ada lagi siswa yang berdiri di dalam antrean.',
+                            statement: 'Kondisi Stack Underflow terjadi ketika pengguna menekan tombol Undo, padahal belum ada satu pun aksi pengetikan yang dilakukan di dalam dokumen (Undo Stack kosong).',
                             isTrue: true,
                             correct: true,
-                            explanation: 'Tepat! Mengambil elemen dari Queue yang kosong menghasilkan galat Underflow.',
-                            feedback: 'Tepat! Mengambil elemen dari Queue yang kosong menghasilkan galat Underflow.'
+                            explanation: 'Tepat! Mencoba membatalkan aksi (pop) dari tumpukan riwayat yang masih kosong memicu kondisi Underflow.',
+                            feedback: 'Tepat! Mencoba membatalkan aksi (pop) dari tumpukan riwayat yang masih kosong memicu kondisi Underflow.'
                         }
                     ],
                     essay: {
-                        prompt: 'Jelaskan bagaimana konsep Front dan Rear pada Queue mencegah penyerobotan antrean di kasir kantin, serta apa rekomendasi algoritmik kelompokmu jika kasir mulai kewalahan!',
-                        placeholder: 'Tuliskan rancangan solusi kelompok: bagaimana penetapan posisi Front dan Rear serta alur pemesanan yang adil dan efisien...'
+                        prompt: 'Jelaskan bagaimana konsep TOP pada Stack memungkinkan fitur Undo dan Redo bekerja secara terpadu, serta apa yang terjadi pada Redo Stack jika pengguna melakukan pengetikan teks baru setelah melakukan beberapa kali Undo!',
+                        placeholder: 'Tuliskan rancangan solusi kelompok: jelaskan interaksi Undo Stack dan Redo Stack serta mengapa aksi baru mengosongkan Redo Stack...'
                     },
-                    essayGuide: 'Jelaskan bagaimana konsep Front dan Rear pada Queue mencegah penyerobotan antrean di kasir kantin!'
+                    essayGuide: 'Jelaskan bagaimana konsep TOP pada Stack memungkinkan fitur Undo dan Redo bekerja serta mengapa pengetikan aksi baru mengosongkan Redo Stack!'
                 }
             },
             case2: {
                 id: 'case2',
-                icon: '🥞',
-                badge: 'Kasus 2: Tumpukan Piring Bersih & Baki Kantin (Mewakili Stack - LIFO)',
-                title: 'Manajemen Tumpukan Baki Saji & Piring Bersih Kantin Sekolah',
-                category: 'Pengelolaan Inventaris Saji & Mekanisme LIFO',
-                desc: 'Petugas dapur kantin bertugas mencuci, mengeringkan, dan menata piring saji serta baki makan untuk siswa. Piring-piring bersih ditumpuk secara vertikal di atas meja dispenser saji (kapasitas maksimal 5 piring). Siswa mengambil piring bersih dari bagian paling atas tumpukan untuk mengambil makanan. Ketika jam sibuk, petugas terus menambahkan piring bersih dari atas (push), sementara siswa terus mengambil piring teratas (pop). Jika piring ditumpuk melebihi 5, tumpukan tidak stabil dan rawan jatuh pecah (Stack Overflow). Sebaliknya, jika piring habis dan siswa tetap mencoba mengambil, terjadi keterlambatan saji (Stack Underflow).',
-                problemChallenge: 'Bagaimana menganalisis alur sirkulasi piring saji menggunakan struktur data Stack (LIFO), dan bagaimana menetapkan algoritma kontrol kapasitas tumpukan agar tidak terjadi kondisi Stack Overflow maupun Stack Underflow?',
-                recommendedStructure: 'Stack (LIFO - Last In First Out)',
-                defaultItems: ['Piring Keramik Putih #1 (Dasar)', 'Piring Keramik Putih #2', 'Piring Keramik Putih #3 (TOP)'],
+                icon: '🖥️',
+                badge: 'Studi Kasus 2: Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium (Mewakili Queue)',
+                title: 'Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium',
+                category: 'Manajemen Alokasi Fasilitas Sekolah & Struktur Data FIFO',
+                desc: 'Laboratorium Komputer sekolah memiliki 30 unit komputer, namun pada jam praktikum mandiri dan bimbingan olimpiade, terdapat lebih dari 50 siswa yang datang ingin menggunakan komputer. Karena belum ada sistem reservasi dan antrean yang tertata, siswa yang datang terlambat sering kali langsung menyerobot masuk ke bilik komputer saat ada siswa lain yang baru selesai, sementara siswa yang sudah datang dan menunggu 20 menit di ruang tunggu justru terlewatkan. Petugas laboran juga kesulitan memverifikasi urutan giliran siswa dan batas waktu penggunaan (maksimal 45 menit per sesi). Kondisi ini menimbulkan ketidakpuasan, kegaduhan antarsiswa, dan ketidakadilan alokasi fasilitas sekolah.',
+                problemChallenge: 'Bagaimana merancang model sistem manajemen antrean laboratorium komputer berbasis struktur data Queue (FIFO), dengan penetapan posisi Front (siswa yang siap dipanggil ke bilik komputer) dan Rear (siswa yang baru mendaftar antrean), serta bagaimana algoritma penanganan saat seluruh bilik komputer penuh atau saat antrean kosong?',
+                recommendedStructure: 'Queue (FIFO - First In First Out)',
+                defaultItems: ['1. Siswa Budi (Daftar 08.00 - FRONT)', '2. Siswa Siti (Daftar 08.05)', '3. Siswa Ahmad (Daftar 08.10 - REAR)'],
                 hots: {
                     mc: {
-                        question: 'Mengapa mekanisme dispenser piring bersih di meja saji kantin secara alami memodelkan struktur data Stack (LIFO)?',
+                        question: 'Mengapa sistem manajemen antrean penggunaan komputer laboratorium sekolah wajib menerapkan struktur data Queue (FIFO) dan BUKAN Stack (LIFO)?',
                         options: [
-                            { key: 'A', text: 'Karena piring yang terakhir kali ditaruh oleh petugas di posisi puncak (TOP) adalah piring yang pertama kali diambil oleh siswa (Last In First Out).', isCorrect: true, feedback: 'Tepat sekali! Akses penambahan (push) dan pengambilan (pop) piring hanya dapat dilakukan melalui satu pintu akses yaitu di posisi paling atas (TOP).' },
-                            { key: 'B', text: 'Karena siswa dapat mengambil piring dari bagian paling bawah tumpukan tanpa menyentuh piring di atasnya.', isCorrect: false, feedback: 'Salah, mengambil dari bawah merusak tumpukan dan bukan sifat Stack.' },
-                            { key: 'C', text: 'Karena piring bersih yang masuk pertama kali akan diambil pertama kali oleh siswa.', isCorrect: false, feedback: 'Salah, itu adalah prinsip FIFO, sedangkan tumpukan adalah LIFO.' },
-                            { key: 'D', text: 'Karena dispenser piring memiliki dua pintu keluar masuk di atas dan di bawah.', isCorrect: false, feedback: 'Salah, Stack hanya memiliki satu ujung akses terbuka (TOP).' }
+                            { key: 'A', text: 'Karena prinsip FIFO menjamin siswa yang datang mendaftar lebih awal berada di posisi Front dan dipanggil pertama kali ke bilik komputer kosong (dequeue), sehingga menciptakan keadilan pemanfaatan fasilitas sekolah.', isCorrect: true, feedback: 'Tepat sekali! Asas keadilan antrean pemanfaatan fasilitas bersama hanya dapat dijamin oleh Queue (FIFO).' },
+                            { key: 'B', text: 'Karena sistem Queue memperbolehkan siswa yang baru datang langsung mengambil komputer tanpa mengantre.', isCorrect: false, feedback: 'Salah, penyerobotan antrean melanggar aturan komputasional FIFO.' },
+                            { key: 'C', text: 'Karena memori Queue otomatis mematikan komputer yang sedang digunakan.', isCorrect: false, feedback: 'Salah, Queue mengelola urutan data, bukan mematikan daya komputer.' },
+                            { key: 'D', text: 'Karena Queue hanya dapat menampung maksimal 1 orang siswa.', isCorrect: false, feedback: 'Salah, Queue dapat menampung banyak elemen data secara dinamis.' }
                         ]
                     },
                     tf: [
                         {
                             id: 'tf1',
-                            statement: 'Saat petugas kantin meletakkan piring bersih baru ke atas tumpukan, operasi komputasional yang dieksekusi adalah operasi Push pada posisi TOP.',
+                            statement: 'Ketika seorang siswa baru datang ke laboratorium komputer dan mendaftarkan diri, operasi komputasional yang terjadi adalah Enqueue pada posisi Rear antrean.',
                             isTrue: true,
                             correct: true,
-                            explanation: 'Benar! Operasi push menambahkan elemen ke puncak tumpukan Stack.',
-                            feedback: 'Benar! Operasi push menambahkan elemen ke puncak tumpukan Stack.'
+                            explanation: 'Tepat! Elemen baru dalam antrean Queue selalu ditambahkan di bagian belakang (Rear) melalui operasi Enqueue.',
+                            feedback: 'Tepat! Elemen baru dalam antrean Queue selalu ditambahkan di bagian belakang (Rear) melalui operasi Enqueue.'
                         },
                         {
                             id: 'tf2',
-                            statement: 'Operasi peek() pada tumpukan piring bersih bertujuan untuk mengambil dan memindahkan piring teratas ke meja makan siswa.',
+                            statement: 'Jika petugas laboran memanggil siswa yang baru saja datang di posisi Rear untuk masuk bilik komputer mendahului siswa di posisi Front, maka laboran tersebut menerapkan aturan Dequeue yang sah.',
                             isTrue: false,
                             correct: false,
-                            explanation: 'Salah! Operasi peek() hanya melihat atau memeriksa status elemen teratas (TOP) tanpa menghapus atau mengambilnya.',
-                            feedback: 'Salah! Operasi peek() hanya melihat atau memeriksa status elemen teratas (TOP) tanpa menghapus atau mengambilnya.'
+                            explanation: 'Salah! Dequeue selalu memanggil dan melayani elemen dari posisi paling depan (Front), bukan dari belakang.',
+                            feedback: 'Salah! Dequeue selalu memanggil dan melayani elemen dari posisi paling depan (Front), bukan dari belakang.'
                         },
                         {
                             id: 'tf3',
-                            statement: 'Kondisi Stack Overflow terjadi ketika dispenser piring yang sudah mencapai kapasitas maksimal (5 piring) tetap dipaksakan untuk ditambah piring baru oleh petugas.',
+                            statement: 'Kondisi Queue Underflow terjadi saat sebuah bilik komputer kosong dan siap digunakan, namun daftar antrean siswa di ruang tunggu laboratorium sedang kosong.',
                             isTrue: true,
                             correct: true,
-                            explanation: 'Tepat! Menambahkan elemen ke wadah Stack yang sudah penuh memicu kondisi galat Stack Overflow.',
-                            feedback: 'Tepat! Menambahkan elemen ke wadah Stack yang sudah penuh memicu kondisi galat Stack Overflow.'
+                            explanation: 'Tepat! Mencoba melakukan Dequeue saat antrean tidak memiliki elemen memicu kondisi Underflow.',
+                            feedback: 'Tepat! Mencoba melakukan Dequeue saat antrean tidak memiliki elemen memicu kondisi Underflow.'
                         }
                     ],
                     essay: {
-                        prompt: 'Jelaskan bagaimana algoritma pengecekan kapasitas (isFull dan isEmpty) mencegah kecelakaan piring pecah (Overflow) atau piring kosong (Underflow)!',
-                        placeholder: 'Tuliskan rancangan algoritma kelompok: langkah pengecekan sebelum push dan sebelum pop...'
+                        prompt: 'Jelaskan bagaimana konsep Front dan Rear pada Queue mencegah praktik penyerobotan bilik komputer laboratorium, serta rumuskan rekomendasi algoritmik kelompokmu jika terdapat siswa yang waktu penggunaannya telah habis!',
+                        placeholder: 'Tuliskan rancangan solusi kelompok: bagaimana penetapan posisi Front dan Rear serta alur pergantian siswa di bilik komputer...'
                     },
-                    essayGuide: 'Jelaskan bagaimana algoritma pengecekan kapasitas (isFull dan isEmpty) mencegah kecelakaan piring pecah (Overflow) atau piring kosong (Underflow)!'
+                    essayGuide: 'Jelaskan bagaimana konsep Front dan Rear pada Queue mencegah penyerobotan bilik komputer laboratorium dan alur algoritmik pergantian sesi!'
                 }
             }
         },
@@ -1287,7 +1287,7 @@ const App = {
         const curCase = this.groupProjectState.cases[this.groupProjectState.selectedCase];
         if (curCase) {
             this.groupProjectState.simState.items = [...(curCase.defaultItems || [])];
-            this.groupProjectState.simState.undoItems = ['1. Buat Kanvas Baru', '2. Ketik Paragraf A'];
+            this.groupProjectState.simState.undoItems = [...(curCase.defaultItems || [])];
             this.groupProjectState.simState.redoItems = [];
             this.groupProjectState.simState.logs = [
                 `[SISTEM] Simulasi siap untuk: ${curCase.title}`,
@@ -1813,17 +1813,18 @@ const App = {
     getSimulationButtonsHTML(caseId) {
         if (caseId === 'case1') {
             return `
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('enqueue_student')">➕ Siswa Masuk Antrean (Enqueue Rear)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('dequeue_kasir')">➔ Kasir Layani Siswa Terdepan (Dequeue Front)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('peek_front')">👁️ Cek Siswa Terdepan (Peek Front)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Antrean</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('push_action')">➕ Ketik Aksi Baru (Push Undo Stack)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('undo_action')">↩️ Batalkan Aksi / Undo (Pop Undo ➔ Push Redo)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('redo_action')">↪️ Kembalikan Aksi / Redo (Pop Redo ➔ Push Undo)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('peek_top')">👁️ Cek Aksi Teratas (Peek TOP)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Editor</button>
             `;
         } else {
             return `
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('push_plate')">➕ Petugas Tambah Piring (Push TOP)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('pop_plate')">➔ Siswa Ambil Piring Teratas (Pop TOP)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('peek_top')">👁️ Cek Piring Teratas (Peek TOP)</button>
-                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Tumpukan</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('enqueue_student')">➕ Siswa Masuk Antrean Lab (Enqueue Rear)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-amber" onclick="App.runCaseSimulation('dequeue_student')">➔ Panggil ke Bilik Komputer (Dequeue Front)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-sky" onclick="App.runCaseSimulation('peek_front')">👁️ Cek Siswa Terdepan (Peek Front)</button>
+                <button type="button" class="gp-sim-btn gp-sim-btn-outline" onclick="App.runCaseSimulation('reset')">🔄 Reset Antrean Lab</button>
             `;
         }
     },
@@ -1835,55 +1836,93 @@ const App = {
         const caseId = this.groupProjectState.selectedCase;
         const sim = this.groupProjectState.simState;
 
-        if (!sim.items || sim.items.length === 0) {
-            vp.innerHTML = `<span style="color: #8F726A; font-size: 0.88rem; font-style: italic;">Antrean / tumpukan data saat ini kosong (Underflow). Gunakan tombol di atas untuk menyimulasikan operasi aliran data.</span>`;
-            return;
-        }
-
         if (caseId === 'case1') {
-            // Queue FIFO Horizontal Track
+            // Stack LIFO: Undo Stack & Redo Stack pada Editor Teks
+            const undoStack = sim.items || [];
+            const redoStack = sim.redoItems || [];
+            const maxCap = 5;
+
             vp.innerHTML = `
                 <div style="width: 100%;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-family: 'Space Mono', monospace; font-weight: 700; color: #714236; margin-bottom: 0.5rem;">
-                        <span>🚪 FRONT (Meja Kasir - Dilayani Duluan) ➔</span>
-                        <span> REAR (Siswa Baru Masuk Antrean)</span>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                        <!-- Kolom 1: Undo Stack -->
+                        <div style="background: #FAF6ED; border: 2px solid #D8D4BC; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong style="font-size: 0.86rem; color: #891A10; font-family: 'Space Mono', monospace;">📚 UNDO STACK (Aksi Aktif)</strong>
+                                <span style="font-size: 0.75rem; background: #891A10; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 700;">${undoStack.length}/${maxCap}</span>
+                            </div>
+                            <div style="font-size: 0.76rem; color: #714236; margin-bottom: 0.5rem;">
+                                ⬇️ Puncak TOP: Aksi terakhir yang siap dibatalkan (Ctrl+Z) ⬇️
+                            </div>
+                            <div style="display: flex; flex-direction: column-reverse; gap: 0.45rem; min-height: 140px; justify-content: flex-start;">
+                                ${undoStack.length === 0 ? '<span style="color: #8F726A; font-size: 0.82rem; font-style: italic; margin: auto;">(Undo Stack Kosong - Underflow)</span>' : ''}
+                                ${undoStack.map((it, idx) => {
+                                    const isTop = idx === undoStack.length - 1;
+                                    return `
+                                        <div style="background: ${isTop ? '#891A10' : '#DC8236'}; color: #FFFFFF; border-radius: 8px; padding: 0.55rem 0.85rem; font-weight: 700; font-size: 0.82rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(113, 66, 54, 0.15);">
+                                            <span>📝 ${it}</span>
+                                            <span style="font-family: 'Space Mono', monospace; font-size: 0.72rem; background: rgba(0,0,0,0.25); padding: 0.15rem 0.4rem; border-radius: 4px;">
+                                                ${isTop ? '★ TOP' : `#${idx + 1}`}
+                                            </span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Kolom 2: Redo Stack -->
+                        <div style="background: #F8FAFC; border: 2px dashed #94A3B8; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong style="font-size: 0.86rem; color: #334155; font-family: 'Space Mono', monospace;">🔄 REDO STACK (Siap Dipulihkan)</strong>
+                                <span style="font-size: 0.75rem; background: #64748B; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 700;">${redoStack.length} Aksi</span>
+                            </div>
+                            <div style="font-size: 0.76rem; color: #64748B; margin-bottom: 0.5rem;">
+                                ⬆️ Aksi yang baru saja di-Undo dan siap dikembalikan (Ctrl+Y) ⬆️
+                            </div>
+                            <div style="display: flex; flex-direction: column-reverse; gap: 0.45rem; min-height: 140px; justify-content: flex-start;">
+                                ${redoStack.length === 0 ? '<span style="color: #94A3B8; font-size: 0.82rem; font-style: italic; margin: auto;">(Redo Stack Kosong)</span>' : ''}
+                                ${redoStack.map((it, idx) => {
+                                    const isTop = idx === redoStack.length - 1;
+                                    return `
+                                        <div style="background: ${isTop ? '#475569' : '#94A3B8'}; color: #FFFFFF; border-radius: 8px; padding: 0.55rem 0.85rem; font-weight: 700; font-size: 0.82rem; display: flex; justify-content: space-between; align-items: center;">
+                                            <span>↩️ ${it}</span>
+                                            <span style="font-family: 'Space Mono', monospace; font-size: 0.72rem; background: rgba(0,0,0,0.2); padding: 0.15rem 0.4rem; border-radius: 4px;">
+                                                ${isTop ? '★ TOP REDO' : `#${idx + 1}`}
+                                            </span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 0.6rem; overflow-x: auto; padding: 0.5rem 0;">
-                        ${sim.items.map((it, idx) => {
-                            const isFront = idx === 0;
-                            const isRear = idx === sim.items.length - 1;
-                            return `
-                                <div class="gp-sim-item-badge" style="background: ${isFront ? '#891A10' : '#E76814'}; color: #FFFFFF; border-radius: 8px; padding: 0.6rem 0.9rem; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(113, 66, 54, 0.2);">
-                                    ${isFront ? '👑 FRONT: ' : (isRear ? '📍 REAR: ' : '👤 ')}${it}
-                                </div>
-                            `;
-                        }).join('')}
+                    <div style="font-size: 0.78rem; color: #714236; margin-top: 0.6rem; text-align: center;">
+                        Mekanisme LIFO: Tombol <strong>Undo</strong> memindahkan aksi dari puncak Undo Stack ke Redo Stack. Mengetik aksi baru akan otomatis mengosongkan Redo Stack!
                     </div>
                 </div>
             `;
         } else {
-            // Stack LIFO Vertical Chamber (Dispenser Piring)
-            const maxCap = 5;
+            // Queue FIFO: Antrean Penggunaan Komputer Laboratorium
+            const queueItems = sim.items || [];
             vp.innerHTML = `
-                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                    <div style="font-size: 0.78rem; font-family: 'Space Mono', monospace; font-weight: 700; color: #891A10; margin-bottom: 0.5rem;">
-                        ⬇️ SATU PINTU AKSES: TOP OF STACK (Push & Pop dari Sini) ⬇️
+                <div style="width: 100%;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-family: 'Space Mono', monospace; font-weight: 700; color: #714236; margin-bottom: 0.5rem;">
+                        <span>🖥️ FRONT (Bilik Komputer Lab 1-30 - Siap Dipanggil) ➔</span>
+                        <span>📍 REAR (Ruang Tunggu Pendaftaran Siswa Baru)</span>
                     </div>
-                    <div style="width: 100%; max-width: 440px; display: flex; flex-direction: column-reverse; gap: 0.5rem; background: #FAF6ED; border: 2px solid #D8D4BC; border-radius: 12px; padding: 1rem;">
-                        ${sim.items.map((it, idx) => {
-                            const isTop = idx === sim.items.length - 1;
+                    <div style="display: flex; gap: 0.6rem; overflow-x: auto; padding: 0.5rem 0;">
+                        ${queueItems.length === 0 ? '<span style="color: #8F726A; font-size: 0.88rem; font-style: italic;">Antrean laboratorium kosong (Underflow). Tidak ada siswa yang menunggu.</span>' : ''}
+                        ${queueItems.map((it, idx) => {
+                            const isFront = idx === 0;
+                            const isRear = idx === queueItems.length - 1;
                             return `
-                                <div style="background: ${isTop ? '#891A10' : '#DC8236'}; color: #FFFFFF; border-radius: 8px; padding: 0.6rem 1rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(113, 66, 54, 0.15);">
-                                    <span>🍽️ ${it}</span>
-                                    <span style="font-family: 'Space Mono', monospace; font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">
-                                        ${isTop ? '★ TOP (Paling Atas)' : `Posisi #${idx + 1}`}
-                                    </span>
+                                <div class="gp-sim-item-badge" style="background: ${isFront ? '#891A10' : '#E76814'}; color: #FFFFFF; border-radius: 8px; padding: 0.6rem 0.9rem; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(113, 66, 54, 0.2);">
+                                    ${isFront ? '👑 FRONT (Giliran Masuk): ' : (isRear ? '📍 REAR (Baru Datang): ' : '👤 ')}${it}
                                 </div>
                             `;
                         }).join('')}
                     </div>
                     <div style="font-size: 0.78rem; color: #714236; margin-top: 0.4rem;">
-                        Kapasitas Dispenser: <strong>${sim.items.length} / ${maxCap} Piring</strong> ${sim.items.length >= maxCap ? '<span style="color: #B8210F; font-weight: bold;">(PENUH / Overflow Warning)</span>' : ''}
+                        Total Siswa Mengantre: <strong>${queueItems.length} Siswa</strong>. Sesuai prinsip FIFO, siswa yang datang lebih awal berada di posisi FRONT dan dipanggil duluan.
                     </div>
                 </div>
             `;
@@ -1896,57 +1935,71 @@ const App = {
         let soundToPlay = 'click';
 
         if (caseId === 'case1') {
-            // Queue Kasir Kantin
-            if (action === 'enqueue_student') {
-                const pool = ['Dian (Nasi Goreng)', 'Fajar (Soto Ayam)', 'Lestari (Mie Ayam)', 'Rafi (Batagor)', 'Nabila (Es Teh)', 'Bagus (Roti Bakar)'];
-                const student = pool[Math.floor(Math.random() * pool.length)];
-                sim.items.push(`Siswa ${student}`);
-                sim.logs.unshift(`[ENQUEUE FIFO] Siswa "${student}" datang dan masuk antrean di barisan paling belakang (REAR). Total antrean: ${sim.items.length}.`);
-                soundToPlay = 'enqueue';
-            } else if (action === 'dequeue_kasir') {
-                if (sim.items.length === 0) {
-                    sim.logs.unshift(`⚠️ [QUEUE UNDERFLOW] Antrean kasir sedang kosong! Kasir menunggu kedatangan siswa berikutnya.`);
+            // Stack Undo / Redo pada Editor Teks
+            const maxCap = 5;
+            if (!sim.redoItems) sim.redoItems = [];
+
+            if (action === 'push_action') {
+                if (sim.items.length >= maxCap) {
+                    sim.logs.unshift(`⚠️ [STACK OVERFLOW] Batas riwayat Undo penuh (${maxCap} aksi)! Editor membatasi memori agar aplikasi tidak lambat.`);
                 } else {
-                    const served = sim.items.shift();
-                    sim.logs.unshift(`✅ [DEQUEUE FIFO] Kasir selesai memproses pembayaran dan menyerahkan pesanan kepada: ${served} (keluar dari FRONT).`);
-                    soundToPlay = 'dequeue';
+                    const pool = ['Ketik: "Rumusan Masalah"', 'Format: Heading 1', 'Sisipkan: Gambar Diagram', 'Ubah Warna: Biru', 'Buat Tabel: 3 Kolom', 'Ketik: "Daftar Pustaka"'];
+                    const actionName = pool[Math.floor(Math.random() * pool.length)];
+                    sim.items.push(actionName);
+                    // Mengetik aksi baru mengosongkan Redo Stack (standar editor teks)
+                    sim.redoItems = [];
+                    sim.logs.unshift(`[PUSH STACK] Pengguna melakukan "${actionName}" (masuk ke TOP Undo Stack). Redo Stack direset.`);
+                    soundToPlay = 'push';
                 }
-            } else if (action === 'peek_front') {
+            } else if (action === 'undo_action') {
                 if (sim.items.length === 0) {
-                    sim.logs.unshift(`👁️ [PEEK FRONT] Antrean kosong, tidak ada siswa di posisi depan.`);
+                    sim.logs.unshift(`⚠️ [STACK UNDERFLOW] Tidak ada aksi yang dapat dibatalkan (Undo Stack kosong)!`);
                 } else {
-                    sim.logs.unshift(`👁️ [PEEK FRONT] Siswa yang saat ini berada di depan meja kasir adalah: ${sim.items[0]} (sedang bersiap memesan).`);
+                    const undone = sim.items.pop();
+                    sim.redoItems.push(undone);
+                    sim.logs.unshift(`↩️ [UNDO LIFO] Aksi "${undone}" dibatalkan (Pop dari Undo Stack ➔ Push ke Redo Stack). Sisa Undo: ${sim.items.length}.`);
+                    soundToPlay = 'pop';
+                }
+            } else if (action === 'redo_action') {
+                if (sim.redoItems.length === 0) {
+                    sim.logs.unshift(`⚠️ [REDO KOSONG] Tidak ada aksi yang dapat dikembalikan (Redo Stack kosong)!`);
+                } else {
+                    const redone = sim.redoItems.pop();
+                    sim.items.push(redone);
+                    sim.logs.unshift(`↪️ [REDO LIFO] Aksi "${redone}" dikembalikan (Pop dari Redo Stack ➔ Push ke Undo Stack).`);
+                    soundToPlay = 'push';
+                }
+            } else if (action === 'peek_top') {
+                if (sim.items.length === 0) {
+                    sim.logs.unshift(`👁️ [PEEK TOP] Undo Stack kosong, belum ada aksi yang dilakukan pengguna.`);
+                } else {
+                    sim.logs.unshift(`👁️ [PEEK TOP] Aksi yang berada di puncak tumpukan (TOP) saat ini adalah: "${sim.items[sim.items.length - 1]}".`);
                 }
             } else if (action === 'reset') {
                 this.resetCaseSimulationData();
                 return;
             }
         } else {
-            // Stack Tumpukan Piring (maks 5 piring)
-            const maxCap = 5;
-            if (action === 'push_plate') {
-                if (sim.items.length >= maxCap) {
-                    sim.logs.unshift(`⚠️ [STACK OVERFLOW] Kapasitas dispenser penuh (${maxCap} piring)! Jangan tambah piring lagi agar tidak goyang dan jatuh pecah.`);
-                } else {
-                    const plateNum = sim.items.length + 1;
-                    const plateName = `Piring Keramik Putih #${plateNum}`;
-                    sim.items.push(plateName);
-                    sim.logs.unshift(`[PUSH STACK] Petugas dapur menaruh ${plateName} bersih ke posisi paling atas (TOP). Tumpukan saat ini: ${sim.items.length} piring.`);
-                    soundToPlay = 'push';
-                }
-            } else if (action === 'pop_plate') {
+            // Queue Antrean Komputer Laboratorium
+            if (action === 'enqueue_student') {
+                const pool = ['Dian (Praktikum Pemrograman)', 'Fajar (Bimbingan OSN)', 'Lestari (Tugas Desain Grafis)', 'Rafi (Simulasi ANBK)', 'Nabila (Analisis Data Excel)', 'Bagus (Riset Jurnal)'];
+                const student = pool[Math.floor(Math.random() * pool.length)];
+                sim.items.push(`Siswa ${student}`);
+                sim.logs.unshift(`[ENQUEUE FIFO] Siswa "${student}" datang mendaftar dan masuk antrean lab di posisi paling belakang (REAR). Total antrean: ${sim.items.length}.`);
+                soundToPlay = 'enqueue';
+            } else if (action === 'dequeue_student' || action === 'dequeue_kasir') {
                 if (sim.items.length === 0) {
-                    sim.logs.unshift(`⚠️ [STACK UNDERFLOW] Dispenser piring bersih kosong! Siswa harus menunggu petugas dapur mencuci piring baru.`);
+                    sim.logs.unshift(`⚠️ [QUEUE UNDERFLOW] Antrean laboratorium sedang kosong! Tidak ada siswa yang menunggu.`);
                 } else {
-                    const popped = sim.items.pop();
-                    sim.logs.unshift(`✅ [POP STACK] Siswa mengambil ${popped} dari posisi paling atas (TOP) untuk mengambil makanan. Sisa: ${sim.items.length} piring.`);
-                    soundToPlay = 'pop';
+                    const served = sim.items.shift();
+                    sim.logs.unshift(`✅ [DEQUEUE FIFO] Siswa "${served}" dipanggil ke bilik komputer yang baru kosong (keluar dari FRONT).`);
+                    soundToPlay = 'dequeue';
                 }
-            } else if (action === 'peek_top') {
+            } else if (action === 'peek_front') {
                 if (sim.items.length === 0) {
-                    sim.logs.unshift(`👁️ [PEEK TOP] Dispenser piring kosong, tidak ada piring di posisi puncak.`);
+                    sim.logs.unshift(`👁️ [PEEK FRONT] Antrean laboratorium kosong, tidak ada siswa di posisi depan.`);
                 } else {
-                    sim.logs.unshift(`👁️ [PEEK TOP] Piring yang berada di puncak tumpukan saat ini adalah: ${sim.items[sim.items.length - 1]}.`);
+                    sim.logs.unshift(`👁️ [PEEK FRONT] Siswa di urutan terdepan yang siap menggunakan bilik komputer berikutnya adalah: "${sim.items[0]}".`);
                 }
             } else if (action === 'reset') {
                 this.resetCaseSimulationData();
@@ -2272,15 +2325,15 @@ const App = {
 
         // 2. Ketepatan Konsep Struktur Data
         const selStruct = (projectData.worksheet?.selectedStructure || '').toLowerCase();
-        const isCase1 = projectData.selectedCase === 'case1'; // Queue Kantin
-        const isCase2 = projectData.selectedCase === 'case2'; // Stack Kantin
+        const isCase1 = projectData.selectedCase === 'case1'; // Stack Undo/Redo
+        const isCase2 = projectData.selectedCase === 'case2'; // Queue Lab Komputer
 
-        if (isCase1 && selStruct.includes('queue')) {
+        if (isCase1 && selStruct.includes('stack')) {
             details.conceptSelection.score = 20;
-            details.conceptSelection.note = "Tepat! Kasus antrean kasir kantin wajib menggunakan Queue (FIFO).";
-        } else if (isCase2 && selStruct.includes('stack')) {
+            details.conceptSelection.note = "Tepat! Kasus sistem Undo dan Redo pada editor teks wajib menggunakan Stack (LIFO).";
+        } else if (isCase2 && selStruct.includes('queue')) {
             details.conceptSelection.score = 20;
-            details.conceptSelection.note = "Tepat! Kasus tumpukan piring saji kantin wajib menggunakan Stack (LIFO).";
+            details.conceptSelection.note = "Tepat! Kasus antrean penggunaan komputer laboratorium wajib menggunakan Queue (FIFO).";
         } else if (selStruct.length > 0) {
             details.conceptSelection.score = 8;
             details.conceptSelection.note = "Struktur data yang dipilih kurang selaras dengan karakteristik masalah.";
@@ -2447,7 +2500,7 @@ const App = {
         }
 
         if (!ws.selectedStructure) {
-            ws.selectedStructure = curCase.recommendedStructure || (caseKey === 'case1' ? 'Queue (FIFO)' : 'Stack (LIFO)');
+            ws.selectedStructure = curCase.recommendedStructure || (caseKey === 'case1' ? 'Stack (LIFO - Last In First Out)' : 'Queue (FIFO - First In First Out)');
             if (structSelect) structSelect.value = ws.selectedStructure;
         }
 
