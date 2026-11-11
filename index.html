@@ -22,10 +22,6 @@
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/academic-theme.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/dark-theme.css">
-
-    <!-- Instant Theme Initializer (Zero-FOUC) -->
-    <script src="js/theme.js"></script>
 </head>
 <body>
 
@@ -130,12 +126,8 @@
                 <button class="nav-link" data-screen-target="profile">Profil & Nilai</button>
             </nav>
 
-            <!-- Student Profile Badge, Theme Toggle & Live Sync Pill -->
+            <!-- Student Profile Badge & Live Sync Pill -->
             <div class="header-actions" style="display: flex; align-items: center; gap: 0.65rem;">
-                <button type="button" class="theme-toggle-btn" onclick="ThemeManager.toggleTheme()" title="Beralih ke Mode Gelap / Terang" aria-label="Toggle Dark/Light Mode">
-                    <span class="theme-toggle-icon">🌙</span>
-                    <span class="theme-toggle-text">Mode Gelap</span>
-                </button>
                 <div id="cloud-sync-status-pill" class="live-sync-indicator connecting" onclick="CloudSync.syncStudentState('Koneksi Diperiksa Manual'); if (window.UI) UI.showToast('📡 Mengirimkan sinkronisasi ke Dashboard Guru...', 'info');" title="Status koneksi real-time ke Portal Dashboard Guru (Klik untuk sinkronisasi manual)">
                     <span class="live-sync-dot"></span>
                     <span class="live-sync-text">Terhubung ke Guru</span>
