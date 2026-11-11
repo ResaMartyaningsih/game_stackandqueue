@@ -1043,8 +1043,8 @@ const App = {
                     mc: {
                         question: 'Mengapa fitur Undo (Ctrl+Z) pada editor teks wajib diimplementasikan menggunakan struktur data Stack dan BUKAN Queue?',
                         options: [
-                            { key: 'A', text: 'Karena prinsip LIFO menjamin aksi pengetikan terakhir yang dilakukan pengguna (di posisi TOP) adalah aksi yang pertama kali dibatalkan, sesuai urutan pembalikan kronologis kerja pengguna.', isCorrect: true, feedback: 'Tepat sekali! Operasi pembatalan (Undo) selalu membatalkan aksi paling mutakhir/terakhir yang berada di posisi TOP stack (Last In First Out).' },
-                            { key: 'B', text: 'Karena Queue hanya dapat membatalkan aksi yang pertama kali dibuat saat dokumen baru dibuka.', isCorrect: false, feedback: 'Salah, pembatalan aksi pertama justru merusak dokumen awal, bukan sifat Undo.' },
+                            { key: 'A', text: 'Karena Queue hanya dapat membatalkan aksi yang pertama kali dibuat saat dokumen baru dibuka.', isCorrect: false, feedback: 'Salah, pembatalan aksi pertama justru merusak dokumen awal, bukan sifat Undo.' },
+                            { key: 'B', text: 'Karena prinsip LIFO menjamin aksi pengetikan terakhir yang dilakukan pengguna (di posisi TOP) adalah aksi yang pertama kali dibatalkan, sesuai urutan pembalikan kronologis kerja pengguna.', isCorrect: true, feedback: 'Tepat sekali! Operasi pembatalan (Undo) selalu membatalkan aksi paling mutakhir/terakhir yang berada di posisi TOP stack (Last In First Out).' },
                             { key: 'C', text: 'Karena Stack dapat mengedit dokumen tanpa memerlukan alokasi memori komputer.', isCorrect: false, feedback: 'Salah, Stack tetap membutuhkan alokasi memori komputer.' },
                             { key: 'D', text: 'Karena Stack secara otomatis menghapus seluruh isi dokumen sekaligus saat tombol ditekan.', isCorrect: false, feedback: 'Salah, Stack membatalkan per elemen aksi secara terurut, bukan menghapus seluruh dokumen.' }
                         ]
@@ -1096,9 +1096,9 @@ const App = {
                     mc: {
                         question: 'Mengapa sistem manajemen antrean penggunaan komputer laboratorium sekolah wajib menerapkan struktur data Queue (FIFO) dan BUKAN Stack (LIFO)?',
                         options: [
-                            { key: 'A', text: 'Karena prinsip FIFO menjamin siswa yang datang mendaftar lebih awal berada di posisi Front dan dipanggil pertama kali ke bilik komputer kosong (dequeue), sehingga menciptakan keadilan pemanfaatan fasilitas sekolah.', isCorrect: true, feedback: 'Tepat sekali! Asas keadilan antrean pemanfaatan fasilitas bersama hanya dapat dijamin oleh Queue (FIFO).' },
-                            { key: 'B', text: 'Karena sistem Queue memperbolehkan siswa yang baru datang langsung mengambil komputer tanpa mengantre.', isCorrect: false, feedback: 'Salah, penyerobotan antrean melanggar aturan komputasional FIFO.' },
-                            { key: 'C', text: 'Karena memori Queue otomatis mematikan komputer yang sedang digunakan.', isCorrect: false, feedback: 'Salah, Queue mengelola urutan data, bukan mematikan daya komputer.' },
+                            { key: 'A', text: 'Karena sistem Queue memperbolehkan siswa yang baru datang langsung mengambil komputer tanpa mengantre.', isCorrect: false, feedback: 'Salah, penyerobotan antrean melanggar aturan komputasional FIFO.' },
+                            { key: 'B', text: 'Karena memori Queue otomatis mematikan komputer yang sedang digunakan.', isCorrect: false, feedback: 'Salah, Queue mengelola urutan data, bukan mematikan daya komputer.' },
+                            { key: 'C', text: 'Karena prinsip FIFO menjamin siswa yang datang mendaftar lebih awal berada di posisi Front dan dipanggil pertama kali ke bilik komputer kosong (dequeue), sehingga menciptakan keadilan pemanfaatan fasilitas sekolah.', isCorrect: true, feedback: 'Tepat sekali! Asas keadilan antrean pemanfaatan fasilitas bersama hanya dapat dijamin oleh Queue (FIFO).' },
                             { key: 'D', text: 'Karena Queue hanya dapat menampung maksimal 1 orang siswa.', isCorrect: false, feedback: 'Salah, Queue dapat menampung banyak elemen data secara dinamis.' }
                         ]
                     },

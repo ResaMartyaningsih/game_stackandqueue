@@ -32,12 +32,12 @@ const PBLAcademic = {
             scenario: "Loket kasir kantin mula-mula kosong. Datang 4 siswa berturut-turut memesan makanan: Budi, Citra, Dodi, Eka (operasi enqueue). Kasir kemudian melayani dan menyelesaikan transaksi 2 orang pertama (operasi dequeue). Setelah itu, datang lagi 1 siswa baru bernama Fani (operasi enqueue).",
             question: "Siapakah siswa yang saat ini berada di posisi terdepan (FRONT) yang siap dilayani berikutnya, dan berapa total siswa yang masih mengantre?",
             options: [
-                "A. Siswa terdepan: Dodi, Total sisa antrean: 3 siswa (Dodi, Eka, Fani)",
-                "B. Siswa terdepan: Citra, Total sisa antrean: 2 siswa (Citra, Dodi)",
+                "A. Siswa terdepan: Citra, Total sisa antrean: 2 siswa (Citra, Dodi)",
+                "B. Siswa terdepan: Dodi, Total sisa antrean: 3 siswa (Dodi, Eka, Fani)",
                 "C. Siswa terdepan: Budi, Total sisa antrean: 4 siswa (Budi, Dodi, Eka, Fani)",
                 "D. Siswa terdepan: Fani, Total sisa antrean: 3 siswa (Fani, Eka, Dodi)"
             ],
-            correct: 0,
+            correct: 1,
             explanation: "Benar! Tracing antrean: Masuk [Budi, Citra, Dodi, Eka]. Dua orang dilayani/keluar (dequeue): Budi keluar, lalu Citra keluar. Sisa antrean menjadi [Dodi, Eka]. Fani masuk (enqueue) di belakang (REAR). Antrean terkini: [Dodi (FRONT), Eka, Fani (REAR)]. Siswa terdepan adalah Dodi dan sisa antrean adalah 3 orang."
         },
         {
@@ -47,12 +47,12 @@ const PBLAcademic = {
             scenario: "Petugas kantin menumpuk piring bersih ke wadah piring: Piring Merah (P1), Piring Biru (P2), Piring Hijau (P3) dengan memanggil fungsi push(). Seorang siswa lalu mengambil 1 piring dengan memanggil fungsi pop(). Petugas kemudian menaruh Piring Kuning (P4) di atas tumpukan dengan push().",
             question: "Jika seorang siswa berikutnya datang mengambil piring menggunakan operasi pop(), piring warna apakah yang akan ia peroleh?",
             options: [
-                "A. Piring Kuning (P4)",
-                "B. Piring Hijau (P3)",
-                "C. Piring Biru (P2)",
+                "A. Piring Hijau (P3)",
+                "B. Piring Biru (P2)",
+                "C. Piring Kuning (P4)",
                 "D. Piring Merah (P1)"
             ],
-            correct: 0,
+            correct: 2,
             explanation: "Tepat sekali! Tracing Stack: push(P1), push(P2), push(P3). Tumpukan saat ini [P1, P2, P3(TOP)]. Pop() mengambil P3, sehingga tumpukan tersisa [P1, P2(TOP)]. Petugas lalu push(P4), sehingga tumpukan menjadi [P1, P2, P4(TOP)]. Saat operasi pop() berikutnya dipanggil, piring di posisi TOP yaitu Piring Kuning (P4) yang keluar!"
         },
         {
@@ -62,12 +62,12 @@ const PBLAcademic = {
             scenario: "Tiga nomor pesanan makanan [101, 102, 103] dimasukkan ke dalam sistem pemrosesan secara berurutan. Sistem X memproses pesanan dengan hasil urutan pengeluaran [103, 102, 101]. Sedangkan Sistem Y memproses dengan urutan pengeluaran [101, 102, 103].",
             question: "Berdasarkan pola urutan keluaran data tersebut, struktur data apakah yang digunakan oleh Sistem X dan Sistem Y?",
             options: [
-                "A. Sistem X menggunakan Stack (LIFO), Sistem Y menggunakan Queue (FIFO)",
-                "B. Sistem X menggunakan Queue (FIFO), Sistem Y menggunakan Stack (LIFO)",
-                "C. Kedua sistem menggunakan Stack (LIFO)",
-                "D. Kedua sistem menggunakan Queue (FIFO)"
+                "A. Sistem X menggunakan Queue (FIFO), Sistem Y menggunakan Stack (LIFO)",
+                "B. Kedua sistem menggunakan Stack (LIFO)",
+                "C. Kedua sistem menggunakan Queue (FIFO)",
+                "D. Sistem X menggunakan Stack (LIFO), Sistem Y menggunakan Queue (FIFO)"
             ],
-            correct: 0,
+            correct: 3,
             explanation: "Sangat tepat! Sistem X menghasilkan urutan terbalik dari urutan masukan ([101, 102, 103] menjadi [103, 102, 101]), ini merupakan ciri khas Stack (LIFO - pembalikan urutan). Sistem Y mempertahankan urutan kedatangan asli ([101, 102, 103] tetap [101, 102, 103]), yang merupakan ciri mutlak Queue (FIFO). Catatan Kondisi Batas: Jika Sistem X kosong lalu dipanggil pop(), terjadi Stack Underflow; jika Sistem Y penuh kuota lalu dipanggil enqueue(), terjadi Queue Overflow!"
         }
     ],
@@ -1214,12 +1214,12 @@ const PBLAcademic = {
             stimulus: "Petugas kantin menata baki saji menggunakan wadah tumpukan vertikal (Stack) dengan kapasitas maksimal 5 baki. Sistem mencatat riwayat operasi berturut-turut: push(Baki Merah) → push(Baki Kuning) → push(Baki Hijau) → pop() → push(Baki Biru) → pop() → push(Baki Ungu).",
             q: "Lakukan penelusuran (tracing) terhadap riwayat operasi tersebut. Analisislah baki mana saja yang telah berhasil dikeluarkan dari tumpukan serta tentukan baki mana yang saat ini menempati posisi puncak (Top of Stack)!",
             options: [
-                "Baki yang telah dikeluarkan adalah Baki Hijau lalu Baki Biru; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Ungu.",
                 "Baki yang telah dikeluarkan adalah Baki Merah lalu Baki Kuning; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Hijau.",
+                "Baki yang telah dikeluarkan adalah Baki Hijau lalu Baki Biru; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Ungu.",
                 "Baki yang telah dikeluarkan adalah Baki Biru lalu Baki Hijau; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Merah.",
                 "Baki yang telah dikeluarkan adalah Baki Ungu lalu Baki Biru; dan baki yang saat ini menempati posisi Top of Stack adalah Baki Kuning."
             ],
-            correct: 0,
+            correct: 1,
             note: "Analisis C4: Penelusuran operasi: push(M), push(K), push(H) -> Stack=[M, K, H(Top)]. Operasi pop() pertama mengeluarkan H. Lalu push(B) -> Stack=[M, K, B(Top)]. Operasi pop() kedua mengeluarkan B. Lalu push(U) -> Stack=[M, K, U(Top)]. Maka baki yang dikeluarkan: Hijau lalu Biru; puncak (Top): Ungu."
         },
         {
@@ -1229,12 +1229,12 @@ const PBLAcademic = {
             stimulus: "Di meja prasmanan, sebuah dispenser piring bersih menampung piring keramik menggunakan prinsip Stack. Saat ini tumpukan berisi dua piring dari bawah ke atas: [Piring A, Piring B] di mana Piring B berada di posisi Top. Asisten kantin kemudian menjalankan urutan instruksi: 1) Melakukan peek(); 2) Melakukan push(Piring C); 3) Melakukan pop(); 4) Melakukan peek() kembali.",
             q: "Tentukan secara berurutan hasil identifikasi piring dari operasi peek() pertama, piring yang terambil saat pop(), dan hasil dari operasi peek() kedua!",
             options: [
-                "peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring B.",
                 "peek() pertama menghasilkan Piring A; pop() mengeluarkan Piring B; dan peek() kedua menghasilkan Piring C.",
-                "peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring A; dan peek() kedua menghasilkan Piring C.",
-                "peek() pertama menghasilkan Piring C; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring A."
+                "peek() pertama menghasilkan Piring C; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring A.",
+                "peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring C; dan peek() kedua menghasilkan Piring B.",
+                "peek() pertama menghasilkan Piring B; pop() mengeluarkan Piring A; dan peek() kedua menghasilkan Piring C."
             ],
-            correct: 0,
+            correct: 2,
             note: "Penerapan C3: Operasi peek() membaca elemen TOP tanpa menghapusnya (maka peek ke-1 membaca Piring B). Operasi push(C) menjadikan C sebagai TOP baru. Operasi pop() mengambil elemen TOP yaitu Piring C sehingga tumpukan kembali [A, B(Top)]. Operasi peek() ke-2 kembali membaca Piring B."
         },
         {
@@ -1244,12 +1244,12 @@ const PBLAcademic = {
             stimulus: "Sebuah sistem antrean digital pemesanan kasir kantin menerapkan struktur data Queue dengan representasi antrean saat ini dari depan ke belakang (Front ke Rear): [Rizky, Siti] di mana Rizky berada di posisi Front. Selanjutnya terjadi urutan aktivitas: 1) Ahmad mengambil nomor antrean (enqueue); 2) Kasir selesai melayani dan memanggil nomor terdepan (dequeue); 3) Budi mengambil nomor antrean (enqueue); 4) Citra mengambil nomor antrean (enqueue).",
             q: "Tentukan siswa yang dipanggil keluar dari antrean pada langkah ke-2, serta susunan urutan antrean siswa yang tersisa di depan kasir saat ini mulai dari Front hingga Rear!",
             options: [
-                "Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Siti, Ahmad, Budi, Citra].",
                 "Siswa yang keluar adalah Siti; dan susunan antrean saat ini dari Front ke Rear adalah [Rizky, Ahmad, Budi, Citra].",
                 "Siswa yang keluar adalah Ahmad; dan susunan antrean saat ini dari Front ke Rear adalah [Citra, Budi, Siti, Rizky].",
-                "Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Citra, Budi, Ahmad, Siti]."
+                "Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Citra, Budi, Ahmad, Siti].",
+                "Siswa yang keluar adalah Rizky; dan susunan antrean saat ini dari Front ke Rear adalah [Siti, Ahmad, Budi, Citra]."
             ],
-            correct: 0,
+            correct: 3,
             note: "Penerapan C3: Antrean awal: [Rizky(Front), Siti(Rear)]. 1) Enqueue Ahmad -> [Rizky, Siti, Ahmad]. 2) Dequeue -> Rizky keluar karena berada di posisi FRONT. Antrean tersisa [Siti(Front), Ahmad(Rear)]. 3) Enqueue Budi -> [Siti, Ahmad, Budi]. 4) Enqueue Citra -> [Siti(Front), Ahmad, Budi, Citra(Rear)]."
         },
         {
@@ -1259,12 +1259,12 @@ const PBLAcademic = {
             stimulus: "Kantin sekolah membuat aplikasi web pemesanan makanan agar siswa dapat memesan menu sebelum jam istirahat. Namun, programmer pemula yang membuat aplikasi tersebut keliru mengimplementasikan struktur data Stack (LIFO) untuk daftar tunggu pemesanan makanan, bukan Queue (FIFO). Siswa pertama (Andi) memesan pukul 09.00, disusul Bella pukul 09.15, dan Candra pukul 09.25.",
             q: "Evaluasilah dampak yang dialami oleh para pemesan akibat kesalahan pemilihan struktur data tersebut, dan tentukan alasan komputasional mengapa sistem tersebut gagal memenuhi keadilan layanan!",
             options: [
-                "Candra akan dilayani paling awal sedangkan Andi (pemesan paling awal) justru dilayani paling akhir; hal ini terjadi karena Stack memprioritaskan elemen yang paling akhir masuk (Last In First Out), sehingga melanggar asas keadilan waktu pemesanan.",
                 "Andi akan dilayani paling awal tetapi pesanan Candra otomatis terhapus karena kapasitas memori Stack langsung penuh (Overflow).",
+                "Candra akan dilayani paling awal sedangkan Andi (pemesan paling awal) justru dilayani paling akhir; hal ini terjadi karena Stack memprioritaskan elemen yang paling akhir masuk (Last In First Out), sehingga melanggar asas keadilan waktu pemesanan.",
                 "Seluruh pesanan Andi, Bella, dan Candra akan diproses secara serentak (paralel) sehingga dapur kantin mengalami kelebihan beban komputasi.",
                 "Tidak ada dampak yang terjadi karena struktur data Stack dan Queue memiliki mekanisme urutan pemrosesan data yang sama persis dalam antrean."
             ],
-            correct: 0,
+            correct: 1,
             note: "Evaluasi C4: Struktur data Stack bekerja dengan prinsip LIFO (Last In First Out). Akibatnya, pemesan terakhir (Candra) berada di Top dan diproses duluan, sedangkan Andi yang memesan paling awal tertahan di dasar tumpukan. Ini membuktikan bahwa antrean layanan manusia/kasir mutlak memerlukan Queue FIFO, bukan Stack LIFO."
         }
     ],
@@ -1718,9 +1718,9 @@ const PBLAcademic = {
             context: 'Loket kasir kantin melayani antrean kuota maksimal 3 siswa. Datang 3 siswa berurutan memesan makanan: 👤 <strong>Ani</strong> (datang ke-1), 👤 <strong>Adi</strong> (datang ke-2), dan 👤 <strong>Ida</strong> (datang ke-3).',
             q: '1. Berdasarkan aturan Queue, saat kasir menekan tombol <strong>− Ambil Antrean (Layani / Dequeue)</strong>, siapakah siswa yang pertama kali dilayani?',
             options: [
-                { text: 'A. 👤 Ida (Posisi Paling Belakang - REAR)', isCorrect: false, note: 'Ida datang terakhir di posisi paling belakang (REAR), harus menunggu giliran antrean.' },
+                { text: 'A. 👤 Ani (Posisi Paling Depan - FRONT)', isCorrect: true, note: 'Tepat sekali! Sesuai aturan Queue: Ani yang datang pertama berada di posisi paling depan (FRONT) dan dilayani pertama kali!' },
                 { text: 'B. 👤 Adi (Posisi Tengah)', isCorrect: false, note: 'Adi berada di tengah antrean di belakang Ani.' },
-                { text: 'C. 👤 Ani (Posisi Paling Depan - FRONT)', isCorrect: true, note: 'Tepat sekali! Sesuai aturan Queue: Ani yang datang pertama berada di posisi paling depan (FRONT) dan dilayani pertama kali!' }
+                { text: 'C. 👤 Ida (Posisi Paling Belakang - REAR)', isCorrect: false, note: 'Ida datang terakhir di posisi paling belakang (REAR), harus menunggu giliran antrean.' }
             ]
         },
         {
@@ -1732,8 +1732,8 @@ const PBLAcademic = {
             q: '2. Berdasarkan aturan Stack, jika seorang siswa datang mengambil piring menggunakan tombol <strong>− Ambil Piring (Pop)</strong>, piring warna apakah yang terambil pertama kali?',
             options: [
                 { text: 'A. 🔴 Piring Merah (Dasar Rak)', isCorrect: false, note: 'Piring Merah berada di dasar rak (paling bawah), terhimpit piring lain.' },
-                { text: 'B. 🟡 Piring Kuning (Tengah Rak)', isCorrect: false, note: 'Piring Kuning berada di tengah rak, tidak bisa diambil langsung.' },
-                { text: 'C. 🟢 Piring Hijau (Puncak - TOP)', isCorrect: true, note: 'Tepat sekali! Sesuai aturan Stack: piring yang terakhir ditaruh di puncak (TOP) adalah yang pertama diambil!' }
+                { text: 'B. 🟢 Piring Hijau (Puncak - TOP)', isCorrect: true, note: 'Tepat sekali! Sesuai aturan Stack: piring yang terakhir ditaruh di puncak (TOP) adalah yang pertama diambil!' },
+                { text: 'C. 🟡 Piring Kuning (Tengah Rak)', isCorrect: false, note: 'Piring Kuning berada di tengah rak, tidak bisa diambil langsung.' }
             ]
         }
     ],
@@ -1992,8 +1992,8 @@ const PBLAcademic = {
             badge: "Soal 1 • Konseptual & Prinsip Kerja (LIFO vs FIFO)",
             question: "Kasir kantin sekolah melayani siswa yang memesan makanan sesuai urutan kedatangan siswa, sedangkan piring saji yang bersih ditumpuk vertikal dan siswa mengambil piring yang paling baru diletakkan oleh petugas. Pasangan struktur data yang tepat untuk memodelkan kedua sistem tersebut adalah...",
             options: [
-                { key: "A", text: "Antrean Kasir: Stack (LIFO) | Piring Saji: Queue (FIFO)", isCorrect: false, explanation: "Salah. Melayani siswa yang baru datang terlebih dahulu akan melanggar prinsip keadilan antrean." },
-                { key: "B", text: "Antrean Kasir: Queue (FIFO) | Piring Saji: Stack (LIFO)", isCorrect: true, explanation: "Tepat sekali! Antrean kasir menjamin yang datang pertama dilayani pertama (FIFO), sedangkan piring saji diambil dari yang paling atas/terakhir ditumpuk (LIFO)." },
+                { key: "A", text: "Antrean Kasir: Queue (FIFO) | Piring Saji: Stack (LIFO)", isCorrect: true, explanation: "Tepat sekali! Antrean kasir menjamin yang datang pertama dilayani pertama (FIFO), sedangkan piring saji diambil dari yang paling atas/terakhir ditumpuk (LIFO)." },
+                { key: "B", text: "Antrean Kasir: Stack (LIFO) | Piring Saji: Queue (FIFO)", isCorrect: false, explanation: "Salah. Melayani siswa yang baru datang terlebih dahulu akan melanggar prinsip keadilan antrean." },
                 { key: "C", text: "Antrean Kasir: Stack (LIFO) | Piring Saji: Stack (LIFO)", isCorrect: false, explanation: "Salah. Antrean kasir tidak boleh memakai Stack karena siswa pertama akan terjebak di posisi bawah." },
                 { key: "D", text: "Antrean Kasir: Queue (FIFO) | Piring Saji: Queue (FIFO)", isCorrect: false, explanation: "Salah. Piring saji bertumpuk vertikal tidak dapat diambil dari bagian bawah tanpa merusak tumpukan." }
             ]
@@ -2026,9 +2026,9 @@ const PBLAcademic = {
             question: "Sebuah dispenser tumpukan baki saji memiliki kapasitas maksimum 5 baki dan saat ini kondisinya kosong sama sekali (isEmpty() == true). Jika seorang siswa tetap mencoba menekan tombol pop() untuk mengambil baki, kondisi galat apakah yang akan terjadi pada sistem komputasi?",
             options: [
                 { key: "A", text: "Stack Overflow, karena sistem kelebihan kapasitas memori", isCorrect: false, explanation: "Salah. Stack Overflow terjadi jika menambah data saat wadah sudah PENUH." },
-                { key: "B", text: "Stack Underflow, karena mencoba mengambil elemen dari wadah yang KOSONG", isCorrect: true, explanation: "Tepat sekali! Mengambil data (pop) dari struktur data yang kosong memicu galat Underflow." },
+                { key: "B", text: "Sistem tetap berjalan normal dan memberikan piring cadangan secara acak", isCorrect: false, explanation: "Salah. Secara komputasi, operasi pop pada wadah kosong adalah galat logika/runtime." },
                 { key: "C", text: "Queue Dequeue Error, karena tumpukan otomatis berubah menjadi antrean", isCorrect: false, explanation: "Salah. Struktur data tumpukan piring adalah Stack, bukan Queue." },
-                { key: "D", text: "Sistem tetap berjalan normal dan memberikan piring cadangan secara acak", isCorrect: false, explanation: "Salah. Secara komputasi, operasi pop pada wadah kosong adalah galat logika/runtime." }
+                { key: "D", text: "Stack Underflow, karena mencoba mengambil elemen dari wadah yang KOSONG", isCorrect: true, explanation: "Tepat sekali! Mengambil data (pop) dari struktur data yang kosong memicu galat Underflow." }
             ]
         }
     ],
