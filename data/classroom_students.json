@@ -959,7 +959,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 86,
+          "bestScore": 86
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -969,10 +972,10 @@
         },
         "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 95,
+          "L": 86,
+          "E": 90,
+          "B": 4
         }
       }
     },
@@ -1079,7 +1082,10 @@
             }
           ],
           "isRepresentative": true,
-          "submissionType": "auto"
+          "submissionType": "auto",
+          "autoScore": 86,
+          "teacherScore": null,
+          "bestScore": 86
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -1201,7 +1207,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -1324,7 +1333,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -1444,7 +1456,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 86,
+          "bestScore": 86
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -1565,7 +1580,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -1685,7 +1703,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -1802,7 +1823,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -1812,10 +1836,10 @@
         },
         "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 80,
+          "B": 5
         }
       }
     },
@@ -1922,7 +1946,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2042,7 +2069,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2052,10 +2082,10 @@
         },
         "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 5
         }
       }
     },
@@ -2160,7 +2190,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2170,10 +2203,10 @@
         },
         "bonusMiniLab": 2,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 2
         }
       }
     },
@@ -2278,7 +2311,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 86,
+          "bestScore": 86
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -2400,7 +2436,10 @@
             }
           ],
           "isRepresentative": true,
-          "submissionType": "auto"
+          "submissionType": "auto",
+          "autoScore": 100,
+          "teacherScore": null,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -2410,10 +2449,10 @@
         },
         "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 95,
+          "L": 100,
+          "E": 90,
+          "B": 4
         }
       }
     },
@@ -2520,7 +2559,10 @@
             }
           ],
           "isRepresentative": true,
-          "submissionType": "auto"
+          "submissionType": "auto",
+          "autoScore": 100,
+          "teacherScore": null,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2643,7 +2685,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -2760,7 +2805,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -2770,10 +2818,10 @@
         },
         "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 80,
+          "B": 5
         }
       }
     },
@@ -2873,7 +2921,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2883,10 +2934,10 @@
         },
         "bonusMiniLab": 2,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 2
         }
       }
     },
@@ -2993,7 +3044,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3115,7 +3169,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3232,7 +3289,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3355,7 +3415,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 86,
+          "bestScore": 86
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -3470,7 +3533,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -3592,7 +3658,10 @@
             }
           ],
           "isRepresentative": true,
-          "submissionType": "auto"
+          "submissionType": "auto",
+          "autoScore": 100,
+          "teacherScore": null,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -3602,10 +3671,10 @@
         },
         "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 100,
+          "L": 100,
+          "E": 90,
+          "B": 4
         }
       }
     },
@@ -3710,7 +3779,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3720,10 +3792,10 @@
         },
         "bonusMiniLab": 2,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 2
         }
       }
     },
@@ -3823,7 +3895,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3833,10 +3908,10 @@
         },
         "bonusMiniLab": 2,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 100,
+          "L": 100,
+          "E": 85,
+          "B": 2
         }
       },
       "teacherEvaluation": {},
@@ -3944,7 +4019,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3954,10 +4032,10 @@
         },
         "bonusMiniLab": 3,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 3
         }
       }
     },
@@ -4064,7 +4142,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -4074,10 +4155,10 @@
         },
         "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 100,
+          "L": 100,
+          "E": 90,
+          "B": 4
         }
       }
     },
@@ -4186,7 +4267,10 @@
             }
           ],
           "isRepresentative": true,
-          "submissionType": "auto"
+          "submissionType": "auto",
+          "autoScore": 100,
+          "teacherScore": null,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -4196,10 +4280,10 @@
         },
         "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 100,
+          "L": 100,
+          "E": 90,
+          "B": 5
         }
       }
     },
@@ -4304,7 +4388,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -4426,7 +4513,10 @@
             }
           ],
           "isRepresentative": true,
-          "submissionType": "auto"
+          "submissionType": "auto",
+          "autoScore": 100,
+          "teacherScore": null,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -4545,7 +4635,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -4664,7 +4757,10 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 86,
+          "bestScore": 86
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -4763,14 +4859,23 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 4
+        "bonusMiniLab": 4,
+        "breakdown": {
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 4
+        }
       },
       "refleksi": {
         "conceptLearned": "sudah paham tentang stack dan queue, terutama perbedaan lifo sama fifo.",
@@ -4862,14 +4967,23 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 4
+        "bonusMiniLab": 4,
+        "breakdown": {
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 4
+        }
       },
       "refleksi": {
         "conceptLearned": "Saya memahami konsep LIFO dan FIFO serta contoh penggunaannya dalam kehidupan sehari-hari seperti tumpukan buku dan antrean kasir.",
@@ -4961,14 +5075,23 @@
             }
           ],
           "isRepresentative": false,
-          "submissionType": "teacher_input"
+          "submissionType": "teacher_input",
+          "autoScore": null,
+          "teacherScore": 100,
+          "bestScore": 100
         },
         "evaluasiAkhir": {
           "score": 85,
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 4
+        "bonusMiniLab": 4,
+        "breakdown": {
+          "I": 85,
+          "L": 100,
+          "E": 85,
+          "B": 4
+        }
       },
       "refleksi": {
         "conceptLearned": "bagus dan menarik, sekarang jadi lebih paham perbedaan stack sama queue.",
