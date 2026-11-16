@@ -470,6 +470,10 @@
             cursor: pointer;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Tables & Cards */
         .guru-table-card {
             background: #FFFFFF;
@@ -478,11 +482,14 @@
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(113, 66, 54, 0.05);
             margin-bottom: 1.5rem;
+            contain: content;
         }
 
         .guru-table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            contain: paint;
+            will-change: scroll-position;
         }
 
         .guru-data-table {
@@ -1332,6 +1339,24 @@
             filteredStudents: [],
             isUnlocked: false,
             STORAGE_ROSTER_KEY: 'laraslogika_guru_persistent_roster_v2',
+            isScrolling: false,
+            _renderTimeout: null,
+            _pendingRender: false,
+            _saveTimer: null,
+
+            scheduleRender() {
+                if (this._renderTimeout) return;
+                if (this.isScrolling) {
+                    this._pendingRender = true;
+                    return;
+                }
+                this._renderTimeout = setTimeout(() => {
+                    this._renderTimeout = null;
+                    requestAnimationFrame(() => {
+                        this.applyFilters();
+                    });
+                }, 300);
+            },
 
             setMonitorConnectionFilter(filterVal) {
                 this.monitorConnectionFilter = filterVal;
@@ -1342,6 +1367,15 @@
             },
 
             savePersistentRoster() {
+                if (this._saveTimer) clearTimeout(this._saveTimer);
+                this._saveTimer = setTimeout(() => {
+                    try {
+                        localStorage.setItem(this.STORAGE_ROSTER_KEY, JSON.stringify(this.studentsData));
+                    } catch (e) {}
+                }, 1000);
+            },
+
+            savePersistentRosterImmediate() {
                 try {
                     localStorage.setItem(this.STORAGE_ROSTER_KEY, JSON.stringify(this.studentsData));
                 } catch (e) {}
@@ -1392,6 +1426,20 @@
             },
 
             init() {
+                // Pasang scroll listener pasif untuk mencegah layout thrashing & stutter saat scroll
+                let scrollTimer = null;
+                window.addEventListener('scroll', () => {
+                    this.isScrolling = true;
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        this.isScrolling = false;
+                        if (this._pendingRender) {
+                            this._pendingRender = false;
+                            this.scheduleRender();
+                        }
+                    }, 150);
+                }, { passive: true });
+
                 if (sessionStorage.getItem('guru_authenticated') === 'true') {
                     this.unlockPortal();
                 }
@@ -1629,38 +1677,75 @@
                     data.status.isOnline = true;
 
                     if (!this.studentsData[cls]) this.studentsData[cls] = {};
+
+                    const existing = this.studentsData[cls][studentKey];
+                    // Pertahankan nilai terverifikasi jika packet baru bernilai 0
+                    if (existing && existing.nilai && (existing.nilai.digitalScore || 0) > 0) {
+                        const inDig = (data.nilai && data.nilai.digitalScore) || 0;
+                        if (inDig === 0) {
+                            data.nilai = existing.nilai;
+                        }
+                    }
+
+                    // Cek perubahan data riil
+                    const exDig = existing?.nilai?.digitalScore;
+                    const inDig = data?.nilai?.digitalScore;
+                    const exOnline = existing?.status?.isOnline;
+                    const isDiff = !existing || exDig !== inDig || exOnline !== data.status.isOnline;
+
                     this.studentsData[cls][studentKey] = data;
 
-                    // Simpan permanen ke localStorage guru
-                    this.savePersistentRoster();
-
-                    this.updateClassCounts();
-                    this.applyFilters();
+                    if (isDiff) {
+                        this.savePersistentRoster();
+                        this.updateClassCounts();
+                        this.scheduleRender();
+                    }
                     return;
                 }
 
                 // Format 2: Nested trees per-class (Firebase / Node server)
-                let hasNew = false;
+                let hasChanges = false;
                 Object.keys(data).forEach(k => {
                     if (data[k] && typeof data[k] === 'object') {
                         if (k.startsWith('X-') || k.startsWith('X.')) {
                             const normCls = k.replace('.', '-');
-                            if (!this.studentsData[normCls]) this.studentsData[normCls] = {};
+                            if (!this.studentsData[normCls]) {
+                                this.studentsData[normCls] = {};
+                                hasChanges = true;
+                            }
                             Object.keys(data[k]).forEach(sk => {
                                 const item = data[k][sk];
-                                if (item && item.status) {
-                                    if (!item.status.recordedAt) item.status.recordedAt = timeStampText;
+                                const existing = this.studentsData[normCls][sk];
+                                if (!existing) {
+                                    this.studentsData[normCls][sk] = item;
+                                    hasChanges = true;
+                                } else {
+                                    const exScore = existing.nilai ? existing.nilai.digitalScore : 0;
+                                    const inScore = item.nilai ? item.nilai.digitalScore : 0;
+                                    const exIndiv = existing.nilai?.tugasIndividu?.bestScore || 0;
+                                    const inIndiv = item.nilai?.tugasIndividu?.bestScore || 0;
+                                    const exLkpd = existing.nilai?.lkpdKelompok?.score || existing.nilai?.lkpdKelompok?.bestScore || 0;
+                                    const inLkpd = item.nilai?.lkpdKelompok?.score || item.nilai?.lkpdKelompok?.bestScore || 0;
+                                    const exEval = existing.nilai?.evaluasiAkhir?.score || 0;
+                                    const inEval = item.nilai?.evaluasiAkhir?.score || 0;
+
+                                    if (exScore !== inScore || exIndiv !== inIndiv || exLkpd !== inLkpd || exEval !== inEval) {
+                                        if (exScore > 0 && inScore === 0) {
+                                            // Jangan timpa jika data lama lebih tinggi dari 0
+                                        } else {
+                                            this.studentsData[normCls][sk] = item;
+                                            hasChanges = true;
+                                        }
+                                    }
                                 }
-                                this.studentsData[normCls][sk] = item;
-                                hasNew = true;
                             });
                         }
                     }
                 });
-                if (hasNew) {
+                if (hasChanges) {
                     this.savePersistentRoster();
                     this.updateClassCounts();
-                    this.applyFilters();
+                    this.scheduleRender();
                 }
             },
 
@@ -1710,6 +1795,9 @@
 
                 // 5. Polling Local Node.js Server (/api/students)
                 const pollLocalServer = () => {
+                    // Hindari polling saat guru sedang aktif scrolling agar fps tetap stabil 60 FPS
+                    if (this.isScrolling) return;
+
                     fetch('/api/students')
                         .then(res => res.json())
                         .then(localData => {
@@ -1720,7 +1808,7 @@
                         .catch(() => {});
                 };
                 pollLocalServer();
-                setInterval(pollLocalServer, 2000);
+                setInterval(pollLocalServer, 15000);
             },
 
             updateClassCounts() {
@@ -1796,11 +1884,17 @@
 
                 this.filteredStudents = list;
 
-                // Render current active pane
-                this.renderStudentsTable();
-                this.renderSimulationTable();
-                this.renderReflectionList();
-                this.renderLiveMonitor();
+                // Hanya render pane yang saat ini aktif dibuka guru (menghemat 75% beban CPU & mencegah stutter saat scroll)
+                const activeTab = this.currentMainTab || 'tab-asesmen';
+                if (activeTab === 'tab-asesmen') {
+                    this.renderStudentsTable();
+                } else if (activeTab === 'tab-simulasi') {
+                    this.renderSimulationTable();
+                } else if (activeTab === 'tab-refleksi') {
+                    this.renderReflectionList();
+                } else if (activeTab === 'tab-monitor') {
+                    this.renderLiveMonitor();
+                }
                 this.updateKpis();
             },
 
@@ -1890,7 +1984,7 @@
                     const indivBest = (val.tugasIndividu && val.tugasIndividu.bestScore) || 0;
                     const indivAtt = (val.tugasIndividu && val.tugasIndividu.currentAttempt) || 1;
                     
-                    const lkpdBest = (val.lkpdKelompok && val.lkpdKelompok.bestScore) || 0;
+                    const lkpdBest = (val.lkpdKelompok && (typeof val.lkpdKelompok.score === 'number' ? val.lkpdKelompok.score : (val.lkpdKelompok.bestScore || 0))) || 0;
                     const lkpdGroup = (val.lkpdKelompok && val.lkpdKelompok.groupName) || '-';
 
                     const evalScore = (val.evaluasiAkhir && val.evaluasiAkhir.score) || 0;
