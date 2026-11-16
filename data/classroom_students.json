@@ -897,8 +897,8 @@
         "lastUpdated": "2026-11-11T07:10:47.620Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami bahwa Stack mengambil data dari bagian paling atas, sedangkan Queue mengambil data dari bagian depan antrean.",
-        "challengingPart": "Tantangannya adalah memahami proses penambahan dan penghapusan data secara berurutan.",
+        "conceptLearned": "Posisi penambahan dan pengambilan elemen: pada Stack data diambil dari posisi paling atas (top), sedangkan Queue dilayani dari barisan terdepan (front).",
+        "challengingPart": "Tantangannya adalah menelusuri alur proses penambahan dan penghapusan data jika operasinya dilakukan berulang-ulang.",
         "actionableSolution": "Menggunakan konsep FIFO ketika mengantre membeli makanan.",
         "rating": "5",
         "savedAt": "Rabu, 11 November 2026, 15.24 WIB"
@@ -1145,7 +1145,7 @@
         "lastUpdated": "2026-11-11T07:10:46.778Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami perbedaan LIFO dan FIFO, serta operasi dasar pada Stack dan Queue.",
+        "conceptLearned": "Karakteristik LIFO versus FIFO, serta empat operasi utamanya yaitu push, pop, enqueue, dan dequeue.",
         "challengingPart": "Masih ingin belajar bagaimana menerapkan kedua konsep tersebut ke dalam program komputer.",
         "actionableSolution": "Membuat urutan pekerjaan berdasarkan prioritas dan waktu masuk.",
         "rating": "4",
@@ -1395,7 +1395,7 @@
       },
       "refleksi": {
         "conceptLearned": "Saya belajar tentang LIFO, FIFO, dan cara kerja data masuk dan keluar pada Stack dan Queue.",
-        "challengingPart": "Bagian yang agak sulit adalah memahami penerapannya dalam coding.",
+        "challengingPart": "Bagian yang agak menantang adalah saat membayangkan penerapannya ke dalam sintaks kode program.",
         "actionableSolution": "Membuat urutan antrean ketika membeli makanan supaya lebih teratur.",
         "rating": "5",
         "savedAt": "Rabu, 11 November 2026, 15.26 WIB"
@@ -1641,7 +1641,7 @@
         "lastUpdated": "2026-11-11T07:10:46.902Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami cara kerja Stack dan Queue melalui simulasi dan contoh kasus. Saya juga mengetahui bahwa pemilihan struktur data harus disesuaikan dengan kebutuhan.",
+        "conceptLearned": "Melalui simulasi interaktif tadi saya jadi jelas alur Stack dan Queue, terutama bahwa pemilihan struktur data harus disesuaikan dengan jenis masalahnya.",
         "challengingPart": "Masih perlu meningkatkan kemampuan dalam menyusun algoritma untuk menyelesaikan suatu kasus.",
         "actionableSolution": "Menerapkan prinsip Queue dalam mengatur urutan pelayanan agar lebih adil.",
         "rating": "5",
@@ -2007,7 +2007,7 @@
         "lastUpdated": "2026-11-11T07:10:42.856Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami bahwa Stack bekerja dengan prinsip data terakhir masuk akan keluar pertama, sedangkan Queue bekerja berdasarkan urutan kedatangan data.",
+        "conceptLearned": "Mekanisme pengurutan data: elemen yang terakhir masuk Stack akan keluar pertama, sedangkan pada Queue data diproses urut berdasarkan urutan kedatangan.",
         "challengingPart": "Perlu belajar lagi tentang cara menentukan langkah-langkah algoritma dalam menyelesaikan masalah.",
         "actionableSolution": "Membuat urutan antrean peminjaman barang di kelas.",
         "rating": "4",
@@ -2374,7 +2374,7 @@
         "lastUpdated": "2026-11-11T07:10:45.023Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami bahwa Stack menggunakan prinsip LIFO dan Queue menggunakan FIFO. Saya juga memahami fungsi Push dan Pop pada Stack serta Enqueue dan Dequeue pada Queue.",
+        "conceptLearned": "Prinsip LIFO pada Stack dan FIFO pada Queue, serta fungsi operasi Push-Pop untuk tumpukan dan Enqueue-Dequeue untuk antrean.",
         "challengingPart": "Masih agak bingung ketika menentukan penggunaan Stack atau Queue dalam suatu permasalahan.",
         "actionableSolution": "Menerapkan sistem antrean yang tertib saat membeli makanan di kantin.",
         "rating": "4",
@@ -2497,8 +2497,8 @@
         "lastUpdated": "2026-11-11T07:10:48.330Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami bahwa Stack seperti tumpukan buku, sedangkan Queue seperti antrean orang. Keduanya memiliki cara kerja yang berbeda.",
-        "challengingPart": "Saya masih sedikit kesulitan memahami kondisi ketika data sudah penuh atau kosong.",
+        "conceptLearned": "Stack itu konsepnya mirip tumpukan buku di meja, sedangkan Queue seperti antrean orang saat beli tiket. Keduanya punya alur kerja yang berkebalikan.",
+        "challengingPart": "Masih sedikit bingung saat menentukan kondisi ketika tumpukan data sudah penuh atau antrean sedang kosong.",
         "actionableSolution": "Mengatur antrean saat membeli makanan di kantin agar tidak terjadi keributan.",
         "rating": "4",
         "savedAt": "Rabu, 11 November 2026, 15.25 WIB"
@@ -2624,7 +2624,7 @@
       },
       "refleksi": {
         "conceptLearned": "Bahwa Stack dan Queue sangat berbeda; Stack menumpuk dengan konsep LIFO (Last In First Out), sedangkan Queue berbaris dengan konsep FIFO (First In First Out).",
-        "challengingPart": "Memahami dan mengimplementasikan operasi Stack dan Queue pada studi kasus yang lebih beragam.",
+        "challengingPart": "Menganalisis dan menentukan struktur data yang paling efisien ketika diberikan studi kasus baru yang lebih rumit.",
         "actionableSolution": "Menyelesaikan masalah harian dengan gampang dan terstruktur menggunakan prinsip berpikir komputasional.",
         "rating": "4",
         "savedAt": "Rabu, 11 November 2026, 15.24 WIB"
@@ -2982,7 +2982,7 @@
         "lastUpdated": "2026-11-11T07:10:49.200Z"
       },
       "refleksi": {
-        "conceptLearned": "memahami konsep stack dan queue serta operasi-operasinya.",
+        "conceptLearned": "Konsep dasar stack sama queue, terus fungsi perintah push, pop, enqueue, dan dequeue.",
         "challengingPart": "cara membuat programnya masih perlu dipelajari lagi.",
         "actionableSolution": "menerapkan sistem antrean sesuai urutan kedatangan.",
         "rating": "4",
@@ -3476,7 +3476,7 @@
         "lastUpdated": "2026-11-11T07:10:46.540Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya paham bahwa Stack menggunakan LIFO dan Queue menggunakan FIFO. Saya juga mengetahui bahwa keduanya bisa digunakan untuk menyelesaikan masalah sehari-hari.",
+        "conceptLearned": "Ternyata aturan LIFO pada Stack dan FIFO pada Queue sangat sering kita temui, dan keduanya efektif untuk memecahkan masalah urutan data.",
         "challengingPart": "Masih bingung jika harus menentukan algoritma yang tepat untuk sebuah kasus.",
         "actionableSolution": "Menggunakan konsep Queue untuk mengatur urutan pelayanan di kantin.",
         "rating": "4",
@@ -3596,7 +3596,7 @@
         "lastUpdated": "2026-11-11T08:08:35.120Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami cara kerja Stack yang mengambil data paling terakhir dimasukkan dan Queue yang mengambil data paling awal dimasukkan.",
+        "conceptLearned": "Alur pergerakan data: Stack selalu memproses data yang paling terakhir dimasukkan, sedangkan Queue melayani data yang datang paling awal.",
         "challengingPart": "Yang masih menantang adalah mengingat istilah-istilah dalam operasi Stack dan Queue.",
         "actionableSolution": "Membuat daftar antrean tugas agar bisa dikerjakan sesuai urutan.",
         "rating": "5",
@@ -3718,7 +3718,7 @@
       },
       "refleksi": {
         "conceptLearned": "Saya mengetahui fungsi Push untuk menambahkan data dan Pop untuk mengambil data pada Stack. Pada Queue terdapat Enqueue dan Dequeue.",
-        "challengingPart": "Perlu lebih banyak latihan untuk memahami alur perubahan data.",
+        "challengingPart": "Perlu lebih banyak latihan simulasi agar lebih terbiasa membaca perubahan urutan datanya.",
         "actionableSolution": "Mengatur urutan pengerjaan tugas dari yang masuk lebih awal.",
         "rating": "4",
         "savedAt": "Rabu, 11 November 2026, 15.28 WIB"
@@ -4080,7 +4080,7 @@
         "lastUpdated": "2026-11-11T08:08:25.861Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami bahwa Stack memiliki prinsip Last In First Out dan Queue memiliki prinsip First In First Out. Saya juga memahami contoh penerapannya dalam kehidupan sehari-hari.",
+        "conceptLearned": "Karakteristik Last In First Out (LIFO) dan First In First Out (FIFO), beserta contoh pemanfaatannya dalam kehidupan sehari-hari.",
         "challengingPart": "Agak kesulitan membedakan kapan harus menggunakan Stack dan kapan menggunakan Queue.",
         "actionableSolution": "Membuat sistem antrean saat kegiatan di kelas supaya lebih teratur.",
         "rating": "5",
@@ -4451,7 +4451,7 @@
         "lastUpdated": "2026-11-11T07:10:45.670Z"
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami perbedaan Stack dan Queue serta contohnya dalam kehidupan sehari-hari.",
+        "conceptLearned": "Perbedaan mendasar antara Stack dan Queue beserta contoh-contoh penerapannya pada aktivitas sehari-hari.",
         "challengingPart": "paham kak, cuma perlu latihan lagi.",
         "actionableSolution": "Menerapkan prinsip antrean teratur saat menggunakan fasilitas bersama di kelas.",
         "rating": "5",
@@ -4986,8 +4986,8 @@
         }
       },
       "refleksi": {
-        "conceptLearned": "Saya memahami konsep LIFO dan FIFO serta contoh penggunaannya dalam kehidupan sehari-hari seperti tumpukan buku dan antrean kasir.",
-        "challengingPart": "Masih perlu memahami lebih dalam tentang kesalahan ketika data dalam Stack atau Queue melebihi kapasitas.",
+        "conceptLearned": "Aturan LIFO dan FIFO beserta contoh nyatanya di keseharian, misalnya tumpukan piring bersih di dapur atau antrean pembayaran di kasir.",
+        "challengingPart": "Masih perlu belajar lebih lanjut tentang cara menangani kondisi saat data dalam tumpukan atau antrean melebihi kapasitas.",
         "actionableSolution": "Mengatur antrean dalam kegiatan kelompok agar semua mendapat giliran.",
         "rating": "4",
         "savedAt": "Rabu, 11 November 2026, 15.30 WIB"
