@@ -4,7 +4,14 @@ const fs = require('fs');
 const path = require('path');
 
 const TMP_FILE = path.join('/tmp', 'classroom_students.json');
-global.studentsDB = global.studentsDB || {};
+
+// Muat master roster persisten bawaan (data riil siswa X-1 s.d X-7 tanggal 11 Nov 2026)
+let initialDatabase = {};
+try {
+    initialDatabase = require('../data/classroom_students.json');
+} catch (e) {}
+
+global.studentsDB = Object.assign({}, initialDatabase, global.studentsDB || {});
 
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
