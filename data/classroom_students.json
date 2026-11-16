@@ -898,7 +898,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 94,
         "tugasIndividu": {
           "bestScore": 95,
           "currentAttempt": 1,
@@ -959,7 +959,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 5
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 4,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1000,7 +1000,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 80,
+        "digitalScore": 81,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1061,7 +1061,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1104,7 +1104,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 90,
+        "digitalScore": 91,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -1165,7 +1165,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1206,9 +1206,15 @@
         },
         "lastUpdated": "2026-11-11T07:07:20.829Z"
       },
-      "refleksi": null,
+      "refleksi": {
+        "conceptLearned": "Cara penggunaan prinsip LIFO & FIFO, perbedaan mendasar keduanya, serta contoh penerapannya dalam kehidupan sehari-hari.",
+        "challengingPart": "Ingin mengetahui bagaimana prinsip tersebut diterapkan dalam program dan cara penanganan kondisi antrean penuh / tumpukan kosong.",
+        "actionableSolution": "Menerapkan prinsip FIFO dalam mengerjakan tugas sekolah, dengan mencatat daftar tugas berdasarkan tugas yang diberikan duluan.",
+        "rating": "5",
+        "savedAt": "16 Nov 2026, 14.46 WIB"
+      },
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1269,7 +1275,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1312,7 +1318,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 83,
+        "digitalScore": 84,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1373,7 +1379,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1412,9 +1418,15 @@
         },
         "lastUpdated": "2026-11-11T07:07:23.043Z"
       },
-      "refleksi": null,
+      "refleksi": {
+        "conceptLearned": "Aturan urutan akses data, operasi dasar pada masing-masing struktur (Enqueue/Dequeue & Push/Pop), serta penerapannya dalam pemrograman sehari-hari.",
+        "challengingPart": "Cara memecah masalah yang kompleks menjadi bagian-bagian kecil secara tepat serta menerapkan logika algoritma ke dalam pemrograman sehari-hari.",
+        "actionableSolution": "Satu aksi nyata yang dapat saya terapkan adalah membuat jadwal harian dan daftar prioritas tugas secara terstruktur agar semua kegiatan dapat diselesaikan dengan lebih efisien dan tepat waktu.",
+        "rating": "5",
+        "savedAt": "16 Nov 2026, 15.36 WIB"
+      },
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -1475,7 +1487,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1518,7 +1530,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 85,
+        "digitalScore": 86,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1579,7 +1591,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1625,9 +1637,15 @@
         },
         "lastUpdated": "2026-11-11T07:10:43.072Z"
       },
-      "refleksi": null,
+      "refleksi": {
+        "conceptLearned": "Perbedaan dari FIFO dan LIFO, manfaat penggunaannya, serta implementasi alur data dalam kehidupan sehari-hari.",
+        "challengingPart": "Menerapkannya sebagai problem solving dan ingin memperdalam di bagian penerapannya pada program komputer.",
+        "actionableSolution": "Menyusun set seragam dan prioritas kegiatan sesuai tingkatan kebutuhan: hari Senin di atas dan giliran tugas berdasarkan urutan waktu.",
+        "rating": "5",
+        "savedAt": "16 Nov 2026, 14.41 WIB"
+      },
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -1688,7 +1706,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 5,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1729,7 +1747,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 90,
+        "digitalScore": 91,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -1790,7 +1808,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1841,7 +1859,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 95,
         "tugasIndividu": {
           "bestScore": 85,
           "currentAttempt": 1,
@@ -1902,7 +1920,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 5,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -1951,7 +1969,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 85,
           "currentAttempt": 1,
@@ -2012,7 +2030,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2053,7 +2071,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 83,
+        "digitalScore": 84,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2114,7 +2132,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2167,7 +2185,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 98,
+        "digitalScore": 99,
         "tugasIndividu": {
           "bestScore": 95,
           "currentAttempt": 1,
@@ -2228,7 +2246,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 5
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 4,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2269,7 +2287,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 90,
+        "digitalScore": 91,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2330,7 +2348,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2371,9 +2389,15 @@
         },
         "lastUpdated": "2026-11-11T07:07:18.588Z"
       },
-      "refleksi": null,
+      "refleksi": {
+        "conceptLearned": "Bahwa Stack dan Queue sangat berbeda; Stack menumpuk dengan konsep LIFO (Last In First Out), sedangkan Queue berbaris dengan konsep FIFO (First In First Out).",
+        "challengingPart": "Memahami dan mengimplementasikan operasi Stack dan Queue pada studi kasus yang lebih beragam.",
+        "actionableSolution": "Menyelesaikan masalah harian dengan gampang dan terstruktur menggunakan prinsip berpikir komputasional.",
+        "rating": "3",
+        "savedAt": "16 Nov 2026, 14.32 WIB"
+      },
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2434,7 +2458,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2480,9 +2504,15 @@
         },
         "lastUpdated": "2026-11-11T07:09:48.178Z"
       },
-      "refleksi": null,
+      "refleksi": {
+        "conceptLearned": "• Stack (LIFO): Data yang terakhir masuk akan keluar pertama (Last-In, First-Out), seperti tumpukan buku.\n• Queue (FIFO): Data yang pertama masuk akan keluar pertama (First-In, First-Out), seperti antrean kasir.\n• Operasi dasar: Stack memakai Push (tambah) dan Pop (ambil), sedangkan Queue memakai Enqueue (masuk) dan Dequeue (keluar).",
+        "challengingPart": "• Cara menulis kode program untuk Stack dan Queue agar tidak error (overflow/underflow).\n• Menentukan struktur data yang paling tepat untuk kasus masalah yang kompleks.",
+        "actionableSolution": "Memecah tugas besar menjadi bagian kecil (dekomposisi) dan mengerjakannya sesuai urutan tenggat waktu paling awal (prinsip Queue) agar tidak keteteran.",
+        "rating": "4",
+        "savedAt": "16 Nov 2026, 17.00 WIB"
+      },
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2543,7 +2573,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 5,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2592,7 +2622,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 85,
           "currentAttempt": 1,
@@ -2648,7 +2678,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2689,7 +2719,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 90,
+        "digitalScore": 91,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2750,7 +2780,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2793,7 +2823,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -2854,7 +2884,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2897,7 +2927,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -2953,7 +2983,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -2996,7 +3026,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 83,
+        "digitalScore": 84,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -3057,7 +3087,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3100,7 +3130,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 85,
+        "digitalScore": 86,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -3156,7 +3186,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3270,7 +3300,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 5
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 4,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3319,7 +3349,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 85,
           "currentAttempt": 1,
@@ -3380,7 +3410,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3429,7 +3459,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 98,
+        "digitalScore": 97,
         "tugasIndividu": {
           "bestScore": 100,
           "currentAttempt": 1,
@@ -3485,7 +3515,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3598,7 +3628,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 3,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3710,7 +3740,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 5
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 4,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3865,7 +3895,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 88,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -3926,7 +3956,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -3969,7 +3999,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 85,
+        "digitalScore": 86,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -4030,7 +4060,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -4073,7 +4103,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 85,
+        "digitalScore": 86,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -4134,7 +4164,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -4180,7 +4210,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 83,
+        "digitalScore": 84,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -4241,7 +4271,7 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 0,
+        "bonusMiniLab": 2,
         "breakdown": {
           "I": 0,
           "L": 0,
@@ -4277,7 +4307,7 @@
         "lastUpdated": "2026-11-11T07:10:45.000Z"
       },
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 94,
         "tugasIndividu": {
           "bestScore": 85,
           "currentAttempt": 1,
@@ -4336,7 +4366,8 @@
           "score": 85,
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
-        }
+        },
+        "bonusMiniLab": 4
       }
     },
     "absen_18_fazli_emir_baizeed": {
@@ -4366,7 +4397,7 @@
         "lastUpdated": "2026-11-11T07:10:45.000Z"
       },
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 94,
         "tugasIndividu": {
           "bestScore": 85,
           "currentAttempt": 1,
@@ -4425,7 +4456,8 @@
           "score": 85,
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
-        }
+        },
+        "bonusMiniLab": 4
       }
     },
     "absen_32_rashya_devdan_damario": {
@@ -4455,7 +4487,7 @@
         "lastUpdated": "2026-11-11T07:10:45.000Z"
       },
       "nilai": {
-        "digitalScore": 93,
+        "digitalScore": 94,
         "tugasIndividu": {
           "bestScore": 85,
           "currentAttempt": 1,
@@ -4514,7 +4546,8 @@
           "score": 85,
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
-        }
+        },
+        "bonusMiniLab": 4
       }
     }
   },
