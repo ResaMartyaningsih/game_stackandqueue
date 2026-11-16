@@ -898,30 +898,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 93,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 95,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 95,
+              "correctCount": 4,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok Almeera Lubhna Ghassani (Kelompok 4)",
+          "groupId": "4",
+          "score": 86,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📝 Notulis / Perumus Masalah",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Almeera Lubhna Ghassani",
+              "absen": 5,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kayla Defara Ashari",
+              "absen": 22,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Aksamala Baksya P.",
+              "absen": 3,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Ainun Hidayati Rondiyah",
+              "absen": 2,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Farra Adzkiyatussyafiqa",
+              "absen": 16,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Aryoseto Nur Cahyanto",
+              "absen": 9,
+              "role": "📢 Presenter / Juru Bicara"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 90,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 5
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -964,30 +1000,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 80,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok Almeera Lubhna Ghassani (Kelompok 4)",
+          "groupId": "4",
+          "score": 86,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "👑 Ketua / Koordinator Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Almeera Lubhna Ghassani",
+              "absen": 5,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kayla Defara Ashari",
+              "absen": 22,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Aksamala Baksya P.",
+              "absen": 3,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Ainun Hidayati Rondiyah",
+              "absen": 2,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Farra Adzkiyatussyafiqa",
+              "absen": 16,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Aryoseto Nur Cahyanto",
+              "absen": 9,
+              "role": "📢 Presenter / Juru Bicara"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 75,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1032,30 +1104,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 90,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok ARFAN (Kelompok 1)",
+          "groupId": "1",
+          "score": 100,
+          "selectedCase": "Sistem Undo dan Redo pada Editor Teks",
+          "role": "📝 Notulis / Perumus Masalah",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Arfan Himawan Abisatya",
+              "absen": 8,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Dzikri Abqori Al-khoiry",
+              "absen": 13,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Lathifa Ulum Annafis",
+              "absen": 24,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Fazli Emir Baizeed",
+              "absen": 18,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Rashya devdan Damario",
+              "absen": 32,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Angelica Bian Celciana Putri",
+              "absen": 7,
+              "role": "📝 Notulis / Perumus Masalah"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1100,30 +1208,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 5",
+          "groupId": "5",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🤝 Anggota Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "andhika poetra jansy",
+              "absen": 6,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Hildannas Zafran Ardafa",
+              "absen": 19,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Muhammad royyan haromain",
+              "absen": 26,
+              "role": "🧪 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Aldito Bagas Abafy",
+              "absen": 4,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Kalila Amalia Wibowo",
+              "absen": 21,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Mochammad Ghani Ardiansyah",
+              "absen": 25,
+              "role": "🤝 Anggota Tim"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1168,30 +1312,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 83,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok Almeera Lubhna Ghassani (Kelompok 4)",
+          "groupId": "4",
+          "score": 86,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔬 Operator Simulasi & Pengujian",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Almeera Lubhna Ghassani",
+              "absen": 5,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kayla Defara Ashari",
+              "absen": 22,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Aksamala Baksya P.",
+              "absen": 3,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Ainun Hidayati Rondiyah",
+              "absen": 2,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Farra Adzkiyatussyafiqa",
+              "absen": 16,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Aryoseto Nur Cahyanto",
+              "absen": 9,
+              "role": "📢 Presenter / Juru Bicara"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1234,30 +1414,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 3",
+          "groupId": "3",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📢 Presenter / Juru Bicara",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Sultan Ahmad Merigi",
+              "absen": 35,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Nakeisha Areta Maritza",
+              "absen": 28,
+              "role": "Anggota Tim"
+            },
+            {
+              "name": "Asyifa Yasmin Khairunnisa Nurcahyanto",
+              "absen": 10,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Brilliant Alif Hakeem",
+              "absen": 12,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Nafiza Azzahra",
+              "absen": 27,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rafa Aisyah Widati Olindamali",
+              "absen": 31,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 80,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1302,30 +1518,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 85,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 3",
+          "groupId": "3",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔬 Operator Simulasi & Pengujian",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Sultan Ahmad Merigi",
+              "absen": 35,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Nakeisha Areta Maritza",
+              "absen": 28,
+              "role": "Anggota Tim"
+            },
+            {
+              "name": "Asyifa Yasmin Khairunnisa Nurcahyanto",
+              "absen": 10,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Brilliant Alif Hakeem",
+              "absen": 12,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Nafiza Azzahra",
+              "absen": 27,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rafa Aisyah Widati Olindamali",
+              "absen": 31,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 75,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1375,30 +1627,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 5",
+          "groupId": "5",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📝 Notulis / Perumus Masalah",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "andhika poetra jansy",
+              "absen": 6,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Hildannas Zafran Ardafa",
+              "absen": 19,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Muhammad royyan haromain",
+              "absen": 26,
+              "role": "🧪 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Aldito Bagas Abafy",
+              "absen": 4,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Kalila Amalia Wibowo",
+              "absen": 21,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Mochammad Ghani Ardiansyah",
+              "absen": 25,
+              "role": "🤝 Anggota Tim"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 80,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1441,30 +1729,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 90,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 2",
+          "groupId": "2",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📢 Presenter / Juru Bicara",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Aena Zainahya",
+              "absen": 1,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Restu Maheswari Mulyono",
+              "absen": 34,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "TIFFANY SHAKEENA CANA BIXENTA",
+              "absen": 36,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Ezhal Azalia Istono",
+              "absen": 14,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Fahmi Azzam Adyaka",
+              "absen": 15,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Irfan Bagas Adyatma",
+              "absen": 20,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1517,30 +1841,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 93,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 85,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 5",
+          "groupId": "5",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🧪 Operator Simulasi & Pengujian",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "andhika poetra jansy",
+              "absen": 6,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Hildannas Zafran Ardafa",
+              "absen": 19,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Muhammad royyan haromain",
+              "absen": 26,
+              "role": "🧪 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Aldito Bagas Abafy",
+              "absen": 4,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Kalila Amalia Wibowo",
+              "absen": 21,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Mochammad Ghani Ardiansyah",
+              "absen": 25,
+              "role": "🤝 Anggota Tim"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1591,30 +1951,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 93,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 85,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 2",
+          "groupId": "2",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔬 Operator Simulasi & Pengujian",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Aena Zainahya",
+              "absen": 1,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Restu Maheswari Mulyono",
+              "absen": 34,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "TIFFANY SHAKEENA CANA BIXENTA",
+              "absen": 36,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Ezhal Azalia Istono",
+              "absen": 14,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Fahmi Azzam Adyaka",
+              "absen": 15,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Irfan Bagas Adyatma",
+              "absen": 20,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1657,30 +2053,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 83,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok Almeera Lubhna Ghassani (Kelompok 4)",
+          "groupId": "4",
+          "score": 86,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "⚙ Perancang Solusi Algoritmik",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Almeera Lubhna Ghassani",
+              "absen": 5,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kayla Defara Ashari",
+              "absen": 22,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Aksamala Baksya P.",
+              "absen": 3,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Ainun Hidayati Rondiyah",
+              "absen": 2,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Farra Adzkiyatussyafiqa",
+              "absen": 16,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Aryoseto Nur Cahyanto",
+              "absen": 9,
+              "role": "📢 Presenter / Juru Bicara"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 80,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1735,30 +2167,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 98,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 95,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 95,
+              "correctCount": 4,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 2",
+          "groupId": "2",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "👑 Ketua / Koordinator Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Aena Zainahya",
+              "absen": 1,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Restu Maheswari Mulyono",
+              "absen": 34,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "TIFFANY SHAKEENA CANA BIXENTA",
+              "absen": 36,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Ezhal Azalia Istono",
+              "absen": 14,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Fahmi Azzam Adyaka",
+              "absen": 15,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Irfan Bagas Adyatma",
+              "absen": 20,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 90,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 5
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1801,30 +2269,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 90,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 5",
+          "groupId": "5",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "👑 Ketua / Koordinator Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "andhika poetra jansy",
+              "absen": 6,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Hildannas Zafran Ardafa",
+              "absen": 19,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Muhammad royyan haromain",
+              "absen": 26,
+              "role": "🧪 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Aldito Bagas Abafy",
+              "absen": 4,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Kalila Amalia Wibowo",
+              "absen": 21,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Mochammad Ghani Ardiansyah",
+              "absen": 25,
+              "role": "🤝 Anggota Tim"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1869,30 +2373,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 3",
+          "groupId": "3",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "Anggota Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Sultan Ahmad Merigi",
+              "absen": 35,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Nakeisha Areta Maritza",
+              "absen": 28,
+              "role": "Anggota Tim"
+            },
+            {
+              "name": "Asyifa Yasmin Khairunnisa Nurcahyanto",
+              "absen": 10,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Brilliant Alif Hakeem",
+              "absen": 12,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Nafiza Azzahra",
+              "absen": 27,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rafa Aisyah Widati Olindamali",
+              "absen": 31,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 80,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -1942,30 +2482,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 5",
+          "groupId": "5",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🤝 Anggota Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "andhika poetra jansy",
+              "absen": 6,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Hildannas Zafran Ardafa",
+              "absen": 19,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Muhammad royyan haromain",
+              "absen": 26,
+              "role": "🧪 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Aldito Bagas Abafy",
+              "absen": 4,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Kalila Amalia Wibowo",
+              "absen": 21,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Mochammad Ghani Ardiansyah",
+              "absen": 25,
+              "role": "🤝 Anggota Tim"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 80,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2016,30 +2592,61 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 93,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 85,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 6",
+          "groupId": "6",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📝 Notulis / Perumus Masalah",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Nasywa Ghani Prabaswara",
+              "absen": 29,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kenisha Rahma Rozano",
+              "absen": 23,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Ayudya Humaira Khairunissa",
+              "absen": 11,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Queenza Aurelia",
+              "absen": 30,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rasya Putra Ramadhan",
+              "absen": 33,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2082,30 +2689,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 90,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 3",
+          "groupId": "3",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "⚙ Perancang Solusi Algoritmik",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Sultan Ahmad Merigi",
+              "absen": 35,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Nakeisha Areta Maritza",
+              "absen": 28,
+              "role": "Anggota Tim"
+            },
+            {
+              "name": "Asyifa Yasmin Khairunnisa Nurcahyanto",
+              "absen": 10,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Brilliant Alif Hakeem",
+              "absen": 12,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Nafiza Azzahra",
+              "absen": 27,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rafa Aisyah Widati Olindamali",
+              "absen": 31,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2150,30 +2793,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 3",
+          "groupId": "3",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔍 Analis Struktur Data",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Sultan Ahmad Merigi",
+              "absen": 35,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Nakeisha Areta Maritza",
+              "absen": 28,
+              "role": "Anggota Tim"
+            },
+            {
+              "name": "Asyifa Yasmin Khairunnisa Nurcahyanto",
+              "absen": 10,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Brilliant Alif Hakeem",
+              "absen": 12,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Nafiza Azzahra",
+              "absen": 27,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rafa Aisyah Widati Olindamali",
+              "absen": 31,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2218,30 +2897,61 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 6",
+          "groupId": "6",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "⚙ Perancang Solusi Algoritmik",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Nasywa Ghani Prabaswara",
+              "absen": 29,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kenisha Rahma Rozano",
+              "absen": 23,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Ayudya Humaira Khairunissa",
+              "absen": 11,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Queenza Aurelia",
+              "absen": 30,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rasya Putra Ramadhan",
+              "absen": 33,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2286,30 +2996,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 83,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok Almeera Lubhna Ghassani (Kelompok 4)",
+          "groupId": "4",
+          "score": 86,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔍 Analis Struktur Data",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Almeera Lubhna Ghassani",
+              "absen": 5,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kayla Defara Ashari",
+              "absen": 22,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Aksamala Baksya P.",
+              "absen": 3,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Ainun Hidayati Rondiyah",
+              "absen": 2,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Farra Adzkiyatussyafiqa",
+              "absen": 16,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Aryoseto Nur Cahyanto",
+              "absen": 9,
+              "role": "📢 Presenter / Juru Bicara"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 80,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2354,30 +3100,61 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 85,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 6",
+          "groupId": "6",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔬 Operator Simulasi & Pengujian",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Nasywa Ghani Prabaswara",
+              "absen": 29,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kenisha Rahma Rozano",
+              "absen": 23,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Ayudya Humaira Khairunissa",
+              "absen": 11,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Queenza Aurelia",
+              "absen": 30,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rasya Putra Ramadhan",
+              "absen": 33,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 75,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2432,7 +3209,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 30,
+        "digitalScore": 100,
         "tugasIndividu": {
           "bestScore": 100,
           "currentAttempt": 1,
@@ -2447,53 +3224,51 @@
           "isLocked": true
         },
         "lkpdKelompok": {
-          "groupName": "-",
+          "groupName": "Kelompok ARFAN (Kelompok 1)",
+          "groupId": "1",
+          "score": 100,
+          "selectedCase": "Sistem Undo dan Redo pada Editor Teks",
+          "role": "👑 Ketua / Koordinator Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
           "members": [
             {
               "name": "Arfan Himawan Abisatya",
-              "absen": "8",
+              "absen": 8,
               "role": "👑 Ketua / Koordinator Tim"
             },
             {
-              "name": "",
-              "absen": "",
-              "role": "📝 Notulis / Perumus Masalah"
-            },
-            {
-              "name": "",
-              "absen": "",
-              "role": "🧪 Operator Simulasi & Pengujian"
-            },
-            {
-              "name": "",
-              "absen": "",
+              "name": "Dzikri Abqori Al-khoiry",
+              "absen": 13,
               "role": "🔍 Analis Struktur Data"
             },
             {
-              "name": "",
-              "absen": "",
-              "role": "⚙️ Perancang Solusi Algoritmik"
+              "name": "Lathifa Ulum Annafis",
+              "absen": 24,
+              "role": "📝 Notulis / Perumus Masalah"
             },
             {
-              "name": "",
-              "absen": "",
+              "name": "Fazli Emir Baizeed",
+              "absen": 18,
               "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Rashya devdan Damario",
+              "absen": 32,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Angelica Bian Celciana Putri",
+              "absen": 7,
+              "role": "📝 Notulis / Perumus Masalah"
             }
-          ],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 90,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 5
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2544,30 +3319,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 93,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 85,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 2",
+          "groupId": "2",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📢 Presenter / Juru Bicara",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Aena Zainahya",
+              "absen": 1,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Restu Maheswari Mulyono",
+              "absen": 34,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "TIFFANY SHAKEENA CANA BIXENTA",
+              "absen": 36,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Ezhal Azalia Istono",
+              "absen": 14,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Fahmi Azzam Adyaka",
+              "absen": 15,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Irfan Bagas Adyatma",
+              "absen": 20,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2618,7 +3429,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 30,
+        "digitalScore": 98,
         "tugasIndividu": {
           "bestScore": 100,
           "currentAttempt": 1,
@@ -2633,22 +3444,46 @@
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 6",
+          "groupId": "6",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔍 Analis Struktur Data",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Nasywa Ghani Prabaswara",
+              "absen": 29,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kenisha Rahma Rozano",
+              "absen": 23,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Ayudya Humaira Khairunissa",
+              "absen": 11,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Queenza Aurelia",
+              "absen": 30,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rasya Putra Ramadhan",
+              "absen": 33,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2702,30 +3537,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 93,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 85,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 2",
+          "groupId": "2",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🔬 Operator Simulasi & Pengujian",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Aena Zainahya",
+              "absen": 1,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Restu Maheswari Mulyono",
+              "absen": 34,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "TIFFANY SHAKEENA CANA BIXENTA",
+              "absen": 36,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Ezhal Azalia Istono",
+              "absen": 14,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Fahmi Azzam Adyaka",
+              "absen": 15,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Irfan Bagas Adyatma",
+              "absen": 20,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2778,7 +3649,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 65,
+        "digitalScore": 100,
         "tugasIndividu": {
           "bestScore": 100,
           "currentAttempt": 1,
@@ -2793,60 +3664,51 @@
           "isLocked": true
         },
         "lkpdKelompok": {
-          "groupName": "Kelompok ARFAN",
+          "groupName": "Kelompok ARFAN (Kelompok 1)",
+          "groupId": "1",
+          "score": 100,
+          "selectedCase": "Sistem Undo dan Redo pada Editor Teks",
+          "role": "🔍 Analis Struktur Data",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
           "members": [
             {
-              "name": "Dzikri Abqori Al-khoiry",
-              "absen": "13",
-              "role": "🔍 Analis Struktur Data"
-            },
-            {
               "name": "Arfan Himawan Abisatya",
-              "absen": "8",
+              "absen": 8,
               "role": "👑 Ketua / Koordinator Tim"
             },
             {
+              "name": "Dzikri Abqori Al-khoiry",
+              "absen": 13,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
               "name": "Lathifa Ulum Annafis",
-              "absen": "24",
+              "absen": 24,
               "role": "📝 Notulis / Perumus Masalah"
             },
             {
               "name": "Fazli Emir Baizeed",
-              "absen": "18",
+              "absen": 18,
               "role": "📢 Presenter / Juru Bicara"
             },
             {
               "name": "Rashya devdan Damario",
-              "absen": "32",
-              "role": "⚙️ Perancang Solusi Algoritmik"
+              "absen": 32,
+              "role": "⚙ Perancang Solusi Algoritmik"
             },
             {
               "name": "Angelica Bian Celciana Putri",
-              "absen": "7",
+              "absen": 7,
               "role": "📝 Notulis / Perumus Masalah"
             }
-          ],
-          "bestScore": 100,
-          "currentAttempt": 1,
-          "history": [
-            {
-              "attempt": 1,
-              "score": 100,
-              "caseKey": "case1",
-              "completedAt": "2026-11-11T07:58:16.600Z"
-            }
-          ],
-          "isLocked": true,
-          "worksheet": {
-            "selectedStructure": "Stack (LIFO - Last In First Out)",
-            "reasoning": "Karena pada studi kasus tersebut menerapkan sistem stack yang berupa riwayat tumpukan yang dapat di hilangkan dan dikembalikan lagi",
-            "steps": "push yaitu menambahkan elemen baru contohnya pada studkas menekan redo\npop yaitu membatalkan elemen teratas pada tumpukan teratas contohnya pada studkas yaitu menekan undo",
-            "conclusion": "Jadi pada kasus tersebut yaitu aplikasi pengolah kata mengggunakan konsep CT stack (LIFO) yang memungkinkan penggunanya untuk melakukan aksi Undo (membatalkan aksi) dan Redo (mengembalikan aksi) "
-          }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 90,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 5
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -2900,7 +3762,7 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 70,
+        "digitalScore": 100,
         "tugasIndividu": {
           "bestScore": 100,
           "currentAttempt": 2,
@@ -2922,59 +3784,45 @@
         },
         "lkpdKelompok": {
           "groupName": "Kelompok 6",
+          "groupId": "6",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "👑 Ketua / Koordinator Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
           "members": [
             {
               "name": "Nasywa Ghani Prabaswara",
-              "absen": "29",
+              "absen": 29,
               "role": "👑 Ketua / Koordinator Tim"
             },
             {
               "name": "Kenisha Rahma Rozano",
-              "absen": "23",
+              "absen": 23,
               "role": "📝 Notulis / Perumus Masalah"
             },
             {
               "name": "Ayudya Humaira Khairunissa",
-              "absen": "11",
-              "role": "🧪 Operator Simulasi & Pengujian"
+              "absen": 11,
+              "role": "🔬 Operator Simulasi & Pengujian"
             },
             {
               "name": "Queenza Aurelia",
-              "absen": "30",
+              "absen": 30,
               "role": "🔍 Analis Struktur Data"
             },
             {
               "name": "Rasya Putra Ramadhan",
-              "absen": "33",
-              "role": "⚙️ Perancang Solusi Algoritmik"
-            },
-            {
-              "name": "",
-              "absen": "",
-              "role": "📢 Presenter / Juru Bicara"
+              "absen": 33,
+              "role": "⚙ Perancang Solusi Algoritmik"
             }
-          ],
-          "bestScore": 100,
-          "currentAttempt": 1,
-          "history": [
-            {
-              "attempt": 1,
-              "score": 100,
-              "caseKey": "case2",
-              "completedAt": "2026-11-11T07:55:43.179Z"
-            }
-          ],
-          "isLocked": true,
-          "worksheet": {
-            "selectedStructure": "Queue (FIFO - First In First Out)",
-            "reasoning": "Konsep antrean yang ada dalam penggunaan bilik komputer oleh siswa paling tepat dengan sistem FIFO karena jika waktu penggunaan komputer siswa pertama habis maka siswa pada antrean selanjutnya dapat masuk dan bergantian menggunakan komputer.",
-            "steps": "Mulai - Siswa 1 - enqueue siswa 2 - enqueue siswa 3 - dequeue siswa 1 - enqueue siswa 4 - dequeue siswa 2 - dequeue siswa 3 - dequeue siswa 4 - selesai.",
-            "conclusion": "Prinsip FIFO diterapkan dalam kasus antrean agar tidak menimbulkan ketidakpuasaan, kegaduhan antarsiswa, dan ketidakadilan karena fasilitas komputer sekolah dapat digunakan oleh seluruh siswa secara bergantian."
-          }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 90,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 5
         },
         "bonusMiniLab": 5,
         "breakdown": {
@@ -3017,30 +3865,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 88,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 80,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 80,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 2",
+          "groupId": "2",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📝 Notulis / Perumus Masalah",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Aena Zainahya",
+              "absen": 1,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Restu Maheswari Mulyono",
+              "absen": 34,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "TIFFANY SHAKEENA CANA BIXENTA",
+              "absen": 36,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Ezhal Azalia Istono",
+              "absen": 14,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Fahmi Azzam Adyaka",
+              "absen": 15,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Irfan Bagas Adyatma",
+              "absen": 20,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 80,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -3085,30 +3969,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 85,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 3",
+          "groupId": "3",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "👑 Ketua / Koordinator Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Sultan Ahmad Merigi",
+              "absen": 35,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Nakeisha Areta Maritza",
+              "absen": 28,
+              "role": "Anggota Tim"
+            },
+            {
+              "name": "Asyifa Yasmin Khairunnisa Nurcahyanto",
+              "absen": 10,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Brilliant Alif Hakeem",
+              "absen": 12,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Nafiza Azzahra",
+              "absen": 27,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Rafa Aisyah Widati Olindamali",
+              "absen": 31,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 75,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -3153,30 +4073,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 85,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok 5",
+          "groupId": "5",
+          "score": 100,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "🤝 Anggota Tim",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "andhika poetra jansy",
+              "absen": 6,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Hildannas Zafran Ardafa",
+              "absen": 19,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Muhammad royyan haromain",
+              "absen": 26,
+              "role": "🧪 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Aldito Bagas Abafy",
+              "absen": 4,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Kalila Amalia Wibowo",
+              "absen": 21,
+              "role": "🤝 Anggota Tim"
+            },
+            {
+              "name": "Mochammad Ghani Ardiansyah",
+              "absen": 25,
+              "role": "🤝 Anggota Tim"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 75,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -3224,30 +4180,66 @@
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 0,
+        "digitalScore": 83,
         "tugasIndividu": {
-          "bestScore": 0,
+          "bestScore": 75,
           "currentAttempt": 1,
-          "history": [],
+          "history": [
+            {
+              "attempt": 1,
+              "score": 75,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
           "isLocked": false
         },
         "lkpdKelompok": {
-          "groupName": "-",
-          "members": [],
-          "bestScore": 0,
-          "currentAttempt": 1,
-          "history": [],
-          "isLocked": false,
-          "worksheet": {
-            "selectedStructure": "",
-            "reasoning": "",
-            "steps": "",
-            "conclusion": ""
-          }
+          "groupName": "Kelompok Almeera Lubhna Ghassani (Kelompok 4)",
+          "groupId": "4",
+          "score": 86,
+          "selectedCase": "Optimalisasi Sistem Antrean Penggunaan Komputer Laboratorium",
+          "role": "📢 Presenter / Juru Bicara",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Almeera Lubhna Ghassani",
+              "absen": 5,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Kayla Defara Ashari",
+              "absen": 22,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Aksamala Baksya P.",
+              "absen": 3,
+              "role": "🔬 Operator Simulasi & Pengujian"
+            },
+            {
+              "name": "Ainun Hidayati Rondiyah",
+              "absen": 2,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Farra Adzkiyatussyafiqa",
+              "absen": 16,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Aryoseto Nur Cahyanto",
+              "absen": 9,
+              "role": "📢 Presenter / Juru Bicara"
+            }
+          ]
         },
         "evaluasiAkhir": {
-          "score": 0,
-          "isCompleted": false
+          "score": 85,
+          "isCompleted": false,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         },
         "bonusMiniLab": 0,
         "breakdown": {
@@ -3255,6 +4247,273 @@
           "L": 0,
           "E": 0,
           "B": 0
+        }
+      }
+    },
+    "absen_07_angelica_bian_celciana_pu": {
+      "identitas": {
+        "nama": "Angelica Bian Celciana Putri",
+        "kelas": "Kelas X.2",
+        "classKey": "X-2",
+        "absen": 7
+      },
+      "status": {
+        "isOnline": false,
+        "currentActivity": "Mengerjakan LKPD Kelompok",
+        "lastActive": "2026-11-11T08:01:26.000Z",
+        "lastActiveTimestamp": 1794384086000,
+        "recordedAt": "11 Nov 2026, 15.01 WIB"
+      },
+      "simulasi": {
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Cakap",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
+        },
+        "lastUpdated": "2026-11-11T07:10:45.000Z"
+      },
+      "nilai": {
+        "digitalScore": 93,
+        "tugasIndividu": {
+          "bestScore": 85,
+          "currentAttempt": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
+          "isLocked": false
+        },
+        "lkpdKelompok": {
+          "groupName": "Kelompok ARFAN (Kelompok 1)",
+          "groupId": "1",
+          "score": 100,
+          "selectedCase": "Sistem Undo dan Redo pada Editor Teks",
+          "role": "📝 Notulis / Perumus Masalah",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Arfan Himawan Abisatya",
+              "absen": 8,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Dzikri Abqori Al-khoiry",
+              "absen": 13,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Lathifa Ulum Annafis",
+              "absen": 24,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Fazli Emir Baizeed",
+              "absen": 18,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Rashya devdan Damario",
+              "absen": 32,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Angelica Bian Celciana Putri",
+              "absen": 7,
+              "role": "📝 Notulis / Perumus Masalah"
+            }
+          ]
+        },
+        "evaluasiAkhir": {
+          "score": 85,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
+        }
+      }
+    },
+    "absen_18_fazli_emir_baizeed": {
+      "identitas": {
+        "nama": "Fazli Emir Baizeed",
+        "kelas": "Kelas X.2",
+        "classKey": "X-2",
+        "absen": 18
+      },
+      "status": {
+        "isOnline": false,
+        "currentActivity": "Mengerjakan LKPD Kelompok",
+        "lastActive": "2026-11-11T08:01:26.000Z",
+        "lastActiveTimestamp": 1794384086000,
+        "recordedAt": "11 Nov 2026, 15.01 WIB"
+      },
+      "simulasi": {
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Cakap",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
+        },
+        "lastUpdated": "2026-11-11T07:10:45.000Z"
+      },
+      "nilai": {
+        "digitalScore": 93,
+        "tugasIndividu": {
+          "bestScore": 85,
+          "currentAttempt": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
+          "isLocked": false
+        },
+        "lkpdKelompok": {
+          "groupName": "Kelompok ARFAN (Kelompok 1)",
+          "groupId": "1",
+          "score": 100,
+          "selectedCase": "Sistem Undo dan Redo pada Editor Teks",
+          "role": "📢 Presenter / Juru Bicara",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Arfan Himawan Abisatya",
+              "absen": 8,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Dzikri Abqori Al-khoiry",
+              "absen": 13,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Lathifa Ulum Annafis",
+              "absen": 24,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Fazli Emir Baizeed",
+              "absen": 18,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Rashya devdan Damario",
+              "absen": 32,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Angelica Bian Celciana Putri",
+              "absen": 7,
+              "role": "📝 Notulis / Perumus Masalah"
+            }
+          ]
+        },
+        "evaluasiAkhir": {
+          "score": 85,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
+        }
+      }
+    },
+    "absen_32_rashya_devdan_damario": {
+      "identitas": {
+        "nama": "Rashya devdan Damario",
+        "kelas": "Kelas X.2",
+        "classKey": "X-2",
+        "absen": 32
+      },
+      "status": {
+        "isOnline": false,
+        "currentActivity": "Mengerjakan LKPD Kelompok",
+        "lastActive": "2026-11-11T08:01:26.000Z",
+        "lastActiveTimestamp": 1794384086000,
+        "recordedAt": "11 Nov 2026, 15.01 WIB"
+      },
+      "simulasi": {
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Cakap",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
+        },
+        "lastUpdated": "2026-11-11T07:10:45.000Z"
+      },
+      "nilai": {
+        "digitalScore": 93,
+        "tugasIndividu": {
+          "bestScore": 85,
+          "currentAttempt": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "score": 85,
+              "correctCount": 3,
+              "completedAt": "2026-11-11T07:15:00.000Z"
+            }
+          ],
+          "isLocked": false
+        },
+        "lkpdKelompok": {
+          "groupName": "Kelompok ARFAN (Kelompok 1)",
+          "groupId": "1",
+          "score": 100,
+          "selectedCase": "Sistem Undo dan Redo pada Editor Teks",
+          "role": "⚙ Perancang Solusi Algoritmik",
+          "verified": true,
+          "verifiedAt": "11 Nov 2026, 15.00 WIB",
+          "members": [
+            {
+              "name": "Arfan Himawan Abisatya",
+              "absen": 8,
+              "role": "👑 Ketua / Koordinator Tim"
+            },
+            {
+              "name": "Dzikri Abqori Al-khoiry",
+              "absen": 13,
+              "role": "🔍 Analis Struktur Data"
+            },
+            {
+              "name": "Lathifa Ulum Annafis",
+              "absen": 24,
+              "role": "📝 Notulis / Perumus Masalah"
+            },
+            {
+              "name": "Fazli Emir Baizeed",
+              "absen": 18,
+              "role": "📢 Presenter / Juru Bicara"
+            },
+            {
+              "name": "Rashya devdan Damario",
+              "absen": 32,
+              "role": "⚙ Perancang Solusi Algoritmik"
+            },
+            {
+              "name": "Angelica Bian Celciana Putri",
+              "absen": 7,
+              "role": "📝 Notulis / Perumus Masalah"
+            }
+          ]
+        },
+        "evaluasiAkhir": {
+          "score": 85,
+          "completedAt": "2026-11-11T07:25:00.000Z",
+          "totalCorrect": 4
         }
       }
     }

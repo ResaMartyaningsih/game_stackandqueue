@@ -39,8 +39,18 @@ module.exports = async (req, res) => {
     const existing = global.studentsDB[cls][studentKey] || {};
     const teacherEval = existing.teacherEvaluation || payload.teacherEvaluation || {};
 
+    // Proteksi: jangan timpa nilai terverifikasi jika payload yang datang bernilai 0
+    let finalNilai = payload.nilai || existing.nilai || {};
+    if (existing.nilai && (existing.nilai.digitalScore || 0) > 0) {
+        const payloadDig = (payload.nilai && payload.nilai.digitalScore) || 0;
+        if (payloadDig === 0) {
+            finalNilai = existing.nilai;
+        }
+    }
+
     global.studentsDB[cls][studentKey] = {
         ...payload,
+        nilai: finalNilai,
         teacherEvaluation: teacherEval,
         _serverUpdated: new Date().toISOString()
     };

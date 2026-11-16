@@ -16,6 +16,9 @@ const Player = {
             this.absen = StorageManager.getPlayerAbsen();
         }
         this.updatePlayerUI();
+        if (this.hasValidProfile()) {
+            this.restoreScoresFromCloud();
+        }
     },
 
     getName() {
@@ -62,6 +65,7 @@ const Player = {
             StorageManager.setProfile(this.name, this.className, this.absen);
         }
         this.updatePlayerUI();
+        this.restoreScoresFromCloud();
     },
 
     hasValidProfile() {
@@ -133,6 +137,112 @@ const Player = {
         document.querySelectorAll('.overall-progress-text').forEach(el => {
             el.textContent = `${completedCount} / ${totalLevels} Level Selesai (${progressPct}%)`;
         });
+    },
+
+    async restoreScoresFromCloud() {
+        if (!window.StorageManager) return;
+        const currentAbsen = parseInt(this.getAbsen(), 10);
+        const currentName = (this.getName() || '').toLowerCase().trim();
+        const currentClass = this.getClass();
+
+        // Konversi nama kelas menjadi key pencarian (e.g. 'Kelas X.2' -> 'X-2')
+        let classKey = 'X-2';
+        const matchClass = currentClass.match(/X[-. ]?(\d+)/i);
+        if (matchClass) {
+            classKey = 'X-' + matchClass[1];
+        }
+
+        try {
+            const resp = await fetch('/api/students');
+            if (!resp.ok) return;
+            const allData = await resp.json();
+            const classData = allData[classKey] || allData['X-2'];
+            if (!classData) return;
+
+            // Cari data siswa yang cocok dengan nomor absen atau kemiripan nama
+            let student = null;
+            Object.values(classData).forEach(s => {
+                if (!s || !s.identitas) return;
+                const sAbs = parseInt(s.identitas.absen, 10);
+                const sName = (s.identitas.nama || '').toLowerCase().trim();
+                if (currentAbsen && sAbs === currentAbsen) {
+                    student = s;
+                } else if (!student && currentName && (sName.includes(currentName) || currentName.includes(sName))) {
+                    student = s;
+                }
+            });
+
+            if (!student || !student.nilai) return;
+
+            const n = student.nilai;
+            let updated = false;
+
+            // 1. Pulihkan tugas individu
+            if (n.tugasIndividu && n.tugasIndividu.bestScore > 0) {
+                if (!StorageManager.data.individualAttempts) StorageManager.data.individualAttempts = {};
+                const currentBest = StorageManager.data.individualAttempts.bestScore || 0;
+                if (n.tugasIndividu.bestScore > currentBest) {
+                    StorageManager.data.individualAttempts.bestScore = n.tugasIndividu.bestScore;
+                    StorageManager.data.individualAttempts.history = n.tugasIndividu.history || [
+                        { attempt: 1, score: n.tugasIndividu.bestScore, correctCount: Math.round(n.tugasIndividu.bestScore / 25), completedAt: new Date().toISOString() }
+                    ];
+                    updated = true;
+                }
+            }
+
+            // 2. Pulihkan LKPD kelompok
+            if (n.lkpdKelompok && n.lkpdKelompok.score > 0) {
+                if (!StorageManager.data.groupAttempts) StorageManager.data.groupAttempts = {};
+                const currentGrp = (StorageManager.data.groupProject && StorageManager.data.groupProject.score) || 0;
+                if (n.lkpdKelompok.score > currentGrp) {
+                    StorageManager.data.groupProject = {
+                        groupName: n.lkpdKelompok.groupName,
+                        score: n.lkpdKelompok.score,
+                        selectedCase: n.lkpdKelompok.selectedCase,
+                        role: n.lkpdKelompok.role,
+                        members: n.lkpdKelompok.members,
+                        savedAt: n.lkpdKelompok.verifiedAt || new Date().toISOString()
+                    };
+                    StorageManager.data.groupAttempts.bestScore = n.lkpdKelompok.score;
+                    StorageManager.data.groupAttempts.isLocked = true;
+                    updated = true;
+                }
+            }
+
+            // 3. Pulihkan evaluasi akhir
+            if (n.evaluasiAkhir && n.evaluasiAkhir.score > 0) {
+                if (!StorageManager.data.pageScores) StorageManager.data.pageScores = {};
+                const currentEval = (StorageManager.data.pageScores['evaluation'] && StorageManager.data.pageScores['evaluation'].score) || 0;
+                if (n.evaluasiAkhir.score > currentEval) {
+                    StorageManager.data.pageScores['evaluation'] = {
+                        score: n.evaluasiAkhir.score,
+                        completed: true,
+                        completedAt: n.evaluasiAkhir.completedAt || new Date().toISOString()
+                    };
+                    updated = true;
+                }
+            }
+
+            // 4. Pulihkan operasi mini-lab
+            if (student.simulasi && student.simulasi.operations) {
+                StorageManager.data.miniLabOps = {
+                    ...StorageManager.data.miniLabOps,
+                    ...student.simulasi.operations
+                };
+                updated = true;
+            }
+
+            if (updated) {
+                StorageManager.save();
+                this.updatePlayerUI();
+                if (window.UI && typeof UI.renderProfilePage === 'function' && UI.currentScreen === 'profile') {
+                    UI.renderProfilePage();
+                }
+                console.log(`[Player] Nilai resmi siswa ${student.identitas.nama} berhasil dipulihkan dari server!`);
+            }
+        } catch (e) {
+            console.warn('[Player] Sinkronisasi pemulihan nilai fallback:', e);
+        }
     }
 };
 

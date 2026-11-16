@@ -52,6 +52,16 @@ module.exports = async (req, res) => {
                                     const slug = (s.identitas.nama || 'siswa').toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 25);
                                     const sk = `absen_${abs}_${slug}`;
                                     if (!global.studentsDB[cls]) global.studentsDB[cls] = {};
+                                    
+                                    const existing = global.studentsDB[cls][sk];
+                                    if (existing && existing.nilai) {
+                                        // Jangan timpa nilai jika data relay memiliki skor 0 sedangkan data lokal memiliki nilai riil
+                                        const exDig = existing.nilai.digitalScore || 0;
+                                        const inDig = (s.nilai && s.nilai.digitalScore) || 0;
+                                        if (exDig > 0 && inDig === 0) {
+                                            s.nilai = existing.nilai;
+                                        }
+                                    }
                                     global.studentsDB[cls][sk] = s;
                                 }
                             }
