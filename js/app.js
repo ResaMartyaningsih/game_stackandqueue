@@ -2542,6 +2542,11 @@ const App = {
         this.groupProjectState.identitySaved = true;
         this.groupProjectState.lastScore = evaluation.totalScore;
 
+        // PENTING: Segera kirim sinkronisasi nilai LKPD otomatis ke Portal Guru
+        if (window.CloudSync && typeof CloudSync.syncStudentState === 'function') {
+            CloudSync.syncStudentState('Menyimpan Lembar LKPD Kelompok');
+        }
+
         if (showFeedback) {
             if (window.SoundManager) SoundManager.play('levelComplete');
             if (window.UI) {

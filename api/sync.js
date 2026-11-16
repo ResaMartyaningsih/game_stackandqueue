@@ -36,20 +36,58 @@ module.exports = async (req, res) => {
         global.studentsDB[cls] = {};
     }
 
-    const existing = global.studentsDB[cls][studentKey] || {};
+    // Cari key yang cocok berdasarkan nama/slug atau nomor absen
+    let targetKey = studentKey;
+    const existingKeys = Object.keys(global.studentsDB[cls]);
+    const matchedKey = existingKeys.find(k => {
+        if (k === studentKey) return true;
+        const st = global.studentsDB[cls][k];
+        if (st && st.identitas && Number(st.identitas.absen) === Number(payload.identitas.absen)) {
+            return true;
+        }
+        return false;
+    });
+    if (matchedKey) targetKey = matchedKey;
+
+    const existing = global.studentsDB[cls][targetKey] || {};
     const teacherEval = existing.teacherEvaluation || payload.teacherEvaluation || {};
 
-    // Proteksi: jangan timpa nilai terverifikasi jika payload yang datang bernilai 0
-    let finalNilai = payload.nilai || existing.nilai || {};
-    if (existing.nilai && (existing.nilai.digitalScore || 0) > 0) {
-        const payloadDig = (payload.nilai && payload.nilai.digitalScore) || 0;
-        if (payloadDig === 0) {
-            finalNilai = existing.nilai;
-        }
+    let finalNilai = { ...(existing.nilai || {}), ...(payload.nilai || {}) };
+
+    // Cek apakah ada skor LKPD baru dari siswa
+    const inLkScore = (payload.nilai?.lkpdKelompok && (
+        typeof payload.nilai.lkpdKelompok.autoScore === 'number' ? payload.nilai.lkpdKelompok.autoScore :
+        (typeof payload.nilai.lkpdKelompok.score === 'number' ? payload.nilai.lkpdKelompok.score : (payload.nilai.lkpdKelompok.bestScore || 0))
+    )) || 0;
+
+    if (inLkScore > 0) {
+        finalNilai.lkpdKelompok = {
+            ...(existing.nilai?.lkpdKelompok || {}),
+            ...(payload.nilai?.lkpdKelompok || {}),
+            autoScore: inLkScore,
+            score: inLkScore,
+            bestScore: inLkScore,
+            isLocked: true
+        };
+    } else if (existing.nilai?.lkpdKelompok) {
+        finalNilai.lkpdKelompok = existing.nilai.lkpdKelompok;
     }
 
-    global.studentsDB[cls][studentKey] = {
+    // Hitung ulang digitalScore jika ada komponen yang lebih tinggi
+    const curIndiv = Math.max(existing.nilai?.tugasIndividu?.bestScore || 0, payload.nilai?.tugasIndividu?.bestScore || 0);
+    const curLkpd = (typeof finalNilai.lkpdKelompok?.autoScore === 'number' && finalNilai.lkpdKelompok.autoScore > 0)
+        ? finalNilai.lkpdKelompok.autoScore
+        : ((typeof finalNilai.lkpdKelompok?.teacherScore === 'number' && finalNilai.lkpdKelompok.teacherScore > 0) ? finalNilai.lkpdKelompok.teacherScore : 0);
+    const curEval = Math.max(existing.nilai?.evaluasiAkhir?.score || 0, payload.nilai?.evaluasiAkhir?.score || 0);
+    const curBonus = Math.max(existing.nilai?.bonusMiniLab || 0, payload.nilai?.bonusMiniLab || 0);
+
+    const newComputedNd = Math.min(100, Math.round((curIndiv * 0.3) + (curLkpd * 0.35) + (curEval * 0.35) + curBonus));
+    finalNilai.digitalScore = Math.max(existing.nilai?.digitalScore || 0, newComputedNd);
+
+    global.studentsDB[cls][targetKey] = {
+        ...existing,
         ...payload,
+        identitas: { ...(existing.identitas || {}), ...(payload.identitas || {}) },
         nilai: finalNilai,
         teacherEvaluation: teacherEval,
         _serverUpdated: new Date().toISOString()
@@ -61,11 +99,11 @@ module.exports = async (req, res) => {
 
     // Forward ke HTTPS Cloud Relay ntfy.sh
     try {
-        const bodyStr = JSON.stringify(global.studentsDB[cls][studentKey]);
+        const bodyStr = JSON.stringify(global.studentsDB[cls][targetKey]);
         const forwardReq = https.request('https://ntfy.sh/laraslogika_edu_pbl_v1', {
             method: 'POST',
             headers: {
-                'Title': `${cls}_${studentKey}`,
+                'Title': `${cls}_${targetKey}`,
                 'Tags': 'student_sync',
                 'Content-Length': Buffer.byteLength(bodyStr)
             }
@@ -76,5 +114,5 @@ module.exports = async (req, res) => {
         forwardReq.end();
     } catch (e) {}
 
-    return res.status(200).json({ success: true, key: studentKey });
+    return res.status(200).json({ success: true, key: targetKey });
 };

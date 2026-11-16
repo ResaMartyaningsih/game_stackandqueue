@@ -481,6 +481,11 @@ const CloudSync = {
         const groupMembers = gp.members || [];
         const worksheet = gp.worksheet || {};
 
+        // Ambil nilai LKPD riil yang baru saja dinilai / tersimpan
+        const lkpdScore = (typeof gp.score === 'number' && gp.score > 0)
+            ? gp.score
+            : ((groupAtt && typeof groupAtt.bestScore === 'number' && groupAtt.bestScore > 0) ? groupAtt.bestScore : 0);
+
         const payload = {
             identitas: {
                 nama: nama,
@@ -517,10 +522,12 @@ const CloudSync = {
                 lkpdKelompok: {
                     groupName: groupName,
                     members: groupMembers,
-                    bestScore: groupAtt.bestScore || 0,
+                    score: lkpdScore,
+                    autoScore: lkpdScore,
+                    bestScore: lkpdScore,
                     currentAttempt: groupAtt.currentAttempt || 1,
                     history: groupAtt.history || [],
-                    isLocked: groupAtt.isLocked || false,
+                    isLocked: groupAtt.isLocked || (lkpdScore > 0),
                     worksheet: {
                         selectedStructure: worksheet.selectedStructure || '',
                         reasoning: worksheet.reasoning || '',

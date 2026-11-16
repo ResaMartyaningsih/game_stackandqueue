@@ -52,17 +52,45 @@ module.exports = async (req, res) => {
                                     const slug = (s.identitas.nama || 'siswa').toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 25);
                                     const sk = `absen_${abs}_${slug}`;
                                     if (!global.studentsDB[cls]) global.studentsDB[cls] = {};
+
+                                    // Cocokkan key berdasarkan absen jika sudah ada di DB
+                                    let targetKey = sk;
+                                    const existingKeys = Object.keys(global.studentsDB[cls]);
+                                    const matchedKey = existingKeys.find(k => {
+                                        if (k === sk) return true;
+                                        const st = global.studentsDB[cls][k];
+                                        return st && st.identitas && Number(st.identitas.absen) === Number(s.identitas.absen);
+                                    });
+                                    if (matchedKey) targetKey = matchedKey;
                                     
-                                    const existing = global.studentsDB[cls][sk];
-                                    if (existing && existing.nilai) {
-                                        // Jangan timpa nilai jika data relay memiliki skor 0 sedangkan data lokal memiliki nilai riil
-                                        const exDig = existing.nilai.digitalScore || 0;
-                                        const inDig = (s.nilai && s.nilai.digitalScore) || 0;
-                                        if (exDig > 0 && inDig === 0) {
-                                            s.nilai = existing.nilai;
-                                        }
+                                    const existing = global.studentsDB[cls][targetKey] || {};
+                                    let mergedNilai = { ...(existing.nilai || {}), ...(s.nilai || {}) };
+
+                                    const inLkScore = (s.nilai?.lkpdKelompok && (
+                                        typeof s.nilai.lkpdKelompok.autoScore === 'number' ? s.nilai.lkpdKelompok.autoScore :
+                                        (typeof s.nilai.lkpdKelompok.score === 'number' ? s.nilai.lkpdKelompok.score : (s.nilai.lkpdKelompok.bestScore || 0))
+                                    )) || 0;
+
+                                    if (inLkScore > 0) {
+                                        mergedNilai.lkpdKelompok = {
+                                            ...(existing.nilai?.lkpdKelompok || {}),
+                                            ...(s.nilai?.lkpdKelompok || {}),
+                                            autoScore: inLkScore,
+                                            score: inLkScore,
+                                            bestScore: inLkScore,
+                                            isLocked: true
+                                        };
+                                    } else if (existing.nilai?.lkpdKelompok) {
+                                        mergedNilai.lkpdKelompok = existing.nilai.lkpdKelompok;
                                     }
-                                    global.studentsDB[cls][sk] = s;
+
+                                    global.studentsDB[cls][targetKey] = {
+                                        ...existing,
+                                        ...s,
+                                        identitas: { ...(existing.identitas || {}), ...(s.identitas || {}) },
+                                        nilai: mergedNilai,
+                                        teacherEvaluation: existing.teacherEvaluation || s.teacherEvaluation || {}
+                                    };
                                 }
                             }
                         } catch (err) {}
