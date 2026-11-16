@@ -977,30 +977,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Melihat Beranda & Orientasi Masalah",
-        "lastActive": "2026-11-11T07:07:22.765Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:44.112Z",
         "lastActiveTimestamp": 1794380842765,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
         },
-        "lastUpdated": "2026-11-11T07:07:22.765Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:44.112Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 81,
+        "digitalScore": 83,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1061,12 +1071,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 86,
+          "E": 75,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -1081,30 +1091,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Terhubung ke Cloud Guru",
-        "lastActive": "2026-11-11T07:07:25.013Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:46.778Z",
         "lastActiveTimestamp": 1794380845013,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPop": true
         },
-        "lastUpdated": "2026-11-11T07:07:25.013Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:46.778Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 91,
+        "digitalScore": 93,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -1165,12 +1185,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 85,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -1185,26 +1205,37 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:20.829Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 100 pts]",
+        "lastActive": "2026-11-11T07:10:48.012Z",
         "lastActiveTimestamp": 1794380840829,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 100,
+        "predicate": "Sangat Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
         },
-        "lastUpdated": "2026-11-11T07:07:20.829Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 4,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 6
+        },
+        "lastUpdated": "2026-11-11T07:10:48.012Z"
       },
       "refleksi": {
         "conceptLearned": "Cara penggunaan prinsip LIFO & FIFO, perbedaan mendasar keduanya, serta contoh penerapannya dalam kehidupan sehari-hari.",
@@ -1214,7 +1245,7 @@
         "savedAt": "16 Nov 2026, 14.46 WIB"
       },
       "nilai": {
-        "digitalScore": 89,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1275,12 +1306,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 100,
+          "E": 85,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -1295,30 +1326,38 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Mempelajari Konsep Dasar CT",
+        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 70 pts]",
         "lastActive": "2026-11-11T07:10:49.007Z",
         "lastActiveTimestamp": 1794381049007,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
+        },
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
         "stackChallenge": null,
         "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
+          "opsCount": 4,
+          "queueCorrect": 1,
           "stackCorrect": 0,
-          "totalCompleted": 0
+          "totalCompleted": 5
         },
         "lastUpdated": "2026-11-11T07:10:49.007Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 84,
+        "digitalScore": 87,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1379,12 +1418,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 86,
+          "E": 85,
+          "B": 5
         }
       }
     },
@@ -1397,26 +1436,37 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:23.043Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 100 pts]",
+        "lastActive": "2026-11-11T07:10:45.890Z",
         "lastActiveTimestamp": 1794380843043,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 100,
+        "predicate": "Sangat Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
         },
-        "lastUpdated": "2026-11-11T07:07:23.043Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 4,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 6
+        },
+        "lastUpdated": "2026-11-11T07:10:45.890Z"
       },
       "refleksi": {
         "conceptLearned": "Aturan urutan akses data, operasi dasar pada masing-masing struktur (Enqueue/Dequeue & Push/Pop), serta penerapannya dalam pemrograman sehari-hari.",
@@ -1426,7 +1476,7 @@
         "savedAt": "16 Nov 2026, 15.36 WIB"
       },
       "nilai": {
-        "digitalScore": 89,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -1487,12 +1537,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 80,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -1507,30 +1557,38 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Melihat Beranda & Orientasi Masalah",
-        "lastActive": "2026-11-11T07:08:07.618Z",
+        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 70 pts]",
+        "lastActive": "2026-11-11T07:10:46.902Z",
         "lastActiveTimestamp": 1794380887618,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
+        },
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
         "stackChallenge": null,
         "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
+          "opsCount": 4,
+          "queueCorrect": 1,
           "stackCorrect": 0,
-          "totalCompleted": 0
+          "totalCompleted": 5
         },
-        "lastUpdated": "2026-11-11T07:08:07.618Z"
+        "lastUpdated": "2026-11-11T07:10:46.902Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 86,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -1591,12 +1649,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 100,
+          "E": 75,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -1724,30 +1782,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Melihat Beranda & Orientasi Masalah",
-        "lastActive": "2026-11-11T07:07:58.515Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:48.776Z",
         "lastActiveTimestamp": 1794380878515,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "stackPush": true,
+          "stackPop": true
         },
-        "lastUpdated": "2026-11-11T07:07:58.514Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:48.776Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 91,
+        "digitalScore": 93,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -1808,12 +1876,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 85,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -2048,30 +2116,38 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Melihat Beranda & Orientasi Masalah",
-        "lastActive": "2026-11-11T07:07:22.164Z",
+        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 70 pts]",
+        "lastActive": "2026-11-11T07:10:47.125Z",
         "lastActiveTimestamp": 1794380842164,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
+        },
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
         "stackChallenge": null,
         "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
+          "opsCount": 4,
+          "queueCorrect": 1,
           "stackCorrect": 0,
-          "totalCompleted": 0
+          "totalCompleted": 5
         },
-        "lastUpdated": "2026-11-11T07:07:22.164Z"
+        "lastUpdated": "2026-11-11T07:10:47.125Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 84,
+        "digitalScore": 87,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2132,12 +2208,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 86,
+          "E": 80,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -2264,30 +2340,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:18.194Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:48.330Z",
         "lastActiveTimestamp": 1794380838194,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "stackPush": true,
+          "stackPop": true
         },
-        "lastUpdated": "2026-11-11T07:07:18.193Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:48.330Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 91,
+        "digitalScore": 93,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2348,12 +2434,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 85,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -2368,26 +2454,37 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:18.588Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 100 pts]",
+        "lastActive": "2026-11-11T07:10:48.450Z",
         "lastActiveTimestamp": 1794380838588,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 100,
+        "predicate": "Sangat Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
         },
-        "lastUpdated": "2026-11-11T07:07:18.588Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 4,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 6
+        },
+        "lastUpdated": "2026-11-11T07:10:48.450Z"
       },
       "refleksi": {
         "conceptLearned": "Bahwa Stack dan Queue sangat berbeda; Stack menumpuk dengan konsep LIFO (Last In First Out), sedangkan Queue berbaris dengan konsep FIFO (First In First Out).",
@@ -2397,7 +2494,7 @@
         "savedAt": "16 Nov 2026, 14.32 WIB"
       },
       "nilai": {
-        "digitalScore": 89,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2458,12 +2555,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 80,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -2696,30 +2793,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Terhubung ke Cloud Guru",
-        "lastActive": "2026-11-11T07:04:59.042Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:49.200Z",
         "lastActiveTimestamp": 1794380699043,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
         },
-        "lastUpdated": "2026-11-11T07:04:59.042Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:49.200Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 91,
+        "digitalScore": 93,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -2780,12 +2887,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 85,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -2800,30 +2907,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:21.151Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:47.889Z",
         "lastActiveTimestamp": 1794380841151,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
         },
-        "lastUpdated": "2026-11-11T07:07:21.151Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:47.889Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 89,
+        "digitalScore": 91,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -2884,12 +3001,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 100,
+          "E": 85,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -2904,30 +3021,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:21.823Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:49.110Z",
         "lastActiveTimestamp": 1794380841823,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
         },
-        "lastUpdated": "2026-11-11T07:07:21.823Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:49.110Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 89,
+        "digitalScore": 91,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -2983,12 +3110,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 100,
+          "E": 85,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -3003,30 +3130,41 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Melihat Beranda & Orientasi Masalah",
-        "lastActive": "2026-11-11T07:07:26.008Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 100 pts]",
+        "lastActive": "2026-11-11T07:10:46.210Z",
         "lastActiveTimestamp": 1794380846008,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 100,
+        "predicate": "Sangat Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
         },
-        "lastUpdated": "2026-11-11T07:07:26.008Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 4,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 6
+        },
+        "lastUpdated": "2026-11-11T07:10:46.210Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 84,
+        "digitalScore": 87,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -3087,12 +3225,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 86,
+          "E": 80,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -3107,30 +3245,38 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:16.324Z",
+        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 70 pts]",
+        "lastActive": "2026-11-11T07:10:46.540Z",
         "lastActiveTimestamp": 1794380836324,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
+        },
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
         "stackChallenge": null,
         "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
+          "opsCount": 4,
+          "queueCorrect": 1,
           "stackCorrect": 0,
-          "totalCompleted": 0
+          "totalCompleted": 5
         },
-        "lastUpdated": "2026-11-11T07:07:16.324Z"
+        "lastUpdated": "2026-11-11T07:10:46.540Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 86,
+        "digitalScore": 89,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -3186,12 +3332,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 100,
+          "E": 75,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -3872,30 +4018,38 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:07:27.539Z",
+        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 70 pts]",
+        "lastActive": "2026-11-11T07:10:47.334Z",
         "lastActiveTimestamp": 1794380847539,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
+        "score": 3,
+        "totalScore": 70,
+        "predicate": "Paham",
+        "count": 4,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true,
+          "stackPop": true
+        },
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
         "stackChallenge": null,
         "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
+          "opsCount": 4,
+          "queueCorrect": 1,
           "stackCorrect": 0,
-          "totalCompleted": 0
+          "totalCompleted": 5
         },
-        "lastUpdated": "2026-11-11T07:07:27.539Z"
+        "lastUpdated": "2026-11-11T07:10:47.334Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 89,
+        "digitalScore": 92,
         "tugasIndividu": {
           "bestScore": 80,
           "currentAttempt": 1,
@@ -3956,12 +4110,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 5,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 80,
+          "L": 100,
+          "E": 80,
+          "B": 5
         }
       },
       "teacherEvaluation": {},
@@ -3976,30 +4130,40 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Profil Siswa Disimpan",
-        "lastActive": "2026-11-11T07:06:11.651Z",
+        "currentActivity": "Tantangan No.2 STACK: Benar (+30 Pts) [Akumulasi: 90 pts]",
+        "lastActive": "2026-11-11T07:10:45.670Z",
         "lastActiveTimestamp": 1794380771651,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
-        "stackChallenge": null,
-        "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
-          "stackCorrect": 0,
-          "totalCompleted": 0
+        "score": 4,
+        "totalScore": 90,
+        "predicate": "Sangat Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
         },
-        "lastUpdated": "2026-11-11T07:06:11.651Z"
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
+        "stackChallenge": {
+          "chosen": 1,
+          "isCorrect": true
+        },
+        "stats": {
+          "opsCount": 3,
+          "queueCorrect": 1,
+          "stackCorrect": 1,
+          "totalCompleted": 5
+        },
+        "lastUpdated": "2026-11-11T07:10:45.670Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 86,
+        "digitalScore": 88,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -4060,12 +4224,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 100,
+          "E": 75,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -4080,30 +4244,37 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Terhubung ke Cloud Guru",
-        "lastActive": "2026-11-11T07:07:27.626Z",
+        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 60 pts]",
+        "lastActive": "2026-11-11T07:10:45.312Z",
         "lastActiveTimestamp": 1794380847626,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 0,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
-        "queueChallenge": null,
+        "score": 3,
+        "totalScore": 60,
+        "predicate": "Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "stackPush": true,
+          "stackPop": true
+        },
+        "queueChallenge": {
+          "chosen": 0,
+          "isCorrect": true
+        },
         "stackChallenge": null,
         "stats": {
-          "opsCount": 0,
-          "queueCorrect": 0,
+          "opsCount": 3,
+          "queueCorrect": 1,
           "stackCorrect": 0,
-          "totalCompleted": 0
+          "totalCompleted": 4
         },
-        "lastUpdated": "2026-11-11T07:07:27.626Z"
+        "lastUpdated": "2026-11-11T07:10:45.312Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 86,
+        "digitalScore": 88,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -4164,12 +4335,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 100,
+          "E": 75,
+          "B": 4
         }
       },
       "teacherEvaluation": {},
@@ -4184,33 +4355,37 @@
       },
       "status": {
         "isOnline": false,
-        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 30 pts]",
+        "currentActivity": "Tantangan No.1 QUEUE: Benar (+30 Pts) [Akumulasi: 60 pts]",
         "lastActive": "2026-11-11T07:10:47.911Z",
         "lastActiveTimestamp": 1794381047911,
         "recordedAt": "11 Nov 2026, 15.07 WIB"
       },
       "simulasi": {
-        "score": 1,
-        "totalScore": 30,
-        "predicate": "Perlu Bimbingan",
-        "count": 0,
-        "operations": {},
+        "score": 3,
+        "totalScore": 60,
+        "predicate": "Paham",
+        "count": 3,
+        "operations": {
+          "queueEnqueue": true,
+          "queueDequeue": true,
+          "stackPush": true
+        },
         "queueChallenge": {
           "chosen": 0,
           "isCorrect": true
         },
         "stackChallenge": null,
         "stats": {
-          "opsCount": 0,
+          "opsCount": 3,
           "queueCorrect": 1,
           "stackCorrect": 0,
-          "totalCompleted": 1
+          "totalCompleted": 4
         },
         "lastUpdated": "2026-11-11T07:10:47.911Z"
       },
       "refleksi": null,
       "nilai": {
-        "digitalScore": 84,
+        "digitalScore": 86,
         "tugasIndividu": {
           "bestScore": 75,
           "currentAttempt": 1,
@@ -4271,12 +4446,12 @@
           "completedAt": "2026-11-11T07:25:00.000Z",
           "totalCorrect": 4
         },
-        "bonusMiniLab": 2,
+        "bonusMiniLab": 4,
         "breakdown": {
-          "I": 0,
-          "L": 0,
-          "E": 0,
-          "B": 0
+          "I": 75,
+          "L": 86,
+          "E": 85,
+          "B": 4
         }
       }
     },
