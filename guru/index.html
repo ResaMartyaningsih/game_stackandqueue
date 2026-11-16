@@ -1889,6 +1889,24 @@
                     const evalScore = (val.evaluasiAkhir && val.evaluasiAkhir.score) || 0;
                     const bonusVal = val.bonusMiniLab || 0;
 
+                    // Diagnostik Awal Data
+                    const sim = s.simulasi || {};
+                    const ops = sim.operations || {};
+                    let opsCount = 0;
+                    ['queueEnqueue', 'queueDequeue', 'stackPush', 'stackPop'].forEach(op => { if (ops[op]) opsCount++; });
+                    const qChal = sim.queueChallenge || (sim.queueChallenges && sim.queueChallenges[1]) || null;
+                    const sChal = sim.stackChallenge || (sim.stackChallenges && sim.stackChallenges[1]) || null;
+                    const qScore = (qChal && qChal.isCorrect) ? 30 : 0;
+                    const sScore = (sChal && sChal.isCorrect) ? 30 : 0;
+                    const calcSimTotal = (opsCount * 10) + qScore + sScore;
+                    const simTotal = (typeof sim.totalScore === 'number' && sim.totalScore > calcSimTotal) ? sim.totalScore : calcSimTotal;
+                    let simStarScore = sim.score || 1;
+                    if (simTotal >= 80) simStarScore = 4;
+                    else if (simTotal >= 60) simStarScore = 3;
+                    else if (simTotal >= 40) simStarScore = 2;
+                    else simStarScore = 1;
+                    const simStars = '⭐'.repeat(simStarScore);
+
                     html += `
                         <tr>
                             <td style="text-align: center;">
@@ -1898,8 +1916,13 @@
                                 <div class="student-name-cell">
                                     <span>${idn.nama || 'Peserta Didik'}</span>
                                 </div>
-                                <div style="font-size: 0.76rem; color: #64748B;">
-                                    ${idn.kelas || s._class}
+                                <div style="font-size: 0.76rem; color: #64748B; display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-top: 2px;">
+                                    <span>${idn.kelas || s._class}</span>
+                                    ${simTotal > 0 ? `
+                                        <span class="sim-star-pill sim-star-${simStarScore}" style="font-size: 0.7rem; padding: 0.1rem 0.45rem; cursor: pointer;" onclick="GuruPortal.switchMainTab('tab-simulasi')" title="Klik untuk membuka detail Tab 2 Diagnostik Awal & Tantangan Logika">
+                                            🧪 Diagnostik: ${simTotal} pts (${simStars})
+                                        </span>
+                                    ` : ''}
                                 </div>
                             </td>
                             <td>
