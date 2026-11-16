@@ -957,7 +957,9 @@
               "absen": 9,
               "role": "📢 Presenter / Juru Bicara"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -1075,7 +1077,9 @@
               "absen": 9,
               "role": "📢 Presenter / Juru Bicara"
             }
-          ]
+          ],
+          "isRepresentative": true,
+          "submissionType": "auto"
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -1195,7 +1199,9 @@
               "absen": 7,
               "role": "📝 Notulis / Perumus Masalah"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -1316,7 +1322,9 @@
               "absen": 25,
               "role": "🤝 Anggota Tim"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -1434,7 +1442,9 @@
               "absen": 9,
               "role": "📢 Presenter / Juru Bicara"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -1553,7 +1563,9 @@
               "absen": 31,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -1671,7 +1683,9 @@
               "absen": 31,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -1786,7 +1800,9 @@
               "absen": 25,
               "role": "🤝 Anggota Tim"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -1904,7 +1920,9 @@
               "absen": 20,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2022,7 +2040,9 @@
               "absen": 25,
               "role": "🤝 Anggota Tim"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2138,7 +2158,9 @@
               "absen": 20,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2254,7 +2276,9 @@
               "absen": 9,
               "role": "📢 Presenter / Juru Bicara"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -2374,7 +2398,9 @@
               "absen": 20,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": true,
+          "submissionType": "auto"
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -2492,7 +2518,9 @@
               "absen": 25,
               "role": "🤝 Anggota Tim"
             }
-          ]
+          ],
+          "isRepresentative": true,
+          "submissionType": "auto"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2613,7 +2641,9 @@
               "absen": 31,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -2728,7 +2758,9 @@
               "absen": 25,
               "role": "🤝 Anggota Tim"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -2839,7 +2871,9 @@
               "absen": 33,
               "role": "⚙ Perancang Solusi Algoritmik"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -2957,7 +2991,9 @@
               "absen": 31,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3077,7 +3113,9 @@
               "absen": 31,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3192,7 +3230,9 @@
               "absen": 33,
               "role": "⚙ Perancang Solusi Algoritmik"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3313,7 +3353,9 @@
               "absen": 9,
               "role": "📢 Presenter / Juru Bicara"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -3426,7 +3468,9 @@
               "absen": 33,
               "role": "⚙ Perancang Solusi Algoritmik"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -3546,7 +3590,9 @@
               "absen": 7,
               "role": "📝 Notulis / Perumus Masalah"
             }
-          ]
+          ],
+          "isRepresentative": true,
+          "submissionType": "auto"
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -3662,7 +3708,9 @@
               "absen": 20,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3773,7 +3821,9 @@
               "absen": 33,
               "role": "⚙ Perancang Solusi Algoritmik"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -3892,7 +3942,9 @@
               "absen": 20,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -4010,7 +4062,9 @@
               "absen": 7,
               "role": "📝 Notulis / Perumus Masalah"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -4130,7 +4184,9 @@
               "absen": 33,
               "role": "⚙ Perancang Solusi Algoritmik"
             }
-          ]
+          ],
+          "isRepresentative": true,
+          "submissionType": "auto"
         },
         "evaluasiAkhir": {
           "score": 90,
@@ -4246,7 +4302,9 @@
               "absen": 20,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 80,
@@ -4366,7 +4424,9 @@
               "absen": 31,
               "role": "🔬 Operator Simulasi & Pengujian"
             }
-          ]
+          ],
+          "isRepresentative": true,
+          "submissionType": "auto"
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -4483,7 +4543,9 @@
               "absen": 25,
               "role": "🤝 Anggota Tim"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 75,
@@ -4600,7 +4662,9 @@
               "absen": 9,
               "role": "📢 Presenter / Juru Bicara"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -4697,7 +4761,9 @@
               "absen": 7,
               "role": "📝 Notulis / Perumus Masalah"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -4794,7 +4860,9 @@
               "absen": 7,
               "role": "📝 Notulis / Perumus Masalah"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
@@ -4891,7 +4959,9 @@
               "absen": 7,
               "role": "📝 Notulis / Perumus Masalah"
             }
-          ]
+          ],
+          "isRepresentative": false,
+          "submissionType": "teacher_input"
         },
         "evaluasiAkhir": {
           "score": 85,
